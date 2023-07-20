@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id('transactionID');
             $table->foreignId('accountID')->constrained('accounts', 'accountID');
             $table->date('date');
-            $table->integer('credit');
-            $table->integer('debt');
+            $table->string('type');
+            $table->integer('credit')->nullable();
+            $table->integer('debt')->nullable();
             $table->integer('refID');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

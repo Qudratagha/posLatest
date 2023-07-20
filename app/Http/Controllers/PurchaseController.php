@@ -59,17 +59,18 @@ class PurchaseController extends Controller
 
 
         $date = Carbon::now();
-//        $ref = getRef();
+        $ref = getRef();
         if ($request->has('paidBy')){
-            PurchasePayment::create([
+           $purchasePayment =  PurchasePayment::create([
                 'purchaseID' => $request['purchaseID'],
                 'amount' => $request['amount'],
                 'accountID' => $request['accountID'],
                 'description' => $request['description'],
-                'refID' => 2,
+                'refID' => $ref,
                 'date' => $request['date'],
             ]);
-
+            addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $ref, $request['description']);
+            addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
 
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
             return to_route('purchase.index');
@@ -84,9 +85,9 @@ class PurchaseController extends Controller
                 'discount' => $request['discount'],
                 'shippingCost' => $request['shippingCost'],
                 'description' => $request['description'],
-                'refID' => 2
+                'refID' => $ref
             ]);
-
+            $netAmount = 0;
             foreach ($request->all() as $key => $value) {
                 if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
                     $productID = $matches[1];
@@ -99,6 +100,7 @@ class PurchaseController extends Controller
                     $productTax = $request['tax_' . $productID];
                     $productPurchaseUnit = $request['purchaseUnit_' . $productID];
                     $subTotal = ($productNetUnitCost * $productQuantity) - $productDiscount + $productTax;
+                    $netAmount += $subTotal;
                     PurchaseOrder::create([
                         'purchaseID' => $purchase->purchaseID,
                         'productID' => $productID,
@@ -120,6 +122,8 @@ class PurchaseController extends Controller
                     ]);
                 }
             }
+            $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
+            addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
             $request->session()->flash('message', 'Purchase Created Successfully!');
             return to_route('purchase.index');
         }
