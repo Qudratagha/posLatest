@@ -482,9 +482,18 @@
         $('.select2').select2();
     })
 
-    $(function () {
-        $('table.display').DataTable();
-    } );
+    $('.display').DataTable({
+        "columnDefs": [
+            {
+                "targets": [1, 2], // Column indices (0-based) for which sorting is disabled
+                "orderable": false
+            }
+        ]
+    });
+
+    // $(function () {
+    //     $('table.display').DataTable();
+    // } );
 
     setTimeout(function() {
         $('.alert').fadeOut('slow');
