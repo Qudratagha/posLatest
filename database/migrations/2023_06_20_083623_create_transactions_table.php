@@ -9,16 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id('transactionID');
             $table->foreignId('accountID')->constrained('accounts', 'accountID');
             $table->date('date');
-            $table->integer('credit');
-            $table->integer('debt');
+            $table->string('type');
+            $table->integer('credit')->nullable();
+            $table->integer('debt')->nullable();
             $table->integer('refID');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -26,7 +27,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('transactions');
     }

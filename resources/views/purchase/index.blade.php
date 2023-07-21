@@ -111,12 +111,9 @@
                                             </div>
 
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">
-                                                <label>Paid By</label>
-                                                <select name="paidBy" class="form-select" required>
-                                                    <option value="cash">Cash</option>
-                                                    <option value="cheque">Cheque</option>
-                                                    <option value="creditCard">Credit Card</option>
-                                                </select>
+                                                <label>Date</label>
+                                                <input type="hidden" name="paidBy" value="a">
+                                               <input type="date" name="date" id="date" class="form-control">
                                             </div>
 
                                             <div class="col-12 mt-2">
