@@ -18,6 +18,7 @@
                 <tr>
                     <th>#</th>
                     <th>Account Name</th>
+                    <th>Account Type</th>
                     <th>Account Number</th>
                     <th>Actions</th>
                 </tr>
@@ -27,6 +28,7 @@
                     <tr>
                         <td>{{ $account->accountID }}</td>
                         <td>{{ $account->name }}</td>
+                        <td>{{ $account->type }}</td>
                         <td>{{ $account->accountNumber }}</td>
 
                         <td>
