@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('orderDiscountType');
             $table->integer('discountValue');
             $table->integer('shippingCost');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->date('date');
             $table->integer('refID');
             $table->timestamps();

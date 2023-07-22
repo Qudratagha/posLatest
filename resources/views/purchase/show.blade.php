@@ -21,7 +21,7 @@
                             <h5 class="text-center mb-3 mt-3">Purchase Details</h5>
                             <dl class="row">
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Supplier Name:</dt>
+                                    <dt class="fs-5">Supplier Name: </dt>
                                     <dd class="fs-5">{{ $purchase->account->name }}</dd>
                                 </div>
                                 <div class="col-sm-6">

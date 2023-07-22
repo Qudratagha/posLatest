@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('stockID');
             $table->foreignId('warehouseID')->constrained('warehouses', 'warehouseID');
             $table->foreignId('productID')->constrained('products', 'productID');
-            $table->integer('batchNumber');
+            $table->integer('batchNumber')->nullable();
             $table->date('date');
             $table->string('credit');
             $table->string('debt');

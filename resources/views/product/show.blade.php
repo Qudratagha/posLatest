@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Category Show')
+@section('title', 'Product Show')
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -37,7 +37,6 @@
 
                     <div class="row fs-5 mt-3 text-dark">
                         <div class="col-sm-12 col-md-6 col-lg-6">Expire:{{ $product->isExpire == 0 ? "Yes" : "No" }}</div>
-
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <img width="40%" class="mt-2 img-circle" src="{{ asset('storage/images/product/'.$product->image) }}" />
                         </div>

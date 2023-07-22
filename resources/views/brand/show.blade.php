@@ -16,7 +16,6 @@
             <dt>
                 <p class=" fs-5">Brand Name: {{ $brand->name}}</p>
                 <p class=" fs-5">Active:{{ $brand->isActive == 0 ? "Yes" : "No" }}</p>
-
             </dt>
         </div>
     </div>

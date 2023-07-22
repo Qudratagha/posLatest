@@ -13,13 +13,8 @@
                 @method('PUT')
                 <div class="form-group row ">
                     <label for="name" class="mb-3 form-label required col-sm-4 col-md-2 col-lg-2  col-form-label">Brand Name: </label>
-                    <div class="mb-3 col-sm-4 col-md-4 col-lg-4 {{ $errors->has('name') ? 'has-error' : '' }}">
-                        <input type="text" name="name" class="form-control  @if($errors->has('name')) is-invalid @endif" value="{{ old('name',$brand->name) }}" required>
-                        @if($errors->has('name'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('name') }}
-                            </div>
-                        @endif
+                    <div class="mb-3 col-sm-4 col-md-4 col-lg-4">
+                        <input type="text" name="name" class="form-control" value="{{ old('name',$brand->name) }}" required>
                     </div>
                 </div>
 

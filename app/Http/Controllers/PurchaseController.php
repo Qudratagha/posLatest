@@ -9,6 +9,7 @@ use App\Models\PurchaseOrder;
 use App\Models\PurchasePayment;
 use App\Models\PurchaseReceive;
 use App\Models\PurchaseStatus;
+use App\Models\Reference;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class PurchaseController extends Controller
 
 
         $date = Carbon::now();
-        $ref = getRef();
+        $ref = Reference::getRef();
         if ($request->has('paidBy')){
            $purchasePayment =  PurchasePayment::create([
                 'purchaseID' => $request['purchaseID'],
@@ -69,8 +70,8 @@ class PurchaseController extends Controller
                 'refID' => $ref,
                 'date' => $request['date'],
             ]);
-            addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $ref, $request['description']);
-            addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
+            Reference::addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $ref, $request['description']);
+            Reference::addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
 
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
             return to_route('purchase.index');
@@ -123,7 +124,7 @@ class PurchaseController extends Controller
                 }
             }
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
-            addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
+            Reference::addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
             $request->session()->flash('message', 'Purchase Created Successfully!');
             return to_route('purchase.index');
         }
@@ -159,18 +160,16 @@ class PurchaseController extends Controller
                 $summedData[$productID]['receivedQty'] += $receivedQty;
             }
         }
-        if ($receivedQty){
+        if (!Empty($receivedQty)){
             $request->session()->flash('error', 'You can not update this purchase as it has received some products');
             return to_route('purchase.index');
         }
-
 
         $units = Unit::all();
         $warehouses = Warehouse::all();
         $accounts = Account::all();
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::all();
-
         $purchaseOrders = $purchase->purchaseOrders;
 
         return view('purchase.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'products', 'units', 'purchase','purchaseOrders'));
@@ -182,13 +181,12 @@ class PurchaseController extends Controller
 
         $purchase->purchaseOrders()->delete();
         $purchase->purchaseReceive()->delete();
-        $purchase->delete();
 
         $date = Carbon::now();
 //        $ref = getRef();
 
         $warehouseID = $request['warehouseID'];
-        $purchase = Purchase::create([
+        $purchase->update([
             'date' => $request['date'],
             'supplierID' => $request['supplierID'],
             'purchaseStatusID' => $request['purchaseStatusID'],
