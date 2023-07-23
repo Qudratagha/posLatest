@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Category Create')
+@section('title', 'Product Create')
 @section('content')
     <div class="card card-default color-palette-box">
         <div class="card-header">
@@ -95,28 +95,6 @@
                         </label>
                     </div>
                 </div>
-
-
-
-{{--                <div class="form-group row mt-3 ">--}}
-{{--                    <label for="name" class="mb-3 form-label required col-sm-4 col-md-2 col-lg-2  col-form-label">Active: </label>--}}
-{{--                    <div class="col-sm-4 col-md-4 col-lg-4">--}}
-{{--                        <label class="form-check form-check-inline">--}}
-{{--                            <input type="radio" class="form-check-input" name="isActive" value="0" @if( $category->isActive == 0 ) checked @endif> <span class="form-check-label">Yes</span>--}}
-{{--                        </label>--}}
-{{--                        <label class="form-check form-check-inline">--}}
-{{--                            <input type="radio" class="form-check-input" name="isActive" value="1" @if( $category->isActive == 1) checked @endif> <span class="form-check-label">No</span>--}}
-{{--                        </label>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-
-{{--                <div class="form-group row mt-3">--}}
-{{--                    <label for="tags" class="mb-3 form-label col-sm-4 col-md-2 col-lg-2 col-form-label">Picture: </label>--}}
-{{--                    <div class="mb-3 col-sm-8 col-md-4 col-lg-4 {{ $errors->has('image') ? 'has-error' : '' }}">--}}
-{{--                        <input type="file" name="image" class="form-control @if($errors->has('image')) is-invalid @endif" value="{{ $category->image }}">--}}
-{{--                        <img width="30%" class="mt-2 img-circle" src="{{ asset('storage/images/category/'.$category->image) }}" />--}}
-{{--                    </div>--}}
-{{--                </div>--}}
 
                 <div class="form-group row">
                     <div class="offset-2">

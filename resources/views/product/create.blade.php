@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Category Create')
+@section('title', 'Product Create')
 @section('content')
     <div class="middle-content container-xxl p-0">
 
@@ -8,14 +8,10 @@
                 <h4 class="card-title fw-semibold">
                     <i class="fas fa-users-cog"></i> Add New Product
                 </h4>
-                <!-- Add a container with the text-center class -->
                 <div class="text-center">
-                    <!-- Button 1 -->
                     <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addBrandModal">
                         <span class="fs-6">Add Brand</span>
                     </button>
-
-                    <!-- Button 2 -->
                     <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                         <span class="fs-6">Add Category</span>
                     </button>
@@ -58,12 +54,9 @@
                                 </div>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
-
-
             <!-- Category Modal -->
             <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

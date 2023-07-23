@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('expenseCategories', function (Blueprint $table) {
             $table->id('expenseCategoryID');
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

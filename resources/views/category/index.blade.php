@@ -23,7 +23,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach($categories->reverse()  as $category)
+                    @foreach($categories  as $category)
                         <tr>
                             <td>{{ $category->categoryID }}</td>
                             <td>{{ $category->name }}</td>
@@ -48,7 +48,6 @@
                         </tr>
                     @endforeach
                 </tbody>
-
             </table>
         </div>
     </div>

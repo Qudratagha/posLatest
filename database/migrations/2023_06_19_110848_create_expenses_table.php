@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('accountID')->constrained('accounts', 'accountID');
             $table->integer('amount');
             $table->date('date');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('refID');
             $table->timestamps();
         });

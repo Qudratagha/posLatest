@@ -23,7 +23,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach($brands->reverse()  as $brand)
+                    @foreach($brands  as $brand)
                         <tr>
                             <td>{{ $brand->brandID }}</td>
                             <td>{{ $brand->name }}</td>
@@ -47,7 +47,6 @@
                         </tr>
                     @endforeach
                 </tbody>
-
             </table>
         </div>
     </div>

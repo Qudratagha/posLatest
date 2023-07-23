@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Category Index')
+@section('title', 'Product Index')
 @section('content')
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -34,7 +34,6 @@
                         <td>{{ $product->brand->name }}</td>
                         <td>{{ $product->category->name }}</td>
                         <td>{{ $product->isExpire == 0 ? "Yes" : "No" }}</td>
-
                         <td>
                             <a href="{{ route('product.show', $product->productID) }}">
                                 <i class="fas fa-eye"></i>
@@ -49,12 +48,10 @@
                                     <i class="text-red fa fa-trash"></i>
                                 </a>
                             </form>
-
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
-
             </table>
         </div>
     </div>

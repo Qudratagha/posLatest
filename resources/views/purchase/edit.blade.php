@@ -94,7 +94,7 @@
                                             <td><input type="date" class="form-control" name="expiryDate_{{$order->productID}}" value="{{ $order->expiryDate }}"></td>
                                             <td><span id="netUnitCost_{{$order->productID}}"> {{ $order->netUnitCost }}</span></td>
                                             <td width="10%" >
-                                                <select name="purchaseUnitID_{{$order->productID}}" id="" class="form-select">
+                                                <select name="purchaseUnit_{{$order->productID}}" id="" class="form-select">
                                                     @foreach($units as $unit)
                                                         <option value="{{ $unit->unitID }}" @if ($unit->unitID == $order->purchaseUnitID) selected @endif > {{ $unit->name }}</option>
                                                     @endforeach
@@ -145,11 +145,11 @@
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
-                        <input type="number" name="discount" class="form-control" value="{{ $purchase->discount }}" >
+                        <input type="number" name="discount" class="form-control" value="{{ $purchase->discount }}" required >
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" value="{{ $purchase->shippingCost }}">
+                        <input type="number" name="shippingCost" class="form-control" value="{{ $purchase->shippingCost }}" required>
                     </label>
                 </div>
                 <div class="form-group row">

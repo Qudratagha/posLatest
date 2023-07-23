@@ -24,7 +24,7 @@
                     </label>
 
                     <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Supplier:
-                        <select name="supplierID" class="form-select">
+                        <select name="supplierID" class="form-select" required>
                             <option value="">Select Supplier</option>
                             @foreach ($accounts as $account)
                                 <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
@@ -115,15 +115,15 @@
                     </label>
 
                     <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount">
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount" required>
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
-                        <input type="number" name="discount" class="form-control" placeholder="Discount">
+                        <input type="number" name="discount" class="form-control" placeholder="Discount" required>
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" placeholder="Shipping Cost">
+                        <input type="number" name="shippingCost" class="form-control" placeholder="Shipping Cost" required>
                     </label>
                 </div>
 
