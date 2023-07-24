@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('credit');
             $table->string('debt');
             $table->integer('refID');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
