@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('purchaseID')->constrained('purchases', 'purchaseID');
             $table->foreignId('productID')->constrained('products', 'productID');
             $table->integer('orderedQty')->nullable();
+            $table->integer('batchNumber')->nullable();
+            $table->date('expiryDate')->nullable();
             $table->integer('receivedQty')->nullable();
             $table->integer('remainingQty')->nullable();
             $table->timestamp('date')->nullable();

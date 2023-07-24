@@ -50,19 +50,19 @@
                         <div class="col-md-12">
                             <h5 class="text-center mb-3">Purchase Orders</h5>
                             <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <table class="table table-bordered table-hover table-striped">
                                     <thead class="thead-dark">
                                     <tr>
-                                        <th>Product Name</th>
-                                        <th>Warehouse</th>
-                                        <th>Code</th>
-                                        <th>Quantity</th>
-                                        <th>Batch Number</th>
-                                        <th>Expiry Date</th>
-                                        <th>Net Unit Cost</th>
-                                        <th>Discount</th>
-                                        <th>Tax</th>
-                                        <th>Total</th>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">Warehouse</th>
+                                        <th scope="col">Code</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Batch Number</th>
+                                        <th scope="col">Expiry Date</th>
+                                        <th scope="col">Net Unit Cost</th>
+                                        <th scope="col">Discount</th>
+                                        <th scope="col">Tax</th>
+                                        <th scope="col">Total</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -73,7 +73,7 @@
                                             <td>{{ $order->code }}</td>
                                             <td>{{ $order->quantity }}</td>
                                             <td>{{ $order->batchNumber ?? '' }}</td>
-                                            <td>{{ $order->expiryDate ?? ''  }}</td>
+                                            <td>{{ $order->expiryDate ?? '' }}</td>
                                             <td>{{ $order->netUnitCost }}</td>
                                             <td>{{ $order->discount }}</td>
                                             <td>{{ $order->tax }}</td>
@@ -84,6 +84,7 @@
                                 </table>
                             </div>
                         </div>
+
 
 
                         <div class="col-md-12">
