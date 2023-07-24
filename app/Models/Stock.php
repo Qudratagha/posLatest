@@ -11,4 +11,9 @@ class Stock extends Model
     protected $primaryKey = 'stockID';
     protected $table = 'stocks';
     protected $guarded = [];
+
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class, 'productID', 'productID');
+    }
 }

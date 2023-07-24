@@ -16,11 +16,12 @@ return new class extends Migration
             $table->foreignId('warehouseID')->constrained('warehouses', 'warehouseID');
             $table->foreignId('productID')->constrained('products', 'productID');
             $table->integer('batchNumber')->nullable();
+            $table->date('expiryDate')->nullable();
             $table->date('date');
             $table->string('credit');
             $table->string('debt');
             $table->integer('refID');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

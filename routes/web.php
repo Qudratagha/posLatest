@@ -35,5 +35,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('/purchase', \App\Http\Controllers\PurchaseController::class);
     Route::resource('/unit', \App\Http\Controllers\UnitController::class);
     Route::resource('/purchaseReceive', \App\Http\Controllers\PurchaseReceiveController::class);
+    Route::resource('/sale', \App\Http\Controllers\SaleController::class);
 
 });

@@ -25,23 +25,12 @@ class PurchaseController extends Controller
     {
         $accounts = Account::where('type', 'business')->get();
         $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')
-            ->orderBy('purchaseID', 'desc')
+            ->orderByDesc('purchaseID')
             ->get();
-//        dd($purchases);
-//        $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')->get();
+        $warehouses = Warehouse::all();
 
-// Sort the collection in descending order based on the purchaseID
-//        $purchases = $purchases->sortByDesc('purchaseID');
-//        $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')
-//            ->orderByRaw('from_unixtime(created_at) DESC')
-//            ->get();
-//        $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')
-//            ->orderBy('purchaseID', 'desc')
-//            ->get();
-//        $purchases = Purchase::with('purchaseOrders', 'purchaseReceive') ->orderBy('purchaseID', 'desc')->get();
-//        $purchases->load('purchaseReceive');
 
-        return view('purchase.index', compact('purchases', 'accounts'));
+        return view('purchase.index', compact('purchases', 'accounts', 'warehouses'));
     }
 
     public function create()
@@ -57,10 +46,8 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
 
-
-
         $date = Carbon::now();
-        $ref = Reference::getRef();
+        $ref = getRef();
         if ($request->has('paidBy')){
            $purchasePayment =  PurchasePayment::create([
                 'purchaseID' => $request['purchaseID'],
@@ -70,8 +57,8 @@ class PurchaseController extends Controller
                 'refID' => $ref,
                 'date' => $request['date'],
             ]);
-            Reference::addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $ref, $request['description']);
-            Reference::addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
+            addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $ref, $request['description']);
+            addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
 
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
             return to_route('purchase.index');
@@ -119,12 +106,14 @@ class PurchaseController extends Controller
                     PurchaseReceive::create([
                         'purchaseID' => $purchase->purchaseID,
                         'productID' => $productID,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
                         'orderedQty' => $productQuantity,
                     ]);
                 }
             }
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
-            Reference::addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
+            addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
             $request->session()->flash('message', 'Purchase Created Successfully!');
             return to_route('purchase.index');
         }

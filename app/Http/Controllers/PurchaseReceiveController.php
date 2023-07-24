@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\PurchaseReceive;
+use App\Models\Reference;
+use App\Models\Stock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -21,11 +23,10 @@ class PurchaseReceiveController extends Controller
 
     public function store(Request $request)
     {
+        $ref = Reference::getRef();
         $requestData = $request->all();
         $productQuantities = [];
-
         $date = Carbon::now();
-
         foreach ($requestData as $key => $value) {
             if (strpos($key, 'receiveQty_') === 0) {
                 $productId = substr($key, strlen('receiveQty_'));
@@ -38,6 +39,14 @@ class PurchaseReceiveController extends Controller
                'productID' => $productId,
                'receivedQty' => $receiveQty,
                'date' => $date
+            ]);
+
+            Stock::create([
+                'warehouseID' =>  $request['warehouseID_'.$productId],
+                'productID' => $productId,
+                'date' => $date,
+                'credit' => $receiveQty,
+                'refID' => $ref,
             ]);
         }
 
