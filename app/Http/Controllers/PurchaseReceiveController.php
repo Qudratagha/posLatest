@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PurchaseReceive;
+use App\Models\Stock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,7 @@ class PurchaseReceiveController extends Controller
 
     public function store(Request $request)
     {
+        dump($request->all());
         $requestData = $request->all();
         $productQuantities = [];
 
@@ -38,6 +40,10 @@ class PurchaseReceiveController extends Controller
                'productID' => $productId,
                'receivedQty' => $receiveQty,
                'date' => $date
+            ]);
+
+            Stock::create([
+
             ]);
         }
 

@@ -188,6 +188,7 @@
                                     <form class="form-horizontal" action="{{ route('purchaseReceive.store') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="purchaseID" value="{{ $purchase->purchaseID }}">
+                                        <input type="hidden" name="warehouseID" value="{{ $purchase->warehouseID }}">
                                         <?php
                                             $uniqueProducts = [];
                                             $receivedQuantity = [];
@@ -211,36 +212,43 @@
                                                 }
                                             ?>
                                         @endforeach
-
                                         @php
                                             $allProductsReceived = true;
                                         @endphp
-
                                         @forelse ($summedData as $data)
                                             @php
                                                 $modifiedOrderedQty = $data['orderedQty'] - $data['receivedQty'];
                                                 $productID = $data['productID'];
                                                 $productName = \App\Models\Product::where('productID', $productID)->pluck('name');
                                             @endphp
-
                                             @if ($modifiedOrderedQty != 0)
                                                 @php $allProductsReceived = false; @endphp
+                                                <div class="form-group row mb-3">
+                                                    <div class="col-sm-12 col-md-3">
+                                                        <label class="form-label font-weight-bold">Product Name:</label>
+                                                        <div class="form-control-plaintext">{{ $productName[0] }}</div>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-3">
+                                                        <label class="form-label font-weight-bold">Order Quantity:</label>
+                                                        <div class="form-control-plaintext">{{ $modifiedOrderedQty }}</div>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-3">
+                                                        <label class="form-label font-weight-bold">Warehouse:</label>
+                                                        <select name="warehouseID_{{ $data['productID'] }}" class="form-select">
+                                                            @foreach($warehouses as $warehouse)
+                                                                <option value="{{ $warehouse->warehouseID }}"> {{ $warehouse->name }} </option>
+                                                            @endforeach
+                                                        </select>
+                                                        <div class="invalid-feedback" style="display: none;">Receive quantity cannot exceed order quantity.</div>
+                                                    </div>
 
-                                                <div class="form-group row">
-                                                    <div class="col-sm-12 col-md-4">
-                                                        <label class="control-label">Product Name:</label>
-                                                        <span class="form-control-static">{{ $productName[0] }}</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-4">
-                                                        <label class="control-label">Order Quantity:</label>
-                                                        <span class="form-control-static">{{ $modifiedOrderedQty }}</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-4">
-                                                        <label class="control-label">Receive Quantity:</label>
+                                                    <div class="col-sm-12 col-md-3">
+                                                        <label class="form-label font-weight-bold">Receive Quantity:</label>
                                                         <input type="number" name="receiveQty_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
-                                                        <span class="invalid-feedback" style="display: none;">Receive quantity cannot exceed order quantity.</span>
+                                                        <div class="invalid-feedback" style="display: none;">Receive quantity cannot exceed order quantity.</div>
                                                     </div>
                                                 </div>
+                                                <hr>
                                             @endif
                                         @empty
                                             <p>No</p>

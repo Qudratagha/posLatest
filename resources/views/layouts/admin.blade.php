@@ -407,11 +407,25 @@
                         <li>
                             <a href="{{ route('purchase.index') }}"> Purchase </a>
                         </li>
-
                     </ul>
                 </li>
 
-
+                <li class="menu">
+                    <a href="#apps" data-bs-toggle="dropdown" aria-expanded="false" class="dropdown-toggle">
+                        <div class="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                            <span>Sale</span>
+                        </div>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu submenu list-unstyled" id="apps" data-bs-parent="#accordionExample">
+                        <li>
+                            <a href="{{ route('sale.index') }}"> Sale </a>
+                        </li>
+                    </ul>
+                </li>
 
                 <li class="menu menu-heading">
                     <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>USER INTERFACE</span></div>
@@ -425,7 +439,6 @@
 
     <div id="content" class="main-content">
         <div class="middle-content container-xxl p-2">
-
             @if(session('message'))
                 <div class="alert alert-success" role="alert">
                     <i class="fa-solid fa-circle-check alert-link"></i> {{ session('message') }}
@@ -474,26 +487,16 @@
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" ></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     @yield('more-script')
 <script>
 
     $(document).ready(function() {
         $('.select2').select2();
     })
-
-    $('.display').DataTable({
-        "columnDefs": [
-            {
-                "targets": [1, 2], // Column indices (0-based) for which sorting is disabled
-                "orderable": false
-            }
-        ]
-    });
-
-    // $(function () {
-    //     $('table.display').DataTable();
-    // } );
+    $('table.display').dataTable( {
+        "ordering": false
+    } );
 
     setTimeout(function() {
         $('.alert').fadeOut('slow');

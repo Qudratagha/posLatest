@@ -25,23 +25,12 @@ class PurchaseController extends Controller
     {
         $accounts = Account::where('type', 'business')->get();
         $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')
-            ->orderBy('purchaseID', 'desc')
+            ->orderByDesc('purchaseID')
             ->get();
-//        dd($purchases);
-//        $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')->get();
+        $warehouses = Warehouse::all();
 
-// Sort the collection in descending order based on the purchaseID
-//        $purchases = $purchases->sortByDesc('purchaseID');
-//        $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')
-//            ->orderByRaw('from_unixtime(created_at) DESC')
-//            ->get();
-//        $purchases = Purchase::with('purchaseOrders', 'purchaseReceive')
-//            ->orderBy('purchaseID', 'desc')
-//            ->get();
-//        $purchases = Purchase::with('purchaseOrders', 'purchaseReceive') ->orderBy('purchaseID', 'desc')->get();
-//        $purchases->load('purchaseReceive');
 
-        return view('purchase.index', compact('purchases', 'accounts'));
+        return view('purchase.index', compact('purchases', 'accounts', 'warehouses'));
     }
 
     public function create()
@@ -56,8 +45,6 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-
-
 
         $date = Carbon::now();
         $ref = Reference::getRef();
