@@ -222,7 +222,9 @@
                                                 $productName = \App\Models\Product::where('productID', $productID)->pluck('name');
                                             @endphp
                                             @if ($modifiedOrderedQty != 0)
-                                                @php $allProductsReceived = false; @endphp
+                                                @php echo '<pre>'; print_r($data); echo '</pre>'; $allProductsReceived = false;@endphp
+                                                <input type="hidden" name="batchNumber_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['batchNumber'] }}">
+                                                <input type="hidden" name="expiryDate_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['expiryDate'] }}">
                                                 <div class="form-group row mb-3">
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Product Name:</label>
