@@ -17,9 +17,9 @@ return new class extends Migration
             $table->foreignId('productID')->constrained('products', 'productID');
             $table->integer('batchNumber')->nullable();
             $table->date('expiryDate')->nullable();
-            $table->date('date');
-            $table->string('credit');
-            $table->string('debt');
+            $table->date('date')->nullable();
+            $table->string('credit')->nullable();
+            $table->string('debt')->nullable();
             $table->integer('refID');
             $table->string('description')->nullable();
             $table->timestamps();

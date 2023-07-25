@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('purchases', function (Blueprint $table) {
             $table->id('purchaseID');
             $table->foreignId('supplierID')->constrained('accounts', 'accountID');
-            $table->foreignId('purchaseStatusID')->constrained('purchaseStatuses', 'purchaseStatusID');
+            $table->string('purchaseStatus');
             $table->string('image')->nullable();
             $table->integer('orderTax')->nullable();
             $table->integer('discount')->nullable();

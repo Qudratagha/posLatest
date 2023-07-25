@@ -23,7 +23,6 @@ class PurchaseReceiveController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
         $ref = Reference::getRef();
         $requestData = $request->all();
         $productQuantities = [];

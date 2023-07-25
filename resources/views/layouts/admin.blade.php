@@ -491,8 +491,18 @@
     @yield('more-script')
 <script>
 
+
+
     $(document).ready(function() {
-        $('.custom-select2').select2();
+
+        var currentDate = new Date().toISOString().split("T")[0];
+        document.getElementById("date").value = currentDate;
+
+        $('.custom-select2').select2({
+            theme: "classic",
+            selectOnClose: true,
+
+        });
     })
     $('table.display').dataTable( {
         "ordering": false

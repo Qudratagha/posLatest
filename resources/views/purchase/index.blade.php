@@ -42,7 +42,7 @@
                         <td>{{ $purchase->date }}</td>
                         <td>{{ $purchase->refID }}</td>
                         <td>{{ $purchase->account->name }}</td>
-                        <td><div class="badge badge-success">{{ $purchase->purchaseStatus->name }}</div></td>
+                        <td><div class="badge badge-success">{{ ucfirst($purchase->purchaseStatus) }}</div></td>
                         <td>{{ $subTotal }}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>
@@ -226,7 +226,7 @@
                                                 $productName = \App\Models\Product::where('productID', $productID)->pluck('name');
                                             @endphp
                                             @if ($modifiedOrderedQty != 0)
-                                                @php echo '<pre>'; print_r($data); echo '</pre>'; $allProductsReceived = false;@endphp
+                                                @php $allProductsReceived = false;@endphp
                                                 <input type="hidden" name="batchNumber_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['batchNumber'] }}">
                                                 <input type="hidden" name="expiryDate_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['expiryDate'] }}">
                                                 <div class="form-group row mb-3">
@@ -240,7 +240,8 @@
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Warehouse:</label>
-                                                        <select name="warehouseID_{{ $data['productID'] }}" class="form-select">
+                                                        <select name="warehouseID_{{ $data['productID'] }}" class="form-select" required>
+                                                            <option value="">Select Warehouse</option>
                                                             @foreach($warehouses as $warehouse)
                                                                 <option value="{{ $warehouse->warehouseID }}"> {{ $warehouse->name }} </option>
                                                             @endforeach

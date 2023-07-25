@@ -19,9 +19,9 @@ return new class extends Migration
             $table->integer('purchasePrice');
             $table->integer('salePrice');
             $table->integer('wholeSalePrice');
-            $table->integer('alertQuantity');
-            $table->string('description');
-            $table->string('image');
+            $table->integer('alertQuantity')->nullable();
+            $table->string('description')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

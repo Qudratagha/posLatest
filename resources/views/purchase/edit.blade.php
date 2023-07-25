@@ -37,10 +37,11 @@
 
                 <div class="form-group row">
                     <label for="" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Purchase Status:
-                        <select name="purchaseStatusID" class="form-select">
-                            @foreach ($purchaseStatuses as $purchaseStatus)
-                                <option value="{{ $purchaseStatus->purchaseStatusID }}" {{ old('purchaseStatusID', $purchase->purchaseStatusID) == $purchaseStatus->purchaseStatusID ? 'selected' : '' }}>{{ $purchaseStatus->name }}</option>
-                            @endforeach
+                        <select name="purchaseStatus" class="form-select">
+                            <select name="purchaseStatus" class="form-select">
+                                <option value="received"  {{ $purchase->purchaseStatus === 'received' ? 'selected' : '' }}>Received</option>
+                                <option value="pending"   {{ $purchase->purchaseStatus === 'pending' ? 'selected' : '' }}>Pending</option>
+                            </select>
                         </select>
                     </label>
 
@@ -52,10 +53,10 @@
                 <div class="form-group row">
                     <label for="date" class="form-label col-form-label col-sm-12"> Products:
                         <div class="col-sm-12">
-                            <select name="productID" id="productID" class="form-select" onchange="getProduct(this.value)">
+                            <select name="productID" id="productID" class="form-select custom-select2" onchange="getProduct(this.value)">
                                 <option value="">Select Product</option>
                                 @foreach ($products as $product)
-                                    <option value="{{ $product->productID }}">{{ $product->name }}</option>
+                                    <option value="{{ $product->productID }}">{{ $product->code .' | '. $product->name  }}</option>
                                 @endforeach
                             </select>
                         </div>

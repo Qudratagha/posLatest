@@ -10,7 +10,7 @@ class WarehouseController extends Controller
 {
     public function index()
     {
-        $warehouses = Warehouse::all();
+        $warehouses = Warehouse::orderByDesc('warehouseID')->get();
         return view('warehouse.index', compact('warehouses'));
     }
 

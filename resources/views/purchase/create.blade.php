@@ -35,10 +35,9 @@
 
                 <div class="form-group row">
                     <label for="" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Purchase Status:
-                        <select name="purchaseStatusID" class="form-select">
-                            @foreach ($purchaseStatuses as $purchaseStatus)
-                                <option value="{{ $purchaseStatus->purchaseStatusID }}" {{ old('purchaseStatusID') == $purchaseStatus->purchaseStatusID ? 'selected' : '' }}>{{ $purchaseStatus->name }}</option>
-                            @endforeach
+                        <select name="purchaseStatus" class="form-select">
+                            <option value="received">Received</option>
+                            <option value="pending">Pending</option>
                         </select>
                     </label>
 
@@ -105,7 +104,6 @@
                     </div>
                 </div>
 
-
                 <div class="form-group row">
                     <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Order Tax:
                         <select name="orderTax" id="orderTax" class="form-select">
@@ -115,15 +113,15 @@
                     </label>
 
                     <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount" required>
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount">
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
-                        <input type="number" name="discount" class="form-control" placeholder="Discount" required>
+                        <input type="number" name="discount" class="form-control" placeholder="Discount">
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" placeholder="Shipping Cost" required>
+                        <input type="number" name="shippingCost" class="form-control" placeholder="Shipping Cost" >
                     </label>
                 </div>
 
@@ -145,13 +143,6 @@
 @section('more-script')
     <script>
 
-        $('#productID').select2({
-            // Add the custom matcher function
-            matcher: function(term, text, option) {
-                // Check if the option text contains the user's input
-                return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
-            }
-        });
         var units = @json($units);
         var existingProducts = [];
 
@@ -197,7 +188,6 @@
                         $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal);
                     } else {
                         result.forEach(function (v) {
-                            console.log(v);
                             let id = v.productID;
                             strHTML += '<tr id="rowID_'+ v.productID +'">';
                             strHTML += '<td>' + v.name + '</td>';
@@ -438,6 +428,8 @@
                 $('th#total-tax').text(totalTax).html();
             });
         }
+
+
     </script>
 @endsection
 

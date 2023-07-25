@@ -68,7 +68,7 @@ class PurchaseController extends Controller
             $purchase = Purchase::create([
                 'date' => $request['date'],
                 'supplierID' => $request['supplierID'],
-                'purchaseStatusID' => $request['purchaseStatusID'],
+                'purchaseStatus' => $request['purchaseStatus'],
                 'orderTax' => 100,
                 'discount' => $request['discount'],
                 'shippingCost' => $request['shippingCost'],
@@ -166,11 +166,8 @@ class PurchaseController extends Controller
 
     public function update(Request $request, Purchase $purchase)
     {
-
-
         $purchase->purchaseOrders()->delete();
         $purchase->purchaseReceive()->delete();
-
         $date = Carbon::now();
 //        $ref = getRef();
 
@@ -178,7 +175,7 @@ class PurchaseController extends Controller
         $purchase->update([
             'date' => $request['date'],
             'supplierID' => $request['supplierID'],
-            'purchaseStatusID' => $request['purchaseStatusID'],
+            'purchaseStatus' => $request['purchaseStatus'],
             'orderTax' => 100,
             'discount' => $request['discount'],
             'shippingCost' => $request['shippingCost'],
