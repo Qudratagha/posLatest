@@ -16,6 +16,10 @@
             <dt>
                 <p class=" fs-5">Category Name: {{ $category->name}}</p>
                 <p class=" fs-5">Active:{{ $category->isActive == 0 ? "Yes" : "No" }}</p>
+                <p class=" fs-5">Image:</p>
+                    <img width="40%" class="mt-2 img-circle" src="{{ asset('storage/images/category/'.$category->image) }}" />
+
+
             </dt>
         </div>
     </div>

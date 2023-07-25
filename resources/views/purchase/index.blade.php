@@ -196,6 +196,8 @@
                                         ?>
                                         @foreach ($purchase->purchaseReceive as $order)
                                             <?php
+                                                $batchNumber = $order['batchNumber'];
+                                                $expiryDate = $order['expiryDate'];
                                                 $productID = $order['productID'];
                                                 $orderedQty = $order['orderedQty'] ?? 0;
                                                 $receivedQty = $order['receivedQty'] ?? 0;
@@ -203,6 +205,8 @@
                                                 if (!isset($summedData[$productID])) {
                                                     $summedData[$productID] = [
                                                         'productID' => $productID,
+                                                        'expiryDate' => $expiryDate,
+                                                        'batchNumber' => $batchNumber,
                                                         'orderedQty' => $orderedQty,
                                                         'receivedQty' => $receivedQty
                                                     ];

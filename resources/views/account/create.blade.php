@@ -28,6 +28,7 @@
                     <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Account Type: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <select name="type" class="form-select" id="accountType">
+                            <option value="business">Select Account Type</option>
                             <option value="business">Business</option>
                             <option value="customer">Customer</option>
                             <option value="supplier">Supplier</option>
@@ -35,47 +36,40 @@
                     </div>
                 </div>
 
-                <div class="form-group row mt-2">
-                    <label for="category" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Account Category: </label>
+                <div class="form-group row mt-2 d-none accCate">
+                    <label for="category" class=" form-label col-sm-4 col-md-2 col-lg-2 col-form-label ">Account Category: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <select name="category" class="form-select" id="accountCategory">
-                            <option value=""></option>
+                            <option value="">Select Account Category</option>
                             <option value="cash">Cash</option>
                             <option value="bank">Bank</option>
                         </select>
                     </div>
                 </div>
-
                 <div class="form-group row mt-2">
                     <label for="initialBalance" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Initial Balance: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <input type="number" name="initialBalance" class="form-control" value="{{ old('initialBalance') }}" value="0" placeholder="Initial Balance">
                     </div>
                 </div>
-
                 <div class="form-group row mt-2">
                     <label for="phone" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Phone: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <input type="text" name="phone" class="form-control" value="{{ old('phone') }}"  placeholder="Phone">
                     </div>
                 </div>
-
                 <div class="form-group row mt-2">
                     <label for="email" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Email: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="Email">
                     </div>
                 </div>
-
                 <div class="form-group row mt-2">
                     <label for="description" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Description: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <input type="text" name="description" class="form-control" value="{{ old('description') }}" placeholder="Description">
                     </div>
                 </div>
-
-
-
                 <div class="form-group row mt-2">
                     <label for="address" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Address: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
@@ -91,4 +85,19 @@
             </form>
         </div>
     </div>
+@endsection
+@section('more-script')
+    <script>
+        $(document).ready(function() {
+            const accountCategorySelectGroup = $(".form-group.accCate");
+            $('#accountType').change(function() {
+                const selectedValue = $(this).val();
+                if (selectedValue === "business") {
+                    accountCategorySelectGroup.removeClass("d-none");
+                } else {
+                    accountCategorySelectGroup.addClass("d-none");
+                }
+            });
+        });
+    </script>
 @endsection

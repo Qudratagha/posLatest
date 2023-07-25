@@ -50,10 +50,10 @@
                 <div class="form-group row">
                     <label for="date" class="form-label col-form-label col-sm-12"> Products:
                         <div class="col-sm-12">
-                            <select name="productID" id="productID" class="form-select" onchange="getProduct(this.value)">
+                            <select name="productID" id="productID" class="form-select custom-select2"  onchange="getProduct(this.value)">
                                 <option value="">Select Product</option>
                                 @foreach ($products as $product)
-                                    <option value="{{ $product->productID }}">{{ $product->name }}</option>
+                                    <option value="{{ $product->productID }}">{{  $product->code .' | '. $product->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -144,6 +144,14 @@
 @endsection
 @section('more-script')
     <script>
+
+        $('#productID').select2({
+            // Add the custom matcher function
+            matcher: function(term, text, option) {
+                // Check if the option text contains the user's input
+                return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+            }
+        });
         var units = @json($units);
         var existingProducts = [];
 
@@ -189,28 +197,30 @@
                         $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal);
                     } else {
                         result.forEach(function (v) {
+                            console.log(v);
                             let id = v.productID;
                             strHTML += '<tr id="rowID_'+ v.productID +'">';
                             strHTML += '<td>' + v.name + '</td>';
                             strHTML += '<td>' + v.code + '</td>';
                             strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" value="1" onchange="changeQuantity(this, '+id+')" style="border: none"></td>';
                             strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value=""></td>';
-                            strHTML += '<td><input type="date" class="form-control" name="expiryDate_'+v.productID+'" value=""></td>';
-                            strHTML += '<td><span id="netUnitCost_'+v.productID+'"> ' + v.productUnit + '</span></td>';
 
+                            strHTML += `<td style="text-align: center;">${
+                                v.isExpire === 0 ?
+                                    `<input type="date" class="form-control" name="expiryDate_${v.productID}" value="">`
+                                    : '<div style="display: inline-block; text-align: center;">N/A</div>'
+                            }</td>`;
+                            strHTML += '<td><span id="netUnitCost_'+v.productID+'"> ' + v.purchasePrice + '</span></td>';
                             strHTML += '<td width="10%"><select class="form-control" name="purchaseUnit_'+v.productID+'">';
-
                             // Loop through the Units from the Laravel variable
                             units.forEach(function(unit) {
                                 strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
                             });
                             strHTML += '</select></td>';
-
                             strHTML += '<td><input type="number" class="form-control" name="discount_'+v.productID+'" value="0" onchange="changeDiscount(this, '+id+')"></td>';
                             strHTML += '<td><input type="number" class="form-control" name="tax_'+v.productID+'" value="0" onchange="changeTax(this, '+id+')"></td>';
-
-                            strHTML += '<td> <span id="subTotal_'+v.productID+'">' + v.productUnit + '</span></td>';
-                            strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.productUnit + '">';
+                            strHTML += '<td> <span id="subTotal_'+v.productID+'">' + v.purchasePrice + '</span></td>';
+                            strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.purchasePrice + '">';
                             strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.code + '">';
                             strHTML += '<td><input type="hidden" name="productID_'+v.productID+'" value="'+v.productID+'"><button type="button" class="btn btn-sm" onclick="deleteRow(this, '+v.productID+')" id="'+v.productID+'"><i class="fa fa-trash"></i></button></td>';
                             strHTML += '</tr>';
@@ -428,9 +438,6 @@
                 $('th#total-tax').text(totalTax).html();
             });
         }
-
-
-
     </script>
 @endsection
 

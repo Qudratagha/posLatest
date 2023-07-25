@@ -30,6 +30,13 @@ class AjaxController extends Controller
             ->groupBy('productID')
             ->get();
         return response()->json(['productsWithCreditSum' => $productsWithCreditSum]);
+    }
 
+    public function products($arguments)
+    {
+
+        $productName = $arguments['productName'];
+        $products = Product::where('name', 'like', '%' . $productName . '%')->get();
+        return response()->json($products); // Assuming you want to return a JSON response
     }
 }

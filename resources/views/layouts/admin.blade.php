@@ -492,7 +492,7 @@
 <script>
 
     $(document).ready(function() {
-        $('.select2').select2();
+        $('.custom-select2').select2();
     })
     $('table.display').dataTable( {
         "ordering": false
