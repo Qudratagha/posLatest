@@ -70,15 +70,14 @@
                                         <th>Name</th>
                                         <th>Code</th>
                                         <th width="12%">Quantity</th>
-                                        <th class="recieved-product-qty d-none">Received</th>
-                                        <th>Batch No</th>
-                                        <th width="8%">Expired Date</th>
-                                        <th>Net Unit Cost</th>
-                                        <th>Purchase Unit</th>
-                                        <th>Discount</th>
-                                        <th>Tax</th>
+                                        <th width="12%">Batch No</th>
+                                        <th>Expired Date</th>
+                                        <th width="10%">Net Unit Cost</th>
+                                        <th width="10%">Purchase Unit</th>
+                                        <th width="10%">Discount</th>
+                                        <th width="10%">Tax</th>
                                         <th>SubTotal</th>
-                                        <th><i class="fa fa-trash"></i></th>
+                                        <th width="4"><i class="fa fa-trash"></i></th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody">
