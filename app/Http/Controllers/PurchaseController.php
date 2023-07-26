@@ -14,6 +14,8 @@ use App\Models\Unit;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
+
 use function Illuminate\Mail\Mailables\subject;
 use function Symfony\Component\HttpKernel\HttpCache\purge;
 use function Symfony\Component\String\length;
@@ -61,7 +63,9 @@ class PurchaseController extends Controller
             addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
 
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
-            return to_route('purchase.index');
+//            return to_route('purchase.index');
+            return redirect()->route('purchase.index');
+
         }
         else {
             $warehouseID = $request['warehouseID'];
@@ -115,7 +119,9 @@ class PurchaseController extends Controller
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
             addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
             $request->session()->flash('message', 'Purchase Created Successfully!');
-            return to_route('purchase.index');
+//            return to_route('purchase.index');
+            return redirect()->route('purchase.index');
+
         }
     }
 
@@ -133,6 +139,7 @@ class PurchaseController extends Controller
 
     public function edit(Purchase $purchase, Request $request)
     {
+//        dd(gettype($purchase->purchasePayments));
         foreach ($purchase->purchaseReceive as $order) {
             $productID = $order['productID'];
             $orderedQty = $order['orderedQty'] ?? 0;
@@ -150,7 +157,12 @@ class PurchaseController extends Controller
             }
         }
         if (!Empty($receivedQty)){
-            $request->session()->flash('error', 'You can not update this purchase as it has received some products');
+            $request->session()->flash('warning', 'You can not update this purchase as it has received some products');
+            return to_route('purchase.index');
+        }
+//        ($user->filled())
+        elseif(!$purchase->purchasePayments->isEmpty()){
+            $request->session()->flash('warning', 'You can not update this purchase as it has some Payments');
             return to_route('purchase.index');
         }
 
@@ -223,6 +235,9 @@ class PurchaseController extends Controller
 
     public function destroy(Purchase $purchase , Request $request)
     {
+        $purchase->purchaseOrders()->delete();
+        $purchase->purchaseReceive()->delete();
+        $purchase->purchasePayments()->delete();
         $purchase->delete();
         $request->session()->flash('message', 'Purchase Del Successfully!');
         return to_route('purchase.index');

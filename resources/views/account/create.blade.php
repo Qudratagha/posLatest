@@ -13,7 +13,7 @@
                 <div class="form-group row">
                     <label for="name" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Account Name: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" required placeholder="Account Number">
+                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" required placeholder="Account Name">
                     </div>
                 </div>
 

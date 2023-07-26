@@ -492,17 +492,14 @@
 <script>
 
 
-
+    // var currentDate = new Date().toISOString().split("T")[0];
+    // document.getElementById("date").value = currentDate;
     $(document).ready(function() {
-
         var currentDate = new Date().toISOString().split("T")[0];
         document.getElementById("date").value = currentDate;
-
-        $('.custom-select2').select2({
-            theme: "classic",
-            selectOnClose: true,
-
-        });
+    //     $('.custom-select2').select2({
+    //         theme: "classic",
+    //     });
     })
     $('table.display').dataTable( {
         "ordering": false
