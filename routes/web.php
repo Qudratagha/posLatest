@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -36,4 +37,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('/unit', \App\Http\Controllers\UnitController::class);
     Route::resource('/purchaseReceive', \App\Http\Controllers\PurchaseReceiveController::class);
 
+    Route::get('/users', [RegisterController::class, 'users']);
 });

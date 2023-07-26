@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
         \Illuminate\Support\Facades\DB::table('users')->insert([
             'name' => 'QudratUllah',
             'email' => 'qudrat@gmail.com',
+            'role' => '1',
             'password' => \Illuminate\Support\Facades\Hash::make('qudrat123'),
         ]);
     }
