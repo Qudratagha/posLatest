@@ -68,7 +68,6 @@
                                         <th>Name</th>
                                         <th>Code</th>
                                         <th width="12%">Quantity</th>
-                                        <th class="recieved-product-qty d-none">Received</th>
                                         <th>Batch No</th>
                                         <th width="8%">Expired Date</th>
                                         <th>Net Unit Cost</th>
@@ -85,7 +84,6 @@
                                     <tr>
                                         <th colspan="2">Total</th>
                                         <th id="total-qty">0</th>
-                                        <th class="recieved-product-qty d-none"></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -158,7 +156,6 @@
                 $('#productID').val(''); // Reset the product dropdown to the default "Select Product" option
             }
         });
-
         function getProduct(warehouseID) {
             if (warehouseID !== '') {
                 $.ajax({
@@ -169,10 +166,11 @@
                         warehouseID: warehouseID
                     },
                     success: function(response) {
+                        console.log(response);
                         $('#productID').empty();
                         $('#productID').append('<option value="">Select Product</option>');
                         $.each(response.productsWithCreditSum, function(index, product) {
-                            $('#productID').append('<option value="' + product.productID + '">' + product.product.name + '</option>');
+                            $('#productID').append('<option value="' + product.productID + '">' + product.product.name +' | '+ product.batchNumber +' | '+ product.credit_sum + '</option>');
                         });
                     },
                     error: function() {
@@ -180,29 +178,73 @@
                     }
                 });
             } else {
-                // If no warehouse is selected, clear the product dropdown
                 $('#productID').empty().append('<option value="">Select Product</option>');
             }
         }
         var units = @json($units);
         var existingProducts = [];
-
-
-
+        function getSelectedWarehouseID() {
+            return $('#warehouseID').val();
+        }
         function productDetails(productID) {
+            var warehouseID = getSelectedWarehouseID();
             var strHTML = "";
             $.ajax({
-                url: "{{ route('ajax.handle',"getProduct") }}",
+                url: "{{ route('ajax.handle',"getProductFromReceive") }}",
                 method: 'post',
                 data: {
                     _token: "{{ csrf_token() }}",
+                    warehouseID : warehouseID,
                     productID: productID,
                 },
                 success: function (result) {
                     {
                         result.forEach(function (v) {
+                            console.log(v.credit_sum);
+                            let id = v.productID;
+                            strHTML += '<tr id="rowID_'+ v.productID +'">';
+                            strHTML += '<td>' + v.product.name + '</td>';
+                            strHTML += '<td>' + v.product.code + '</td>';
+                            strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" min="1" max="'+ v.credit_sum +'" value="1" onkeyup="changeQuantity(this, '+id+')" style="border: none"></td>';
+                            strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value="'+v.batchNumber+'"></td>';
 
+                            strHTML += `<td style="text-align: center;">${
+                                v.product.isExpire === 0 ?
+                                    `<input type="date" class="form-control" name="expiryDate_${v.productID}" value="">`
+                                    : '<div style="display: inline-block; text-align: center;">N/A</div>'
+                            }</td>`;
+
+                            strHTML += '<td></td>';
+                            strHTML += '<td></td>';
+                            strHTML += '<td></td>';
+                            strHTML += '<td></td>';
+                            strHTML += '<td></td>';
+                            strHTML += '<td></td>';
+                            strHTML += '<td></td>';
+                            // strHTML += '<td>' + v.code + '</td>';
+                            // strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" min="1" value="1" onkeyup="changeQuantity(this, '+id+')" style="border: none"></td>';
+                            // strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value=""></td>';
+                            //
+                            // strHTML += `<td style="text-align: center;">${
+                            //     v.isExpire === 0 ?
+                            //         `<input type="date" class="form-control" name="expiryDate_${v.productID}" value="">`
+                            //         : '<div style="display: inline-block; text-align: center;">N/A</div>'
+                            // }</td>`;
+                            // strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="'+ v.purchasePrice +'" onkeyup="changeNetUnitCost(this, '+id+')" > </td>';
+                            // strHTML += '<td width="10%"><select class="form-control" name="purchaseUnit_'+v.productID+'">';
+                            // units.forEach(function(unit) {
+                            //     strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
+                            // });
+                            // strHTML += '</select></td>';
+                            // strHTML += '<td><input type="number" class="form-control" name="discount_'+v.productID+'" min="0" value="0" onkeyup="changeDiscount(this, '+id+')"></td>';
+                            // strHTML += '<td><input type="number" class="form-control" name="tax_'+v.productID+'" min="0" value="0" onkeyup="changeTax(this, '+id+')"></td>';
+                            // strHTML += '<td> <span id="subTotal_'+v.productID+'">' + v.purchasePrice + '</span></td>';
+                            // strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.purchasePrice + '">';
+                            // strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.code + '">';
+                            // strHTML += '<td><input type="hidden" name="productID_'+v.productID+'" value="'+v.productID+'"><button type="button" class="btn btn-sm" onclick="deleteRow(this, '+v.productID+')" id="'+v.productID+'"><i class="fa fa-trash"></i></button></td>';
+                            strHTML += '</tr>';
                         });
+
                     }
                     $('#tbody').append(strHTML);
                 }

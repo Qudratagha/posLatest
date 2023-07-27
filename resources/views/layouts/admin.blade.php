@@ -289,14 +289,14 @@
                             <a href="{{ route('category.index') }}"> Categories </a>
                         </li>
                         <li>
-                            <a href="{{ route('product.index') }}"> Products </a>
-                        </li>
-                        <li>
                             <a href="{{ route('warehouse.index') }}"> Warehouses </a>
                         </li>
 
                         <li>
                             <a href="{{ route('unit.index') }}"> Units </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('product.index') }}"> Products </a>
                         </li>
 {{--                        <li>--}}
 {{--                            <a href="app-mailbox.html"> Mailbox </a>--}}

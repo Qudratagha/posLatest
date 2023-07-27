@@ -10,6 +10,7 @@ use App\Models\PurchasePayment;
 use App\Models\PurchaseReceive;
 use App\Models\PurchaseStatus;
 use App\Models\Reference;
+use App\Models\Stock;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -61,11 +62,8 @@ class PurchaseController extends Controller
             ]);
             addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $ref, $request['description']);
             addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
-
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
-//            return to_route('purchase.index');
             return redirect()->route('purchase.index');
-
         }
         else {
             $warehouseID = $request['warehouseID'];
@@ -73,7 +71,7 @@ class PurchaseController extends Controller
                 'date' => $request['date'],
                 'supplierID' => $request['supplierID'],
                 'purchaseStatus' => $request['purchaseStatus'],
-                'orderTax' => 100,
+                'orderTax' => 0,
                 'discount' => $request['discount'],
                 'shippingCost' => $request['shippingCost'],
                 'description' => $request['description'],
@@ -87,6 +85,7 @@ class PurchaseController extends Controller
                     $productQuantity = $request['quantity_' . $productID];
                     $productBatchNumber = $request['batchNumber_' . $productID];
                     $productExpiryDate = $request['expiryDate_' . $productID];
+//                    dump($productExpiryDate);
                     $productNetUnitCost = $request['netUnitCost_' . $productID];
                     $productDiscount = $request['discount_' . $productID];
                     $productTax = $request['tax_' . $productID];
@@ -114,12 +113,34 @@ class PurchaseController extends Controller
                         'expiryDate' => $productExpiryDate,
                         'orderedQty' => $productQuantity,
                     ]);
+                    if($request['purchaseStatus'] === 'received'){
+                        PurchaseReceive::create([
+                            'purchaseID' => $purchase->purchaseID,
+                            'productID' => $productID,
+                            'batchNumber' => $productBatchNumber,
+                            'expiryDate' => $productExpiryDate,
+                            'receivedQty' => $productQuantity ?? 'NULL'
+                        ]);
+
+                        Stock::create([
+                            'warehouseID' =>  $warehouseID,
+                            'productID' => $productID,
+                            'date' => $date,
+                            'batchNumber' => $productBatchNumber,
+                            'expiryDate' => $productExpiryDate,
+                            'credit' => $productQuantity ?? 'NULL',
+                            'refID' => $ref,
+                        ]);
+                    }
+
+
+
+
                 }
             }
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
             addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
             $request->session()->flash('message', 'Purchase Created Successfully!');
-//            return to_route('purchase.index');
             return redirect()->route('purchase.index');
 
         }
@@ -139,7 +160,6 @@ class PurchaseController extends Controller
 
     public function edit(Purchase $purchase, Request $request)
     {
-//        dd(gettype($purchase->purchasePayments));
         foreach ($purchase->purchaseReceive as $order) {
             $productID = $order['productID'];
             $orderedQty = $order['orderedQty'] ?? 0;
@@ -160,7 +180,6 @@ class PurchaseController extends Controller
             $request->session()->flash('warning', 'You can not update this purchase as it has received some products');
             return to_route('purchase.index');
         }
-//        ($user->filled())
         elseif(!$purchase->purchasePayments->isEmpty()){
             $request->session()->flash('warning', 'You can not update this purchase as it has some Payments');
             return to_route('purchase.index');
