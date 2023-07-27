@@ -12,9 +12,9 @@ return new class extends Migration
         Schema::create('warehouses', function (Blueprint $table) {
             $table->id('warehouseID');
             $table->string('name');
-            $table->integer('phone');
-            $table->string('email');
-            $table->string('address');
+            $table->integer('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
         });
     }

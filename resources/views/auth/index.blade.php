@@ -7,7 +7,7 @@
                 <i class="fas fa-user-graduate"></i> Users
             </h3>
             <div class="card-actions">
-                <a href="{{route('sale.create')}}" class="btn btn-primary d-none d-sm-inline-block">
+                <a href="#" class="btn btn-primary d-none d-sm-inline-block">
                     <i class="fas fa-plus"></i> Add User
                 </a>
             </div>

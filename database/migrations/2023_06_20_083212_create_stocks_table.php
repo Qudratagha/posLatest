@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('productID')->constrained('products', 'productID');
             $table->integer('batchNumber');
             $table->date('date');
-            $table->string('credit');
-            $table->string('debt');
+            $table->string('credit')->nullable();
+            $table->string('debt')->nullable();
             $table->integer('refID');
             $table->string('description');
             $table->timestamps();
