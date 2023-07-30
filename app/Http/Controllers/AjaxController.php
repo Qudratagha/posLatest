@@ -25,11 +25,6 @@ class AjaxController extends Controller
     public function productForSale($arguments)
     {
         $warehouseID = $arguments['warehouseID'];
-//        $productsWithCreditSum = Stock::with('product')
-//            ->select('productID', \DB::raw('SUM(credit) as credit_sum'))
-//            ->where('warehouseID', $warehouseID)
-//            ->groupBy('productID')
-//            ->get();
         $productsWithCreditSum = Stock::with('product')
             ->select('productID', 'batchNumber', \DB::raw('SUM(credit) as credit_sum'))
             ->where('warehouseID', $warehouseID)
@@ -50,12 +45,20 @@ class AjaxController extends Controller
     {
         \Illuminate\Support\Facades\DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
         $warehouseID = $arguments['warehouseID'];
-        $productID = $arguments['productID'];
+
+        $productIDAndBatchNumber = $arguments['productID'];
+        $underscorePosition = strpos($productIDAndBatchNumber, '_');
+
+        $productID = substr($productIDAndBatchNumber, 0, $underscorePosition);
+        $batchNumber = substr($productIDAndBatchNumber, $underscorePosition + 1);
+
+
 
         $productsWithCreditSum = Stock::with('product')
             ->select('*', \DB::raw('SUM(credit) as credit_sum'))
             ->where('warehouseID', $warehouseID)
             ->where('productID', $productID)
+            ->where('batchNumber', $batchNumber)
             ->groupBy('productID')
             ->get();
 
