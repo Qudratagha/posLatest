@@ -197,13 +197,12 @@
                             strHTML += '<td>' + v.code + '</td>';
                             strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" min="1" value="1" onkeyup="changeQuantity(this, '+id+')" style="border: none"></td>';
                             strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value=""></td>';
-
                             strHTML += `<td style="text-align: center;">${
                                 v.isExpire === 0 ?
                                     `<input type="date" class="form-control" name="expiryDate_${v.productID}" value="">`
                                     : '<div style="display: inline-block; text-align: center;">N/A</div>'
                             }</td>`;
-                            strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="'+ v.purchasePrice +'" onkeyup="changeNetUnitCost(this, '+id+')" > </td>';
+                            strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="' + v.purchasePrice + '" onkeyup="changeNetUnitCost(this, '+id+')" > </td>';
                             strHTML += '<td width="10%"><select class="form-control" name="purchaseUnit_'+v.productID+'">';
                             units.forEach(function(unit) {
                                 strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
@@ -232,6 +231,7 @@
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            console.log(netUnitCost);
             let quantityIntoUnitCost = quantity * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
@@ -244,6 +244,7 @@
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCost - discount + tax;
+
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             var subTotalAmount = 0;
             var totalQuantity = 0;

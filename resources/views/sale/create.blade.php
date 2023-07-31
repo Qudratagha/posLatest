@@ -60,7 +60,7 @@
                 <div class="form-group">
                     <div class="row mt-4">
                         <div class="col-md-12">
-                            <h5>Order Table *</h5>
+                            <h5>Sale Table *</h5>
                             <div class="table-responsive table-responsive-sm mt-3">
                                 <table id="myTable" class="table table-hover order-list">
                                     <thead>
@@ -109,16 +109,34 @@
                     </label>
 
                     <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount" required>
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" min="0" placeholder="Tax Amount">
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
-                        <input type="number" name="discount" class="form-control" placeholder="Discount" required>
+                        <input type="number" name="discount" class="form-control" value="0" min="0" placeholder="Discount">
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" placeholder="Shipping Cost" required>
+                        <input type="number" name="shippingCost" class="form-control" value="0" min="0" placeholder="Shipping Cost" >
                     </label>
+                </div>
+
+                <div class="form-group row">
+
+                    <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Sale Status:
+                        <select name="saleStatus" id="saleStatus" class="form-select">
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </label>
+
+                    <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Status:
+                        <select name="paymentStatus" id="paymentStatus" class="form-select">
+                            <option value="received">Received</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </label>
+
                 </div>
 
                 <div class="form-group row">
@@ -128,9 +146,9 @@
                 </div>
 
                 <div class="form-group row mt-2">
-                    <div class="offset-2">
+{{--                    <div class="offset-2">--}}
                         <input class="btn btn-primary" type="submit" value="Save">
-                    </div>
+{{--                    </div>--}}
                 </div>
             </form>
         </div>
@@ -208,8 +226,8 @@
                         });
                         if (found.length > 0)
                         {
-                            var rowId = result[0].batchNumber; // Example row id
-                            var row = $("#tbody #" +'rowID_'+ rowId); // Select the row based on the id
+                            var rowId = result[0].batchNumber;
+                            var row = $("#tbody #" +'rowID_'+ rowId);
                             var quantityInput = row.find('[name="quantity_' + rowId + '"]');
                             var netUnitCostInput = row.find('input[name="netUnitCost_' + rowId + '"]');
                             var discountInput = row.find('[name="discount_' + rowId + '"]');
@@ -236,40 +254,47 @@
                                         `<input type="date" id="date" class="form-control" name="expiryDate_${v.batchNumber}" value="">`
                                         : '<div style="display: inline-block; text-align: center;">N/A</div>'
                                 }</td>`;
-
                                 strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" onkeyup="changeNetUnitCost(this, ' + id + ')" > </td>';
-
-                                strHTML += '<td width="10%"><select class="form-control" name="purchaseUnit_' + v.batchNumber + '">';
+                                strHTML += '<td width="10%"><select class="form-control" name="saleUnit_' + v.batchNumber + '">';
                                 units.forEach(function (unit) {
                                     strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
                                 });
                                 strHTML += '</select></td>';
-
                                 strHTML += '<td><input type="number" class="form-control" name="discount_' + v.batchNumber + '" min="0" value="0" onkeyup="changeDiscount(this, ' + id + ')"></td>';
                                 strHTML += '<td><input type="number" class="form-control" name="tax_' + v.batchNumber + '" min="0" value="0" onkeyup="changeTax(this, ' + id + ')"></td>';
                                 strHTML += '<td> <span id="subTotal_' + v.batchNumber + '">' + v.product.purchasePrice + '</span></td>';
                                 strHTML += '<td><input type="hidden" name="productID_' + v.batchNumber + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this, ' + v.productID + ')" id="' + v.productID + '"><i class="fa fa-trash"></i></button></td>';
-                                // strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.purchasePrice + '">';
-                                // strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.code + '">';
-                                // strHTML += '<td><input type="hidden" name="productID_'+v.productID+'" value="'+v.productID+'"><button type="button" class="btn btn-sm" onclick="deleteRow(this, '+v.productID+')" id="'+v.productID+'"><i class="fa fa-trash"></i></button></td>';
+                                strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.product.purchasePrice + '">';
+                                strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.product.code + '">';
                                 strHTML += '</tr>';
                             });
                             if (!existingProducts.includes(result[0].batchNumber)) {
                                 existingProducts.push(result[0].batchNumber);
                             }
                         }
-
                     }
                     $('#tbody').append(strHTML);
-                    rowData();
+                    footerData();
                 }
-
             });
             document.getElementById("productID").value = "";
         }
-
         function changeQuantity(input, id) {
-            console.log(id);
+            let row = $(input).closest('tr');
+            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let quantityIntoUnitCost = quantity * netUnitCost;
+            var discountInput = row.find('input[name="discount_' + id + '"]').val();
+            var taxInput = row.find('input[name="tax_' + id + '"]').val();
+            var discount = parseInt(discountInput);
+            if (isNaN(discount)){discount = 0;}
+            var tax = parseInt(taxInput);
+            if (isNaN(tax)){tax = 0;}
+            var subtotal = quantityIntoUnitCost - discount + tax;
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            footerData();
+        }
+        function changeNetUnitCost(input, id) {
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
@@ -286,25 +311,47 @@
             }
             var subtotal = quantityIntoUnitCost - discount + tax;
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
-            var subTotalAmount = 0;
-            var totalQuantity = 0;
-            $('tr').each(function() {
-                var quantityInput = $(this).find('input[name^="quantity_"]');
-                var quantity = parseInt(quantityInput.val());
-                if (!isNaN(quantity)) {
-                    totalQuantity += quantity;
-                }
-                $('th#total-qty').text(totalQuantity).html();
-                var subtotalSpan = $(this).find('span[id^="subTotal_"]');
-                var subtotalValue = parseFloat(subtotalSpan.text().trim());
-                if (!isNaN(subtotalValue)) {
-                    subTotalAmount += subtotalValue;
-                }
-                $('th#total').text(subTotalAmount).html();
-            });
+            footerData();
         }
-
-        function rowData(){
+        function changeDiscount(input, id) {
+            let row = $(input).closest('tr');
+            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let quantityIntoUnitCost = quantity * netUnitCost;
+            var discountInput = row.find('input[name="discount_' + id + '"]').val();
+            var discount = parseInt(discountInput);
+            if(isNaN(discount)){
+                discount = 0;
+            }
+            var taxInput = row.find('input[name="tax_' + id + '"]').val();
+            var tax = parseInt(taxInput);
+            if(isNaN(tax)){
+                tax = 0;
+            }
+            var subtotal = quantityIntoUnitCost - discount + tax;
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            footerData();
+        }
+        function changeTax(input, id) {
+            let row = $(input).closest('tr');
+            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+            let quantityIntoUnitCost = quantity * netUnitCost;
+            var discountInput = row.find('input[name="discount_' + id + '"]').val();
+            var taxInput = row.find('input[name="tax_' + id + '"]').val();
+            var discount = parseInt(discountInput);
+            if(isNaN(discount)){
+                discount = 0;
+            }
+            var tax = parseInt(taxInput);
+            if(isNaN(tax)){
+                tax = 0;
+            }
+            var subtotal = quantityIntoUnitCost - discount + tax;
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            footerData();
+        }
+        function footerData(){
             var subTotalAmount = 0;
             var totalQuantity = 0;
             var totalDiscount = 0;
@@ -336,7 +383,17 @@
                 $('th#total-tax').text(totalTax).html();
             });
         }
-
+        function deleteRow(button, id) {
+            existingProducts = $.grep(existingProducts, function(value) {
+                let index = existingProducts.indexOf(value);
+                if (index !== -1) {
+                    existingProducts.splice(index, 1);
+                }
+                return value !== id;
+            });
+            $(button).closest('tr').remove();
+            footerData();
+        }
 
     </script>
 @endsection
