@@ -6,11 +6,14 @@
             <h3 class="card-title">
                 <i class="fas fa-user-graduate"></i> Units
             </h3>
+            @can('Add Unit')
             <div class="card-actions">
                 <a href="{{route('unit.create')}}" class="btn btn-primary d-none d-sm-inline-block">
                     <i class="fas fa-plus"></i> Add Unit
                 </a>
             </div>
+            @endcan
+
         </div>
         <div class="card-body">
             <table class="table table-bordered table-striped table-hover datatable display">

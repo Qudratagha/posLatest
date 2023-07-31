@@ -67,8 +67,5 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function users(){
-        $users = User::all();
-        return view('auth.index')->with(compact('users'));
-    }
+
 }

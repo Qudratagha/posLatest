@@ -7,9 +7,12 @@
                 <i class="fas fa-user-graduate"></i> Warehouses
             </h3>
             <div class="card-actions">
+                @can('Add Warehouse')
                 <a href="{{route('warehouse.create')}}" class="btn btn-primary d-none d-sm-inline-block">
                     <i class="fas fa-plus"></i> Add Warehouse
                 </a>
+                @endcan
+
             </div>
         </div>
         <div class="card-body">
@@ -31,9 +34,12 @@
                             <a href="{{ route('warehouse.show', $warehouse->warehouseID) }}">
                                 <i class="fas fa-eye"></i>
                             </a>
+                            @can('Edit Warehouse')
                             <a class="ps-1 pe-1" href="{{ route('warehouse.edit', $warehouse->warehouseID) }}">
                                 <i class="text-yellow fa fa-edit"></i>
                             </a>
+                            @endcan
+                            @can('Delete Warehouse')
                             <form action="{{ route('warehouse.destroy', $warehouse->warehouseID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -41,7 +47,7 @@
                                     <i class="text-red fa fa-trash"></i>
                                 </a>
                             </form>
-
+                            @endcan
                         </td>
                     </tr>
                 @endforeach

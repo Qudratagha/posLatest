@@ -12,6 +12,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(roleSeeder::class);
+        $this->call(permissionSeeder::class);
         $this->call([
             UserSeeder::class,
             PurchaseStatusSeeder::class,
@@ -20,7 +22,6 @@ class DatabaseSeeder extends Seeder
             unitsSeeder::class,
             categorySeeder::class,
             accountsSeeder::class,
-            permissionsSeeder::class,
         ]);
     }
 }
