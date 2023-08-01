@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\permissionsController;
+use App\Http\Controllers\rolesController;
+use App\Http\Controllers\usersController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -39,4 +43,20 @@ Route::middleware('auth')->group(function () {
     Route::resource('/saleDelivered', \App\Http\Controllers\SaleDeliveredController::class);
     Route::resource('/salePayment', \App\Http\Controllers\SalePaymentController::class);
 
+    Route::get('/users', [usersController::class, 'index']);
+    Route::get('/user/add', [usersController::class, 'add']);
+    Route::post('/user/create', [usersController::class, 'create']);
+    Route::get('/user/permissions/{id}', [usersController::class, 'viewPermissions']);
+    Route::get('/user/edit/{id}', [usersController::class, 'editUser']);
+    Route::post('/user/update', [usersController::class, 'update']);
+    Route::post('/user/assignRole', [usersController::class, 'assignRole']);
+    Route::post('/user/assignPermissions', [usersController::class, 'assignPermissions']);
+    Route::get('/user/role/revoke/{id}/{role}', [usersController::class, 'revokeRole']);
+    Route::get('/roles', [rolesController::class, 'index']);
+    Route::get('/role/edit/{id}', [rolesController::class, 'edit']);
+    Route::post('/role/update', [rolesController::class, 'update']);
+    Route::post('/roles/store', [rolesController::class, 'store']);
+    Route::post('/role/updatePermissions', [rolesController::class, 'updatePermissions']);
+    Route::get('/permissions', [permissionsController::class, 'index']);
+    /* Route::post('/permissions/store', [permissionsController::class, 'store']); */
 });
