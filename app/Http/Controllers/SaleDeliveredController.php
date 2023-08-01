@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PurchaseReceive;
-use App\Models\Reference;
+use App\Models\SaleDelivered;
 use App\Models\Stock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class PurchaseReceiveController extends Controller
+class SaleDeliveredController extends Controller
 {
 
     public function index()
@@ -23,7 +22,7 @@ class PurchaseReceiveController extends Controller
 
     public function store(Request $request)
     {
-        $ref = Reference::getRef();
+        $ref = getRef();
         $requestData = $request->all();
         $productQuantities = [];
         $date = Carbon::now();
@@ -34,42 +33,44 @@ class PurchaseReceiveController extends Controller
             }
         }
         foreach ($productQuantities as $productId => $receiveQty) {
-            PurchaseReceive::create([
-               'purchaseID' => $request['purchaseID'],
-               'productID' => $productId,
-               'receivedQty' => $receiveQty,
-               'date' => $date
+            SaleDelivered::create([
+                'saleID' => $request['saleID'],
+                'productID' => $productId,
+                'batchNumber' => $request['batchNumber_'.$productId],
+                'receivedQty' => $receiveQty,
+                'date' => $date
             ]);
 
             Stock::create([
                 'warehouseID' =>  $request['warehouseID_'.$productId],
                 'productID' => $productId,
+                'batchNumber' => $request['batchNumber_'.$productId],
                 'date' => $date,
-                'credit' => $receiveQty,
+                'debt' => $receiveQty,
                 'refID' => $ref,
             ]);
         }
 
-        $request->session()->flash('message', 'Product Received Successfully!');
-        return to_route('purchase.index');
+        $request->session()->flash('message', 'Product Delivered Successfully!');
+        return to_route('sale.index');
     }
 
-    public function show(PurchaseReceive $purchaseReceive)
+    public function show(SaleDelivered $saleDelivered)
     {
         //
     }
 
-    public function edit(PurchaseReceive $purchaseReceive)
+    public function edit(SaleDelivered $saleDelivered)
     {
         //
     }
 
-    public function update(Request $request, PurchaseReceive $purchaseReceive)
+    public function update(Request $request, SaleDelivered $saleDelivered)
     {
         //
     }
 
-    public function destroy(PurchaseReceive $purchaseReceive)
+    public function destroy(SaleDelivered $saleDelivered)
     {
         //
     }

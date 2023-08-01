@@ -34,16 +34,16 @@
                     @php
                             $subTotal = $purchase->purchaseOrders->sum('subTotal');
                             $paidAmount = $purchase->purchasePayments->sum('amount');
-                            $dueAmount = $subTotal - $paidAmount;
+                            $dueAmount = $subTotal - $purchase->discount + $purchase->shippingCost - $paidAmount;
                             $allPayments = $purchase->purchasePayments;
                     @endphp
                     <tr>
-                        <td>{{ $purchase->purchaseID }}</td>
+                        <td>{{ $purchase->purchaseID  }}</td>
                         <td>{{ $purchase->date }}</td>
                         <td>{{ $purchase->refID }}</td>
                         <td>{{ $purchase->account->name }}</td>
-                        <td><div class="badge badge-success">{{ $purchase->purchaseStatus->name }}</div></td>
-                        <td>{{ $subTotal }}</td>
+                        <td><div class="badge badge-warning">{{ ucfirst($purchase->purchaseStatus) }}</div></td>
+                        <td>{{ $subTotal - $purchase->discount + $purchase->shippingCost}}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>
                         <td> @if($dueAmount > 0) <div class="badge badge-danger">Due</div> @else <div class="badge badge-success">Paid</div> @endif</td>
@@ -97,7 +97,7 @@
                                         <div class="row">
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">
                                                 <label>Receivable Amount *</label>
-                                                <input type="number" name="amount" class="form-control" value="{{ $subTotal }}" step="any" disabled>
+                                                <input type="number" name="amount" class="form-control" value="{{ $dueAmount }}" step="any" disabled>
                                             </div>
 
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">
@@ -226,7 +226,7 @@
                                                 $productName = \App\Models\Product::where('productID', $productID)->pluck('name');
                                             @endphp
                                             @if ($modifiedOrderedQty != 0)
-                                                @php echo '<pre>'; print_r($data); echo '</pre>'; $allProductsReceived = false;@endphp
+                                                @php $allProductsReceived = false;@endphp
                                                 <input type="hidden" name="batchNumber_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['batchNumber'] }}">
                                                 <input type="hidden" name="expiryDate_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['expiryDate'] }}">
                                                 <div class="form-group row mb-3">
@@ -240,7 +240,8 @@
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Warehouse:</label>
-                                                        <select name="warehouseID_{{ $data['productID'] }}" class="form-select">
+                                                        <select name="warehouseID_{{ $data['productID'] }}" class="form-select" required>
+                                                            <option value="">Select Warehouse</option>
                                                             @foreach($warehouses as $warehouse)
                                                                 <option value="{{ $warehouse->warehouseID }}"> {{ $warehouse->name }} </option>
                                                             @endforeach
@@ -284,6 +285,10 @@
 @section('more-script')
     <script>
         $(document).ready(function() {
+
+            var currentDate = new Date().toISOString().split("T")[0];
+            document.getElementById("date").value = currentDate;
+
             $('.receive-quantity').on('input', function() {
                 var orderQty = parseInt($(this).parent().prev().find('.form-control-static').text());
                 var receiveQty = parseInt($(this).val());

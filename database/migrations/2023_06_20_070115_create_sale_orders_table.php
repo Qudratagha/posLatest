@@ -17,11 +17,11 @@ return new class extends Migration
             $table->foreignId('productID')->constrained('products', 'productID');
             $table->foreignId('warehouseID')->constrained('warehouses', 'warehouseID');
             $table->integer('quantity');
-            $table->integer('batchNumber');
-            $table->date('expiryDate');
+            $table->integer('batchNumber')->nullable();
+            $table->date('expiryDate')->nullable();
             $table->integer('netUnitCost');
-            $table->integer('discountValue');
-            $table->integer('tax');
+            $table->integer('discountValue')->nullable();
+            $table->integer('tax')->nullable();
             $table->integer('subTotal');
             $table->integer('saleUnit');
             $table->timestamps();

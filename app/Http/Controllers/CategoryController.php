@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::orderByDesc('categoryID')->get();
         return view('category.index', compact('categories'));
     }
 

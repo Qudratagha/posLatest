@@ -196,7 +196,7 @@
 
                         <label for="image" class=" form-label col-sm-6 col-md-6 col-lg-2 col-form-label">Picture: </label>
                         <div class=" col-sm-6 col-md-6 col-lg-4">
-                            <input type="file" name="image" class="form-control">
+                            <input type="file" name="image" class="form-control" required>
                         </div>
 
                         <label for="name" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Is-expiry: </label>

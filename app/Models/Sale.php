@@ -12,6 +12,28 @@ class Sale extends Model
     protected $table = 'sales';
     protected $guarded = [];
 
+    public function saleOrders()
+    {
+        return $this->hasMany(\App\Models\SaleOrder::class, 'saleID', 'saleID');
+    }
+    public function account()
+    {
+        return $this->belongsTo(\App\Models\Account::class, 'customerID', 'accountID');
+    }
 
+    public function salePayments()
+    {
+        return $this->hasMany(\App\Models\SalePayment::class, 'saleID', 'saleID');
+    }
+
+    public function saleReceive()
+    {
+        return $this->hasMany(\App\Models\SaleDelivered::class, 'saleID', 'saleID');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class, 'productID', 'productID');
+    }
 
 }

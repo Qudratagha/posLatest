@@ -36,10 +36,16 @@
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
+                        <div class="col-sm-12 col-md-6 col-lg-6">Product Description: {{ $product->description}}</div>
+                    </div>
+
+                    <div class="row fs-5 mt-3 text-dark">
                         <div class="col-sm-12 col-md-6 col-lg-6">Expire:{{ $product->isExpire == 0 ? "Yes" : "No" }}</div>
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <img width="40%" class="mt-2 img-circle" src="{{ asset('storage/images/product/'.$product->image) }}" />
                         </div>
+
+
                     </div>
                 </dt>
             </div>

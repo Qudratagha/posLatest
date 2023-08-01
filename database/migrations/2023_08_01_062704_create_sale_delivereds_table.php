@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchaseReceives', function (Blueprint $table) {
-            $table->id('purchaseReceiveID');
-            $table->foreignId('purchaseID')->constrained('purchases', 'purchaseID');
+        Schema::create('saleDelivered', function (Blueprint $table) {
+            $table->id('saleDeliveredID');
+            $table->foreignId('saleID')->constrained('sales', 'saleID');
             $table->foreignId('productID')->constrained('products', 'productID');
             $table->integer('batchNumber')->nullable();
             $table->date('expiryDate')->nullable();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchaseReceives');
+        Schema::dropIfExists('saleDelivered');
     }
 };

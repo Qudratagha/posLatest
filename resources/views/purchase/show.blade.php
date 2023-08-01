@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Account Show')
+@section('title', 'Purchase Show')
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <dt class="fs-5">Purchase Status:</dt>
-                                    <dd class="fs-5">{{ $purchase->purchaseStatus->name }}</dd>
+                                    <dd class="fs-5">{{ ucfirst($purchase->purchaseStatus) }}</dd>
                                 </div>
                                 <div class="col-sm-6">
                                     <dt class="fs-5">Order Tax:</dt>

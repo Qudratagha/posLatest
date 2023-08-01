@@ -289,14 +289,14 @@
                             <a href="{{ route('category.index') }}"> Categories </a>
                         </li>
                         <li>
-                            <a href="{{ route('product.index') }}"> Products </a>
-                        </li>
-                        <li>
                             <a href="{{ route('warehouse.index') }}"> Warehouses </a>
                         </li>
 
                         <li>
                             <a href="{{ route('unit.index') }}"> Units </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('product.index') }}"> Products </a>
                         </li>
 {{--                        <li>--}}
 {{--                            <a href="app-mailbox.html"> Mailbox </a>--}}
@@ -491,8 +491,15 @@
     @yield('more-script')
 <script>
 
+
+    // var currentDate = new Date().toISOString().split("T")[0];
+    // document.getElementById("date").value = currentDate;
     $(document).ready(function() {
-        $('.custom-select2').select2();
+        var currentDate = new Date().toISOString().split("T")[0];
+        document.getElementById("date").value = currentDate;
+    //     $('.custom-select2').select2({
+    //         theme: "classic",
+    //     });
     })
     $('table.display').dataTable( {
         "ordering": false

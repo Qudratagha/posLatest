@@ -10,10 +10,13 @@ use App\Models\PurchasePayment;
 use App\Models\PurchaseReceive;
 use App\Models\PurchaseStatus;
 use App\Models\Reference;
+use App\Models\Stock;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
+
 use function Illuminate\Mail\Mailables\subject;
 use function Symfony\Component\HttpKernel\HttpCache\purge;
 use function Symfony\Component\String\length;
@@ -59,17 +62,16 @@ class PurchaseController extends Controller
             ]);
             addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $ref, $request['description']);
             addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
-
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
-            return to_route('purchase.index');
+            return redirect()->route('purchase.index');
         }
         else {
             $warehouseID = $request['warehouseID'];
             $purchase = Purchase::create([
                 'date' => $request['date'],
                 'supplierID' => $request['supplierID'],
-                'purchaseStatusID' => $request['purchaseStatusID'],
-                'orderTax' => 100,
+                'purchaseStatus' => $request['purchaseStatus'],
+                'orderTax' => 0,
                 'discount' => $request['discount'],
                 'shippingCost' => $request['shippingCost'],
                 'description' => $request['description'],
@@ -110,12 +112,36 @@ class PurchaseController extends Controller
                         'expiryDate' => $productExpiryDate,
                         'orderedQty' => $productQuantity,
                     ]);
+                    if($request['purchaseStatus'] === 'received'){
+                        PurchaseReceive::create([
+                            'purchaseID' => $purchase->purchaseID,
+                            'productID' => $productID,
+                            'batchNumber' => $productBatchNumber,
+                            'expiryDate' => $productExpiryDate,
+                            'receivedQty' => $productQuantity ?? 'NULL'
+                        ]);
+
+                        Stock::create([
+                            'warehouseID' =>  $warehouseID,
+                            'productID' => $productID,
+                            'date' => $date,
+                            'batchNumber' => $productBatchNumber,
+                            'expiryDate' => $productExpiryDate,
+                            'credit' => $productQuantity ?? 'NULL',
+                            'refID' => $ref,
+                        ]);
+                    }
+
+
+
+
                 }
             }
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
             addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
             $request->session()->flash('message', 'Purchase Created Successfully!');
-            return to_route('purchase.index');
+            return redirect()->route('purchase.index');
+
         }
     }
 
@@ -150,7 +176,11 @@ class PurchaseController extends Controller
             }
         }
         if (!Empty($receivedQty)){
-            $request->session()->flash('error', 'You can not update this purchase as it has received some products');
+            $request->session()->flash('warning', 'You can not update this purchase as it has received some products');
+            return to_route('purchase.index');
+        }
+        elseif(!$purchase->purchasePayments->isEmpty()){
+            $request->session()->flash('warning', 'You can not update this purchase as it has some Payments');
             return to_route('purchase.index');
         }
 
@@ -166,11 +196,8 @@ class PurchaseController extends Controller
 
     public function update(Request $request, Purchase $purchase)
     {
-
-
         $purchase->purchaseOrders()->delete();
         $purchase->purchaseReceive()->delete();
-
         $date = Carbon::now();
 //        $ref = getRef();
 
@@ -178,7 +205,7 @@ class PurchaseController extends Controller
         $purchase->update([
             'date' => $request['date'],
             'supplierID' => $request['supplierID'],
-            'purchaseStatusID' => $request['purchaseStatusID'],
+            'purchaseStatus' => $request['purchaseStatus'],
             'orderTax' => 100,
             'discount' => $request['discount'],
             'shippingCost' => $request['shippingCost'],
@@ -226,6 +253,9 @@ class PurchaseController extends Controller
 
     public function destroy(Purchase $purchase , Request $request)
     {
+        $purchase->purchaseOrders()->delete();
+        $purchase->purchaseReceive()->delete();
+        $purchase->purchasePayments()->delete();
         $purchase->delete();
         $request->session()->flash('message', 'Purchase Del Successfully!');
         return to_route('purchase.index');
