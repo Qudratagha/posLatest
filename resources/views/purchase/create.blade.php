@@ -175,16 +175,15 @@
                     });
                     if (found.length > 0) {
                         var rowId = result[0].productID; // Example row id
-                        var row = $("#tbody #" +'rowID_'+ rowId); // Select the row based on the id
-                        var quantityInput = row.find('[name="quantity_' + rowId + '"]').val();
-                        var netUnitCostInput = row.find('input[name="' + 'netUnitCost_' + rowId + '"]').val();
-                        var discountInput = row.find('[name="discount_' + rowId + '"]').val();
-                        var taxInput = row.find('[name="tax_' + rowId + '"]').val();
-
-                        var quantity = parseInt(quantityInput);
-                        var netUnitCost = parseInt(netUnitCostInput);
-                        var discount = parseInt(discountInput);
-                        var tax = parseInt(taxInput);
+                        var row = $("#tbody #" +'rowID_'+ rowId);
+                        var quantityInput = row.find('[name="quantity_' + rowId + '"]');
+                        var netUnitCostInput = row.find('input[name="netUnitCost_' + rowId + '"]');
+                        var discountInput = row.find('[name="discount_' + rowId + '"]');
+                        var taxInput = row.find('[name="tax_' + rowId + '"]');
+                        var quantity = parseInt(quantityInput.val());
+                        var netUnitCost = parseInt(netUnitCostInput.val());
+                        var discount = parseInt(discountInput.val());
+                        var tax = parseInt(taxInput.val());
                         quantity++;
                         quantityInput.val(quantity);
                         var subtotal = (quantity * netUnitCost) - discount + tax;

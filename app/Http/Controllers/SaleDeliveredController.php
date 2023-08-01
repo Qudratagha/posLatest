@@ -17,7 +17,7 @@ class SaleDeliveredController extends Controller
 
     public function create()
     {
-        //
+
     }
 
     public function store(Request $request)
@@ -35,7 +35,7 @@ class SaleDeliveredController extends Controller
         foreach ($productQuantities as $productId => $receiveQty) {
             SaleDelivered::create([
                 'saleID' => $request['saleID'],
-                'productID' => $productId,
+                'productID' => $request['productID_'.$productId],
                 'batchNumber' => $request['batchNumber_'.$productId],
                 'receivedQty' => $receiveQty,
                 'date' => $date
@@ -43,7 +43,7 @@ class SaleDeliveredController extends Controller
 
             Stock::create([
                 'warehouseID' =>  $request['warehouseID_'.$productId],
-                'productID' => $productId,
+                'productID' => $request['productID_'.$productId],
                 'batchNumber' => $request['batchNumber_'.$productId],
                 'date' => $date,
                 'debt' => $receiveQty,
