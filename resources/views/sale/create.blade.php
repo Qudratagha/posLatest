@@ -51,7 +51,7 @@
 
                 <div class="form-group row">
                     <label for="product" class="form-label col-form-label col-sm-12"> Products:
-                        <select name="productID" id="productID" class="form-select form-control productField" onchange="productDetails(this.value)">
+                        <select name="productID" id="productID" class="form-select form-control productField" onchange="productDetails(this.value)" autofocus>
                             <option value="">Select Product</option>
                         </select>
                     </label>
@@ -264,7 +264,7 @@
                                 strHTML += '<td><input type="number" class="form-control" name="tax_' + v.batchNumber + '" min="0" value="0" onkeyup="changeTax(this, ' + id + ')"></td>';
                                 strHTML += '<td> <span id="subTotal_' + v.batchNumber + '">' + v.product.purchasePrice + '</span></td>';
                                 strHTML += '<td><input type="hidden" name="productID_' + v.batchNumber + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this, ' + v.productID + ')" id="' + v.productID + '"><i class="fa fa-trash"></i></button></td>';
-                                strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.product.purchasePrice + '">';
+                                // strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.product.purchasePrice + '">';
                                 strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.product.code + '">';
                                 strHTML += '</tr>';
                             });

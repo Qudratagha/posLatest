@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id('saleID');
             $table->foreignId('customerID')->constrained('accounts', 'accountID');
-            $table->foreignId('accountID')->constrained('accounts', 'accountID');
             $table->string('orderTax')->nullable();
             $table->string('saleStatus');
             $table->string('orderDiscountType')->nullable();

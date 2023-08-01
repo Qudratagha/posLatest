@@ -85,7 +85,6 @@ class PurchaseController extends Controller
                     $productQuantity = $request['quantity_' . $productID];
                     $productBatchNumber = $request['batchNumber_' . $productID];
                     $productExpiryDate = $request['expiryDate_' . $productID];
-//                    dump($productExpiryDate);
                     $productNetUnitCost = $request['netUnitCost_' . $productID];
                     $productDiscount = $request['discount_' . $productID];
                     $productTax = $request['tax_' . $productID];

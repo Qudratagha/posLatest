@@ -211,7 +211,7 @@
                             strHTML += '<td><input type="number" class="form-control" name="discount_'+v.productID+'" min="0" value="0" onkeyup="changeDiscount(this, '+id+')"></td>';
                             strHTML += '<td><input type="number" class="form-control" name="tax_'+v.productID+'" min="0" value="0" onkeyup="changeTax(this, '+id+')"></td>';
                             strHTML += '<td> <span id="subTotal_'+v.productID+'">' + v.purchasePrice + '</span></td>';
-                            strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.purchasePrice + '">';
+                            // strHTML += '<input type="hidden" name="netUnitCosts_'+ v.productID +'" value="' + v.purchasePrice + '">';
                             strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.code + '">';
                             strHTML += '<td><input type="hidden" name="productID_'+v.productID+'" value="'+v.productID+'"><button type="button" class="btn btn-sm" onclick="deleteRow(this, '+v.productID+')" id="'+v.productID+'"><i class="fa fa-trash"></i></button></td>';
                             strHTML += '</tr>';

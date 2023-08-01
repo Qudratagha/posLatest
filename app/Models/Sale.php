@@ -28,7 +28,12 @@ class Sale extends Model
 
     public function saleReceive()
     {
-        return $this->hasMany(\App\Models\Purchase::class, 'purchaseID', 'purchaseID');
+        return $this->hasMany(\App\Models\SaleDelivered::class, 'saleID', 'saleID');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class, 'productID', 'productID');
     }
 
 }

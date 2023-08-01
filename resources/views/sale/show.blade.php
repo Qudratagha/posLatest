@@ -87,31 +87,33 @@
 
 
 
-{{--                        <div class="col-md-12">--}}
-{{--                            <h5 class="text-center mb-3">Purchase Receive</h5>--}}
-{{--                            <div class="table-responsive">--}}
+                        <div class="col-md-12">
+                            <h5 class="text-center mb-3">Sale Delivered</h5>
+                            <div class="table-responsive">
 
-{{--                                <table class="table table-bordered">--}}
-{{--                                    <thead class="thead-dark">--}}
-{{--                                    <tr>--}}
-{{--                                        <th>Product Name</th>--}}
-{{--                                        <th>Received Quantity</th>--}}
-{{--                                        <th>Date</th>--}}
-{{--                                    </tr>--}}
-{{--                                    </thead>--}}
-{{--                                    <tbody>--}}
-{{--                                    @foreach($purchaseReceives as $receive)--}}
-{{--                                        <tr>--}}
-{{--                                            <td>{{ $receive->product->name }}</td>--}}
-{{--                                            <td>{{ $receive->receivedQty }}</td>--}}
-{{--                                            <td>{{ \Carbon\Carbon::parse($receive->date)->format('Y-m-d')  }}</td>--}}
-{{--                                        </tr>--}}
-{{--                                    @endforeach--}}
-{{--                                    </tbody>--}}
-{{--                                </table>--}}
+                                <table class="table table-bordered">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Delivered Quantity</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($saleReceives as $delivers)
+                                        @php $productName = \App\Models\Product::where('productID',$delivers->productID)->pluck('name')[0];
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $productName }}</td>
+                                            <td>{{ $delivers->receivedQty }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($delivers->date)->format('Y-m-d')  }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
 
-{{--                            </div>--}}
-{{--                        </div>--}}
+                            </div>
+                        </div>
                     </dl>
                 </div>
 
