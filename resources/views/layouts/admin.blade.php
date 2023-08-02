@@ -228,6 +228,7 @@
                 </li>
                 @endcan
                 @can('View Sales')
+
                 <li class="menu">
                     <a href="#apps" data-bs-toggle="dropdown" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
