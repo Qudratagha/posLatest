@@ -44,12 +44,11 @@ class SaleController extends Controller
         $warehouseID = $request['warehouseID'];
         $sale = Sale::create([
             'customerID' => $request['customerID'],
-//            'orderTax' => 0,
+            'orderTax' => $request['taxAmount'],
             'saleStatus' => $request['saleStatus'],
             'discountValue' => $request['discount'],
             'shippingCost' => $request['shippingCost'],
-//            'referenceNo' => $request['referenceNo'],
-//            'warehouseID' => $request['warehouseID'],
+            'referenceNo' => $request['referenceNo'],
 //            'paymentStatus' => $request['paymentStatus'],
             'description' => $request['description'],
             'date' => $request['date'],
@@ -90,15 +89,15 @@ class SaleController extends Controller
                     'orderedQty' => $productQuantity,
                 ]);
 
-                Stock::create([
-                    'warehouseID' =>  $warehouseID,
-                    'productID' => $productID,
-                    'date' => $date,
-                    'batchNumber' => $productBatchNumber,
-                    'expiryDate' => $productExpiryDate,
-                    'credit' => $productQuantity ?? 'NULL',
-                    'refID' => $ref,
-                ]);
+//                Stock::create([
+//                    'warehouseID' =>  $warehouseID,
+//                    'productID' => $productID,
+//                    'date' => $date,
+//                    'batchNumber' => $productBatchNumber,
+//                    'expiryDate' => $productExpiryDate,
+//                    'credit' => $productQuantity ?? 'NULL',
+//                    'refID' => $ref,
+//                ]);
             }
         }
 

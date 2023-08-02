@@ -33,6 +33,7 @@ class PurchaseController extends Controller
         $warehouses = Warehouse::all();
 
 
+
         return view('purchase.index', compact('purchases', 'accounts', 'warehouses'));
     }
 
@@ -48,7 +49,6 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-
         $date = Carbon::now();
         $ref = getRef();
         if ($request->has('paidBy')){
@@ -71,7 +71,7 @@ class PurchaseController extends Controller
                 'date' => $request['date'],
                 'supplierID' => $request['supplierID'],
                 'purchaseStatus' => $request['purchaseStatus'],
-                'orderTax' => 0,
+                'orderTax' => $request['taxAmount'],
                 'discount' => $request['discount'],
                 'shippingCost' => $request['shippingCost'],
                 'description' => $request['description'],

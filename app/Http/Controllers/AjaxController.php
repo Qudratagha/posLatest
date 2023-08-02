@@ -31,6 +31,7 @@ class AjaxController extends Controller
             ->groupBy('productID', 'batchNumber')
             ->get();
 
+
 //            ->select(
 //                'productID',
 //                'batchNumber',

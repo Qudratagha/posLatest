@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('title', 'Purchase Index')
 @section('content')
+
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title">
@@ -34,7 +35,7 @@
                     @php
                             $subTotal = $purchase->purchaseOrders->sum('subTotal');
                             $paidAmount = $purchase->purchasePayments->sum('amount');
-                            $dueAmount = $subTotal - $purchase->discount + $purchase->shippingCost - $paidAmount;
+                            $dueAmount = $subTotal - $purchase->discount + $purchase->shippingCost - $paidAmount + $purchase->orderTax;
                             $allPayments = $purchase->purchasePayments;
                     @endphp
                     <tr>
@@ -43,7 +44,7 @@
                         <td>{{ $purchase->refID }}</td>
                         <td>{{ $purchase->account->name }}</td>
                         <td><div class="badge badge-warning">{{ ucfirst($purchase->purchaseStatus) }}</div></td>
-                        <td>{{ $subTotal - $purchase->discount + $purchase->shippingCost}}</td>
+                        <td>{{ $subTotal - $purchase->discount + $purchase->shippingCost + $purchase->orderTax }}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>
                         <td> @if($dueAmount > 0) <div class="badge badge-danger">Due</div> @else <div class="badge badge-success">Paid</div> @endif</td>
@@ -97,12 +98,17 @@
                                         <div class="row">
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">
                                                 <label>Receivable Amount *</label>
-                                                <input type="number" name="amount" class="form-control" value="{{ $dueAmount }}" step="any" disabled>
+                                                <input type="number" name="receivableAmount" class="form-control" value="{{ $dueAmount }}" step="any" disabled>
                                             </div>
 
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">
                                                 <label>Paying Amount *</label>
-                                                <input type="number" name="amount" class="form-control" step="any" required>
+
+                                                <!-- Input field with Bootstrap classes -->
+                                                <input type="number" name="amount" class="form-control paying-amount" max="{{ $dueAmount }}" step="any" required>
+                                                <span class="max-amount" style="display: none;">{{ $dueAmount }}</span>
+                                                <div class="invalid-feedback">The amount cannot exceed the maximum value.</div>
+
                                             </div>
 
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-2">
@@ -135,7 +141,6 @@
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             <input class="btn btn-primary" type="submit" value="Save">
                                         </div>
-
                                     </form>
                                 </div>
                             </div>
@@ -236,7 +241,7 @@
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Order Quantity:</label>
-                                                        <div class="form-control-plaintext">{{ $modifiedOrderedQty }}</div>
+                                                        <div class="form-control-plaintext order-quantity">{{ $modifiedOrderedQty }}</div>
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Warehouse:</label>
@@ -246,13 +251,12 @@
                                                                 <option value="{{ $warehouse->warehouseID }}"> {{ $warehouse->name }} </option>
                                                             @endforeach
                                                         </select>
-                                                        <div class="invalid-feedback" style="display: none;">Receive quantity cannot exceed order quantity.</div>
                                                     </div>
 
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Receive Quantity:</label>
                                                         <input type="number" name="receiveQty_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
-                                                        <div class="invalid-feedback" style="display: none;">Receive quantity cannot exceed order quantity.</div>
+                                                        <div class="invalid-feedback" style="display: none;">Receive quantity cannot exceed from order quantity.</div>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -290,18 +294,35 @@
             document.getElementById("date").value = currentDate;
 
             $('.receive-quantity').on('input', function() {
-                var orderQty = parseInt($(this).parent().prev().find('.form-control-static').text());
+                var orderQty = parseInt($(this).parent().siblings().find('.order-quantity').text());
                 var receiveQty = parseInt($(this).val());
 
                 if (receiveQty > orderQty) {
                     $(this).addClass('is-invalid');
-                    $(this).next('.invalid-feedback').show();
+                    $(this).val(orderQty); // Set the value to the maximum amount
+                    $(this).siblings('.invalid-feedback').show();
                 } else {
                     $(this).removeClass('is-invalid');
-                    $(this).next('.invalid-feedback').hide();
+                    $(this).siblings('.invalid-feedback').hide();
                 }
             });
         });
+
+        $('.paying-amount').on('input', function() {
+            var maxAmount = parseFloat($(this).next('.max-amount').text());
+            var enteredAmount = parseFloat($(this).val());
+
+            if (enteredAmount > maxAmount) {
+                $(this).addClass('is-invalid');
+                $(this).val(maxAmount); // Set the value to the maximum amount
+
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+
+
     </script>
 @endsection
 

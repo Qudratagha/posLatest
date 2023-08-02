@@ -109,7 +109,7 @@
                     </label>
 
                     <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" min="0" placeholder="Tax Amount">
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" min="0" value="0" placeholder="Tax Amount">
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
@@ -117,7 +117,7 @@
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" value="0" min="0" placeholder="Shipping Cost" >
+                        <input type="number" name="shippingCost" class="form-control" value="0" min="0" placeholder="Shipping Cost">
                     </label>
                 </div>
 
@@ -156,6 +156,8 @@
 @endsection
 @section('more-script')
     <script>
+        var currentDate = new Date().toISOString().split("T")[0];
+        document.getElementById("date").value = currentDate;
 
         $(document).ready(function() {
             $('.productField').select2();
@@ -247,7 +249,7 @@
                                 strHTML += '<tr id="rowID_' + v.batchNumber + '">';
                                 strHTML += '<td>' + v.product.name + '</td>';
                                 strHTML += '<td>' + v.product.code + '</td>';
-                                strHTML += '<td><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.credit_sum + '" value="1" onkeyup="changeQuantity(this, ' + id + ')" style="border: none"></td>';
+                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.credit_sum + '" value="1" onkeyup="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.credit_sum + '</span> </div></td>';
                                 strHTML += '<td><input type="number" class="form-control" name="batchNumber_' + v.batchNumber + '" value="' + v.batchNumber + '"></td>';
                                 strHTML += `<td style="text-align: center;">${
                                     v.product.isExpire === 0 ?

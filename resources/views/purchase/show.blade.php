@@ -36,6 +36,12 @@
                                     <dt class="fs-5">Shipping Cost:</dt>
                                     <dd class="fs-5">{{ $purchase->shippingCost }}</dd>
                                 </div>
+
+                                <div class="col-sm-6">
+                                    <dt class="fs-5">Discount:</dt>
+                                    <dd class="fs-5">{{ $purchase->discount }}</dd>
+                                </div>
+
                                 <div class="col-sm-6">
                                     <dt class="fs-5">Description:</dt>
                                     <dd class="fs-5">{{ $purchase->description }}</dd>

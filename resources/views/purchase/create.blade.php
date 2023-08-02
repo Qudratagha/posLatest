@@ -1,10 +1,12 @@
 @extends('layouts.admin')
 @section('title', 'Purchase Create')
 @section('content')
+    <?php echo 'yes' ?>
     <div class="card card-default color-palette-box">
         <div class="card-header">
             <h4 class="card-title fw-semibold">
                 <i class="fas fa-users-cog"></i> Add New Purchase
+
             </h4>
         </div>
         <div class="card-body">
@@ -160,7 +162,6 @@
         });
 
         function getProduct(productID) {
-
             var strHTML = "";
             $.ajax({
                 url: "{{ route('ajax.handle',"getProduct") }}",
