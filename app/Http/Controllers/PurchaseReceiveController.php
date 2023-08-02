@@ -35,15 +35,19 @@ class PurchaseReceiveController extends Controller
         }
         foreach ($productQuantities as $productId => $receiveQty) {
             PurchaseReceive::create([
-               'purchaseID' => $request['purchaseID'],
-               'productID' => $productId,
-               'receivedQty' => $receiveQty,
+                'purchaseID' => $request['purchaseID'],
+                'productID' => $productId,
+                'batchNumber' => $request['batchNumber_'.$productId],
+                'expiryDate' => $request['expiryDate_'.$productId],
+                'receivedQty' => $receiveQty,
                'date' => $date
             ]);
 
             Stock::create([
                 'warehouseID' =>  $request['warehouseID_'.$productId],
                 'productID' => $productId,
+                'batchNumber' => $request['batchNumber_'.$productId],
+                'expiryDate' => $request['expiryDate_'.$productId],
                 'date' => $date,
                 'credit' => $receiveQty,
                 'refID' => $ref,

@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id('saleID');
             $table->foreignId('customerID')->constrained('accounts', 'accountID');
-            $table->string('orderTax')->nullable();
             $table->string('saleStatus');
-            $table->string('orderDiscountType')->nullable();
-            $table->integer('discountValue')->nullable();
+            $table->integer('referenceNo');
             $table->integer('shippingCost')->nullable();
+            $table->integer('discountValue')->nullable();
+            $table->string('orderTax')->nullable();
             $table->string('description')->nullable();
-            $table->date('date');
+            $table->string('orderDiscountType')->nullable();
             $table->integer('refID');
+            $table->date('date');
             $table->timestamps();
         });
     }

@@ -308,22 +308,10 @@
     @yield('more-script')
 <script>
 
-    $(document).ready(function() {
-        $('.select2').select2();
-    })
 
-    $('.display').DataTable({
-        "columnDefs": [
-            {
-                "targets": [1, 2], // Column indices (0-based) for which sorting is disabled
-                "orderable": false
-            }
-        ]
-    });
-
-    // $(function () {
-    //     $('table.display').DataTable();
-    // } );
+     $('.display').DataTable({
+         "ordering": false
+     });
 
     setTimeout(function() {
         $('.alert').fadeOut('slow');

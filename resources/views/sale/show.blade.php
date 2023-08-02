@@ -33,6 +33,10 @@
                                     <dd class="fs-5">{{ $sale->orderTax }}</dd>
                                 </div>
                                 <div class="col-sm-6">
+                                    <dt class="fs-5">Discount:</dt>
+                                    <dd class="fs-5">{{ $sale->discountValue }}</dd>
+                                </div>
+                                <div class="col-sm-6">
                                     <dt class="fs-5">Shipping Cost:</dt>
                                     <dd class="fs-5">{{ $sale->shippingCost }}</dd>
                                 </div>
