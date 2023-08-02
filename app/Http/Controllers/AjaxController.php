@@ -31,18 +31,6 @@ class AjaxController extends Controller
             ->groupBy('productID', 'batchNumber')
             ->get();
 
-
-//            ->select(
-//                'productID',
-//                'batchNumber',
-//                \DB::raw('SUM(credit) as credit'),
-//                \DB::raw('SUM(debt) as debt'),
-//                \DB::raw('SUM(credit) - SUM(debt) as credit_sum')
-//            )
-//            ->where('warehouseID', $warehouseID)
-//            ->groupBy('productID', 'batchNumber')
-//            ->get();
-
         return response()->json(['productsWithCreditSum' => $productsWithCreditSum]);
     }
 

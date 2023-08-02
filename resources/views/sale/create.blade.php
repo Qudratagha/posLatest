@@ -249,7 +249,7 @@
                                 strHTML += '<tr id="rowID_' + v.batchNumber + '">';
                                 strHTML += '<td>' + v.product.name + '</td>';
                                 strHTML += '<td>' + v.product.code + '</td>';
-                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.credit_sum + '" value="1" onkeyup="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.credit_sum + '</span> </div></td>';
+                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.credit_sum + '" value="1" onchange="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.credit_sum + '</span> </div></td>';
                                 strHTML += '<td><input type="number" class="form-control" name="batchNumber_' + v.batchNumber + '" value="' + v.batchNumber + '"></td>';
                                 strHTML += `<td style="text-align: center;">${
                                     v.product.isExpire === 0 ?

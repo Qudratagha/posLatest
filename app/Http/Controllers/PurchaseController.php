@@ -31,9 +31,6 @@ class PurchaseController extends Controller
             ->orderByDesc('purchaseID')
             ->get();
         $warehouses = Warehouse::all();
-
-
-
         return view('purchase.index', compact('purchases', 'accounts', 'warehouses'));
     }
 

@@ -118,9 +118,43 @@ class SaleController extends Controller
 
     }
 
-    public function edit(Sale $sale)
+    public function edit(Sale $sale , Request $request)
     {
-        //
+//        dd($sale->salePayments);
+        foreach ($sale->saleReceive as $order) {
+            $productID = $order['productID'];
+            $orderedQty = $order['orderedQty'] ?? 0;
+            $receivedQty = $order['receivedQty'] ?? 0;
+
+            if (!isset($summedData[$productID])) {
+                $summedData[$productID] = [
+                    'productID' => $productID,
+                    'orderedQty' => $orderedQty,
+                    'receivedQty' => $receivedQty
+                ];
+            } else {
+                $summedData[$productID]['orderedQty'] += $orderedQty;
+                $summedData[$productID]['receivedQty'] += $receivedQty;
+            }
+        }
+        if (!Empty($receivedQty)){
+            $request->session()->flash('warning', 'You can not update this sale as it has received some products');
+            return to_route('sale.index');
+        }
+        elseif(!$sale->salePayments->isEmpty()){
+            $request->session()->flash('warning', 'You can not update this sale as it has some Payments');
+            return to_route('sale.index');
+        }
+
+        $units = Unit::all();
+        $warehouses = Warehouse::all();
+        $accounts = Account::all();
+        $purchaseStatuses = PurchaseStatus::all();
+        $saleOrders = $sale->saleOrders;
+
+        $selectedWarehouseID = $sale->saleOrders->pluck('warehouseID')->first();
+
+        return view('sale.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'units', 'sale', 'saleOrders', 'selectedWarehouseID'));
     }
 
     public function update(Request $request, Sale $sale)

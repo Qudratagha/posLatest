@@ -44,10 +44,13 @@
                         <td>{{ $sale->referenceNo }}</td>
                         <td>Biller</td>
                         <td>{{ $sale->account->name }}</td>
-                        <td><div class="badge badge-warning">{{ ucfirst($sale->saleStatus) }}</div></td>
-
+                        @php
+                            $saleOrders = $sale->saleReceive->sum('orderedQty');
+                            $saleDelivered = $sale->saleReceive->sum('receivedQty');
+                            $sum = $saleOrders - $saleDelivered;
+                            @endphp
+                        <td> @if($sum > 0) <div class="badge badge-danger">Pending</div> @else <div class="badge badge-success">Delivered</div> @endif</td>
                         <td> @if($dueAmount > 0) <div class="badge badge-danger">Due</div> @else <div class="badge badge-success">Paid</div> @endif</td>
-
                         <td>{{ $subTotal }}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>

@@ -4,7 +4,7 @@
     <div class="card card-default color-palette-box">
         <div class="card-header">
             <h4 class="card-title fw-semibold">
-                <i class="fas fa-users-cog"></i>
+                <i class="fas fa-users-cog"></i>Edit Purchase
             </h4>
         </div>
         <div class="card-body">
