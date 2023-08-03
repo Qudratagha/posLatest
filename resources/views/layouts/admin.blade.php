@@ -172,11 +172,6 @@
                             <a href="{{ route('category.index') }}"> Categories </a>
                         </li>
                         @endcan
-                        @can('View Products')
-                        <li>
-                            <a href="{{ route('product.index') }}"> Products </a>
-                        </li>
-                        @endcan
                         @can('View Warehouses')
                         <li>
                             <a href="{{ route('warehouse.index') }}"> Warehouses </a>
@@ -186,6 +181,11 @@
                         <li>
                             <a href="{{ route('unit.index') }}"> Units </a>
                         </li>
+                        @endcan
+                        @can('View Products')
+                            <li>
+                                <a href="{{ route('product.index') }}"> Products </a>
+                            </li>
                         @endcan
                     </ul>
                 </li>
@@ -309,7 +309,13 @@
     @yield('more-script')
 <script>
 
-
+    function getCurrentDate() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
      $('.display').DataTable({
          "ordering": false
      });

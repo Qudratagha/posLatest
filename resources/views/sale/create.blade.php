@@ -122,7 +122,6 @@
                 </div>
 
                 <div class="form-group row">
-
                     <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Sale Status:
                         <select name="saleStatus" id="saleStatus" class="form-select">
                             <option value="completed">Completed</option>
@@ -131,12 +130,44 @@
                     </label>
 
                     <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Status:
-                        <select name="paymentStatus" id="paymentStatus" class="form-select">
-                            <option value="received">Received</option>
+                        <select name="paymentStatus" id="paymentStatus" class="form-select" onchange="toggleReceivedFields()">
                             <option value="pending">Pending</option>
+                            <option value="received">Received</option>
                         </select>
                     </label>
+                </div>
 
+
+                <div class="received-fields d-none">
+                    <div class="form-group row">
+                        <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Receivable Amount *:
+                            <input type="number" name="receivableAmount" class="form-control" value="" step="any" disabled>
+                        </label>
+
+                        <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Paying Amount *:
+                            <input type="number" name="amount" class="form-control paying-amount" max="" step="any">
+                            <span class="max-amount" style="display: none;"></span>
+                            <div class="invalid-feedback">The amount cannot exceed the maximum value.</div>
+                        </label>
+
+                        <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Date *:
+                            <input type="hidden" name="paidBy" value="0">
+                            <input type="date" name="date" value="{{ date("Y-m-d") }}" class="form-control">
+                        </label>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="account" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Account *:
+                            <select name="accountID" class="form-select">
+                            @foreach ($paymentAccounts as $account)
+                                <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                            @endforeach
+                            </select>
+                        </label>
+                        <label for="paymentNote" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Note *:
+                            <textarea type="text" name="description" rows="5" class="form-control"></textarea>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="form-group row">
@@ -146,9 +177,7 @@
                 </div>
 
                 <div class="form-group row mt-2">
-{{--                    <div class="offset-2">--}}
-                        <input class="btn btn-primary" type="submit" value="Save">
-{{--                    </div>--}}
+                    <input class="btn btn-primary" type="submit" value="Save">
                 </div>
             </form>
         </div>
@@ -190,10 +219,11 @@
                         warehouseID: warehouseID
                     },
                     success: function(response) {
+                        console.log(response);
                         $('#productID').empty();
                         $('#productID').append('<option value="">Select Product</option>');
-                        $.each(response.productsWithCreditSum, function(index, product) {
-                            $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">' + product.product.name +' | '+ product.batchNumber +' | '+ product.credit_sum + '</option>');
+                        $.each(response.productsWithCreditDebtSum, function(index, product) {
+                            $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">' + product.product.name +' | '+ product.batchNumber +' | '+ product.difference + '</option>');
                         });
                     },
                     error: function() {
@@ -223,6 +253,11 @@
                 },
                 success: function (result) {
                     {
+                        if(result[0].difference === 0){
+                            alert('Out Of Stock');
+                            document.getElementById("productID").value = "";
+                            return;
+                        }
                         let found = $.grep(existingProducts, function(element) {
                             return element === result[0].batchNumber;
                         });
@@ -245,15 +280,16 @@
 
                         }else {
                             result.forEach(function (v) {
+
                                 let id = v.batchNumber;
                                 strHTML += '<tr id="rowID_' + v.batchNumber + '">';
                                 strHTML += '<td>' + v.product.name + '</td>';
                                 strHTML += '<td>' + v.product.code + '</td>';
-                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.credit_sum + '" value="1" onchange="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.credit_sum + '</span> </div></td>';
-                                strHTML += '<td><input type="number" class="form-control" name="batchNumber_' + v.batchNumber + '" value="' + v.batchNumber + '"></td>';
+                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.difference + '" value="1" onchange="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.difference + '</span> </div></td>';
+                                strHTML += '<td> <span id="batchNumber_' + v.batchNumber + '">' + v.batchNumber + '</span></td>';
                                 strHTML += `<td style="text-align: center;">${
                                     v.product.isExpire === 0 ?
-                                        `<input type="date" id="date" class="form-control" name="expiryDate_${v.batchNumber}" value="">`
+                                        `<input type="date" class="form-control" name="expiryDate_${v.batchNumber}" value="${getCurrentDate()}" required>`
                                         : '<div style="display: inline-block; text-align: center;">N/A</div>'
                                 }</td>`;
                                 strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" onkeyup="changeNetUnitCost(this, ' + id + ')" > </td>';
@@ -266,8 +302,8 @@
                                 strHTML += '<td><input type="number" class="form-control" name="tax_' + v.batchNumber + '" min="0" value="0" onkeyup="changeTax(this, ' + id + ')"></td>';
                                 strHTML += '<td> <span id="subTotal_' + v.batchNumber + '">' + v.product.purchasePrice + '</span></td>';
                                 strHTML += '<td><input type="hidden" name="productID_' + v.batchNumber + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this, ' + v.productID + ')" id="' + v.productID + '"><i class="fa fa-trash"></i></button></td>';
-                                // strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.product.purchasePrice + '">';
-                                strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.product.code + '">';
+                                strHTML += '<input type="hidden" name="code_'+ v.batchNumber +'" value="' + v.product.code + '">';
+                                strHTML += '<input type="hidden" name="batchNumber_'+ v.batchNumber +'" value="' + v.batchNumber + '">';
                                 strHTML += '</tr>';
                             });
                             if (!existingProducts.includes(result[0].batchNumber)) {
@@ -396,7 +432,16 @@
             $(button).closest('tr').remove();
             footerData();
         }
+        function toggleReceivedFields() {
+            const paymentStatus = document.getElementById('paymentStatus').value;
+            const receivedFields = document.querySelector('.received-fields');
 
+            if (paymentStatus === 'received') {
+                receivedFields.classList.remove('d-none');
+            } else {
+                receivedFields.classList.add('d-none');
+            }
+        }
     </script>
 @endsection
 

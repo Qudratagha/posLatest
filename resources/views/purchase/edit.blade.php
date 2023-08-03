@@ -277,7 +277,7 @@
                             strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value=""></td>';
                             strHTML += `<td style="text-align: center;">${
                                 v.isExpire === 0 ?
-                                    `<input type="date" id="date" class="form-control" name="expiryDate_${v.productID}" value="">`
+                                    `<input type="date" id="date" class="form-control" name="expiryDate_${v.productID}" value="" required>`
                                     : '<div style="display: inline-block; text-align: center;">N/A</div>'
                             }</td>`;
                             strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="'+ v.purchasePrice +'" onkeyup="changeNetUnitCost(this, '+id+')" > </td>';

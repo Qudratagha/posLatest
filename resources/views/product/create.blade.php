@@ -128,7 +128,7 @@
 
                         <label for="code" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Product Code: </label>
                         <div class="col-sm-8 col-md-6 col-lg-4">
-                            <input type="number" name="code" class="form-control" value="{{ old('code') }}" required placeholder="Product Code">
+                            <input type="number" name="code" class="form-control" value="{{ old('code') }}" required placeholder="Product Code" onchange="productCode(this.value)">
                         </div>
                     </div>
 
@@ -163,18 +163,19 @@
                                 @endforeach
                             </select>
                         </div>
-                        <label for="salePrice" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Sale Price: </label>
-                        <div class="col-sm-6 col-md-6 col-lg-4 {{ $errors->has('salePrice') ? 'has-error' : '' }}">
-                            <input type="number" name="salePrice" class="form-control  @if($errors->has('salePrice')) is-invalid @endif" value="{{ old('salePrice') }}" required placeholder="Sale Price">
+                        <label for="purchasePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Purchase Price: </label>
+                        <div class="col-sm-6 col-md-6 col-lg-4">
+                            <input type="number" name="purchasePrice" class="form-control" value="{{ old('purchasePrice') }}" required placeholder="Purchase Price">
                         </div>
                     </div>
 
 
                     <div class="form-group row mb-1">
-                        <label for="purchasePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Purchase Price: </label>
-                        <div class="col-sm-6 col-md-6 col-lg-4">
-                            <input type="number" name="purchasePrice" class="form-control" value="{{ old('purchasePrice') }}" required placeholder="Purchase Price">
+                        <label for="salePrice" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Sale Price: </label>
+                        <div class="col-sm-6 col-md-6 col-lg-4 {{ $errors->has('salePrice') ? 'has-error' : '' }}">
+                            <input type="number" name="salePrice" class="form-control  @if($errors->has('salePrice')) is-invalid @endif" value="{{ old('salePrice') }}" required placeholder="Sale Price">
                         </div>
+
                         <label for="wholeSalePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Whole Sale Price: </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
                             <input type="number" name="wholeSalePrice" class="form-control" value="{{ old('wholeSalePrice') }}" required placeholder="Whole Sale Price">
@@ -184,11 +185,11 @@
                     <div class="form-group row mb-1">
                         <label for="alertQuantity" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Alert Quantity: </label>
                         <div class="col-sm-6 col-md-6 col-lg-4">
-                            <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity') }}" required placeholder="Alert Quantity">
+                            <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity') }}" placeholder="Alert Quantity">
                         </div>
                         <label for="description" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Description: </label>
                         <div class=" col-sm-6 col-md-6 col-lg-4">
-                            <input type="text" name="description" class="form-control" value="{{ old('description') }}" required placeholder="Description">
+                            <input type="text" name="description" class="form-control" value="{{ old('description') }}" placeholder="Description">
                         </div>
                     </div>
 
@@ -196,7 +197,7 @@
 
                         <label for="image" class=" form-label col-sm-6 col-md-6 col-lg-2 col-form-label">Picture: </label>
                         <div class=" col-sm-6 col-md-6 col-lg-4">
-                            <input type="file" name="image" class="form-control" required>
+                            <input type="file" name="image" class="form-control">
                         </div>
 
                         <label for="name" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Is-expiry: </label>
@@ -219,4 +220,24 @@
             </div>
         </div>
     </div>
+@endsection
+@section('more-script')
+    <script>
+        function productCode(productCode) {
+            $.ajax({
+                url: "{{ route('ajax.handle',"getProductCode") }}",
+                method: 'post',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    productCode: productCode,
+                },
+                success: function (result) {
+                    if (result.length > 0 && result[0].code) {
+                        alert('This code already exists.');
+                        $('input[name="code"]').val('');
+                    }
+                }
+            });
+        }
+    </script>
 @endsection

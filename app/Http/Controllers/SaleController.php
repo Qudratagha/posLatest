@@ -31,14 +31,17 @@ class SaleController extends Controller
     {
         $units = Unit::all();
         $warehouses = Warehouse::all();
+        $paymentAccounts = Account::where('type', 'business')->get();
+
         $accounts = Account::where('type', 'customer')->get();
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::all();
-        return view('sale.create', compact('warehouses', 'accounts', 'purchaseStatuses', 'products', 'units'));
+        return view('sale.create', compact('warehouses', 'accounts', 'purchaseStatuses', 'products', 'units', 'paymentAccounts'));
     }
 
     public function store(Request $request)
     {
+
         $date = Carbon::now();
         $ref = getRef();
         $warehouseID = $request['warehouseID'];
@@ -49,7 +52,6 @@ class SaleController extends Controller
             'discountValue' => $request['discount'],
             'shippingCost' => $request['shippingCost'],
             'referenceNo' => $request['referenceNo'],
-//            'paymentStatus' => $request['paymentStatus'],
             'description' => $request['description'],
             'date' => $request['date'],
             'refID' => $ref,
@@ -71,6 +73,7 @@ class SaleController extends Controller
                 SaleOrder::create([
                     'saleID' => $sale->saleID,
                     'productID' => $productID,
+                    'code' => $productCode,
                     'warehouseID' => $warehouseID,
                     'quantity' => $productQuantity,
                     'batchNumber' => $productBatchNumber,
@@ -89,15 +92,27 @@ class SaleController extends Controller
                     'orderedQty' => $productQuantity,
                 ]);
 
-//                Stock::create([
-//                    'warehouseID' =>  $warehouseID,
-//                    'productID' => $productID,
-//                    'date' => $date,
-//                    'batchNumber' => $productBatchNumber,
-//                    'expiryDate' => $productExpiryDate,
-//                    'credit' => $productQuantity ?? 'NULL',
-//                    'refID' => $ref,
-//                ]);
+                if($request['saleStatus'] === 'completed')
+                {
+                    SaleDelivered::create([
+                        'saleID' => $sale->saleID,
+                        'productID' => $productID,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'receivedQty' => $productQuantity,
+                    ]);
+
+
+                    Stock::create([
+                        'warehouseID' =>  $warehouseID,
+                        'productID' => $productID,
+                        'date' => $date,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'debt' => $productQuantity,
+                        'refID' => $ref,
+                    ]);
+                }
             }
         }
 
@@ -109,8 +124,8 @@ class SaleController extends Controller
     {
         $saleAmount     = $sale->saleOrders->sum('subTotal');
         $saleOrders     = $sale->saleOrders;
-        $paidAmount         = $sale->salePayments->sum('amount');
-        $dueAmount          = $saleAmount - $paidAmount;
+        $paidAmount     = $sale->salePayments->sum('amount');
+        $dueAmount      = $saleAmount - $paidAmount;
         $salePayments   = $sale->salePayments;
 
         $saleReceives   = $sale->saleReceive()->where('orderedQty', null)->get();

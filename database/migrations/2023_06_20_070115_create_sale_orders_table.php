@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('productID')->constrained('products', 'productID');
             $table->foreignId('warehouseID')->constrained('warehouses', 'warehouseID');
             $table->integer('quantity');
+            $table->integer('code');
             $table->integer('batchNumber')->nullable();
             $table->date('expiryDate')->nullable();
             $table->integer('netUnitCost');

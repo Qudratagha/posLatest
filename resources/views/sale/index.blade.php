@@ -116,11 +116,6 @@
                                                 <div class="invalid-feedback">The amount cannot exceed the maximum value.</div>
                                             </div>
 
-                                            <div class="col-sm-12 col-md-6 col-lg-6 mt-2">
-                                                <label>Change :</label>
-                                                <span>0.00</span>
-                                            </div>
-
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">
                                                 <label>Date</label>
                                                 <input type="hidden" name="paidBy" value="a">
