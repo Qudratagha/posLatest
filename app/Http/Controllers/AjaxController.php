@@ -25,25 +25,18 @@ class AjaxController extends Controller
     public function productForSale($arguments)
     {
         $warehouseID = $arguments['warehouseID'];
-        $productsWithCreditSum = Stock::with('product')
-            ->select('productID', 'batchNumber', \DB::raw('SUM(credit) as credit_sum'))
+
+        $productsWithCreditDebtSum = Stock::with('product')
+            ->select('productID', 'batchNumber', \DB::raw('SUM(credit) as credit_sum'), \DB::raw('SUM(debt) as debt_sum'))
             ->where('warehouseID', $warehouseID)
             ->groupBy('productID', 'batchNumber')
             ->get();
 
-
-//            ->select(
-//                'productID',
-//                'batchNumber',
-//                \DB::raw('SUM(credit) as credit'),
-//                \DB::raw('SUM(debt) as debt'),
-//                \DB::raw('SUM(credit) - SUM(debt) as credit_sum')
-//            )
-//            ->where('warehouseID', $warehouseID)
-//            ->groupBy('productID', 'batchNumber')
-//            ->get();
-
-        return response()->json(['productsWithCreditSum' => $productsWithCreditSum]);
+        // Calculate the difference between credit_sum and debt_sum
+        $productsWithCreditDebtSum->each(function ($stock) {
+            $stock->difference = $stock->credit_sum - $stock->debt_sum;
+        });
+        return response()->json(['productsWithCreditDebtSum' => $productsWithCreditDebtSum]);
     }
 
     public function products($arguments)
@@ -64,17 +57,27 @@ class AjaxController extends Controller
         $productID = substr($productIDAndBatchNumber, 0, $underscorePosition);
         $batchNumber = substr($productIDAndBatchNumber, $underscorePosition + 1);
 
-
-
-        $productsWithCreditSum = Stock::with('product')
-            ->select('*', \DB::raw('SUM(credit) as credit_sum'))
+        $productsWithCreditDebtSum = Stock::with('product')
+            ->select('*', \DB::raw('SUM(credit) as credit_sum'), \DB::raw('SUM(debt) as debt_sum'))
             ->where('warehouseID', $warehouseID)
             ->where('productID', $productID)
             ->where('batchNumber', $batchNumber)
             ->groupBy('productID')
             ->get();
 
-        return response()->json($productsWithCreditSum); // Assuming you want to return a JSON response
+        // Calculate the difference between credit_sum and debt_sum
+        $productsWithCreditDebtSum->each(function ($stock) {
+            $stock->difference = $stock->credit_sum - $stock->debt_sum;
+        });
+
+        return response()->json($productsWithCreditDebtSum);
+    }
+    public function getProductCode($arguments)
+    {
+        $productCode = $arguments['productCode'];
+        $productDetails = Product::where('code', $productCode)->get();
+        return response()->json($productDetails); // Assuming you want to return a JSON response
+
     }
 
 

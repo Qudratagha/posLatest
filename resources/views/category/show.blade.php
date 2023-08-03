@@ -17,8 +17,13 @@
                 <p class=" fs-5">Category Name: {{ $category->name}}</p>
                 <p class=" fs-5">Active:{{ $category->isActive == 0 ? "Yes" : "No" }}</p>
                 <p class=" fs-5">Image:</p>
-                    <img width="40%" class="mt-2 img-circle" src="{{ asset('storage/images/category/'.$category->image) }}" />
-
+                @if ($category->image)
+                <img width="40%" class="mt-2 img-circle" src="{{ asset('storage/images/category/'.$category->image) }}" />
+                @else
+                    <div class="bg-light d-inline-block p-3">
+                        <span class="text-muted">No image available</span>
+                    </div>
+                @endif
 
             </dt>
         </div>

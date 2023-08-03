@@ -44,10 +44,13 @@
                         <td>{{ $sale->referenceNo }}</td>
                         <td>Biller</td>
                         <td>{{ $sale->account->name }}</td>
-                        <td><div class="badge badge-warning">{{ ucfirst($sale->saleStatus) }}</div></td>
-
+                        @php
+                            $saleOrders = $sale->saleReceive->sum('orderedQty');
+                            $saleDelivered = $sale->saleReceive->sum('receivedQty');
+                            $sum = $saleOrders - $saleDelivered;
+                            @endphp
+                        <td> @if($sum > 0) <div class="badge badge-danger">Pending</div> @else <div class="badge badge-success">Delivered</div> @endif</td>
                         <td> @if($dueAmount > 0) <div class="badge badge-danger">Due</div> @else <div class="badge badge-success">Paid</div> @endif</td>
-
                         <td>{{ $subTotal }}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>
@@ -111,11 +114,6 @@
                                                 <input type="number" name="amount" class="form-control paying-amount" max="{{ $dueAmount }}" step="any" required>
                                                 <span class="max-amount" style="display: none;">{{ $dueAmount }}</span>
                                                 <div class="invalid-feedback">The amount cannot exceed the maximum value.</div>
-                                            </div>
-
-                                            <div class="col-sm-12 col-md-6 col-lg-6 mt-2">
-                                                <label>Change :</label>
-                                                <span>0.00</span>
                                             </div>
 
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">

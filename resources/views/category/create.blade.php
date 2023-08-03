@@ -44,7 +44,7 @@
                 <div class="form-group row mt-1">
                     <label for="tags" class="form-label col-sm-4 col-md-2 col-lg-2 col-form-label">Picture: </label>
                     <div class="col-sm-8 col-md-4 col-lg-4">
-                        <input type="file" name="image" class="form-control" required>
+                        <input type="file" name="image" class="form-control">
                     </div>
                 </div>
 

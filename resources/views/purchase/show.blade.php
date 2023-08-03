@@ -21,34 +21,27 @@
                             <h5 class="text-center mb-3 mt-3">Purchase Details</h5>
                             <dl class="row">
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Supplier Name: </dt>
-                                    <dd class="fs-5">{{ $purchase->account->name }}</dd>
+                                    <dt class="fs-5">Supplier Name: {{ $purchase->account->name }} </dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Purchase Status:</dt>
-                                    <dd class="fs-5">{{ ucfirst($purchase->purchaseStatus) }}</dd>
+                                    <dt class="fs-5">Purchase Status: {{ ucfirst($purchase->purchaseStatus) }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Order Tax:</dt>
-                                    <dd class="fs-5">{{ $purchase->orderTax }}</dd>
+                                    <dt class="fs-5">Order Tax: {{ $purchase->orderTax }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Shipping Cost:</dt>
-                                    <dd class="fs-5">{{ $purchase->shippingCost }}</dd>
+                                    <dt class="fs-5">Shipping Cost: {{ $purchase->shippingCost }}</dt>
                                 </div>
 
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Discount:</dt>
-                                    <dd class="fs-5">{{ $purchase->discount }}</dd>
+                                    <dt class="fs-5">Discount: {{ $purchase->discount }}</dt>
                                 </div>
 
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Description:</dt>
-                                    <dd class="fs-5">{{ $purchase->description }}</dd>
+                                    <dt class="fs-5">Description: {{ $purchase->description }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Date:</dt>
-                                    <dd class="fs-5">{{ $purchase->date }}</dd>
+                                    <dt class="fs-5">Date:{{ $purchase->date }}</dt>
                                 </div>
                             </dl>
                         </div>
@@ -72,6 +65,8 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    @php $totalAmount = 0; @endphp
+
                                     @foreach($purchaseOrders as $order)
                                         <tr>
                                             <td>{{ $order->product->name }}</td>
@@ -84,6 +79,7 @@
                                             <td>{{ $order->discount }}</td>
                                             <td>{{ $order->tax }}</td>
                                             <td>{{ $order->subTotal }}</td>
+                                            @php $totalAmount +=  $order->subTotal @endphp
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -91,12 +87,9 @@
                             </div>
                         </div>
 
-
-
                         <div class="col-md-12">
                             <h5 class="text-center mb-3">Purchase Receive</h5>
                             <div class="table-responsive">
-
                                 <table class="table table-bordered">
                                     <thead class="thead-dark">
                                     <tr>
@@ -118,10 +111,56 @@
 
                             </div>
                         </div>
+
+                        <div class="col-md-12">
+                            <h5 class="text-center mb-3">Purchase Payments</h5>
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th>Amount</th>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php $receivedPayment = 0; @endphp
+                                    @foreach($purchasePayments as $receive)
+                                        <tr>
+                                            <td>{{ $receive->amount }}</td>
+                                            <td>{{ $receive->description }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($receive->date)->format('Y-m-d')  }}</td>
+                                        </tr>
+                                        @php $receivedPayment += $receive->amount @endphp
+                                    @endforeach
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
                     </dl>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">Summary</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h5>Total Amount</h5>
+                                    <p>{{ $totalAmount + $purchase->orderTax -  $purchase->discount + $purchase->shippingCost }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Received Payment</h5>
+                                    <p>{{ $receivedPayment }}</p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <h5>Remaining Amount</h5>
+                                    <p>{{ $totalAmount + $purchase->orderTax -  $purchase->discount + $purchase->shippingCost - $receivedPayment }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-
             </dt>
         </div>
     </div>

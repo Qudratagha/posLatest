@@ -43,7 +43,12 @@
                         <td>{{ $purchase->date }}</td>
                         <td>{{ $purchase->refID }}</td>
                         <td>{{ $purchase->account->name }}</td>
-                        <td><div class="badge badge-warning">{{ ucfirst($purchase->purchaseStatus) }}</div></td>
+                        @php
+                            $purchaseOrders = $purchase->purchaseReceive->sum('orderedQty');
+                            $purchaseDelivered = $purchase->purchaseReceive->sum('receivedQty');
+                            $sum = $purchaseOrders - $purchaseDelivered;
+                        @endphp
+                        <td> @if($sum > 0) <div class="badge badge-danger">Pending</div> @else <div class="badge badge-success">Delivered</div> @endif</td>
                         <td>{{ $subTotal - $purchase->discount + $purchase->shippingCost + $purchase->orderTax }}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>
@@ -111,15 +116,10 @@
 
                                             </div>
 
-                                            <div class="col-sm-12 col-md-6 col-lg-6 mt-2">
-                                                <label>Change :</label>
-                                                <span>0.00</span>
-                                            </div>
-
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">
                                                 <label>Date</label>
                                                 <input type="hidden" name="paidBy" value="a">
-                                               <input type="date" name="date" id="date" class="form-control">
+                                               <input type="date" name="date" value="{{ date("Y-m-d") }}" class="form-control">
                                             </div>
 
                                             <div class="col-12 mt-2">
@@ -252,7 +252,6 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Receive Quantity:</label>
                                                         <input type="number" name="receiveQty_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
@@ -320,9 +319,6 @@
                 $(this).removeClass('is-invalid');
             }
         });
-
-
-
     </script>
 @endsection
 
