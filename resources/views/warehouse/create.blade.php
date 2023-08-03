@@ -20,7 +20,9 @@
                 <div class="form-group row mt-2">
                     <label for="phone" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Phone: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="number" name="phone" class="form-control" value="{{ old('phone') }}" required placeholder="Warehouse Phone">
+                        <input type="number" name="phone" class="form-control" value="{{ old('phone') }}"
+                               oninput="javascript: if (this.value.length > 11) this.value = this.value.slice(0, 11);"
+                               min="10" max="99999999999" required placeholder="Warehouse Phone" />
                     </div>
                 </div>
 

@@ -11,4 +11,9 @@ class SaleOrder extends Model
     protected $primaryKey = 'saleOrderID';
     protected $table = 'saleOrders';
     protected $guarded = [];
+
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class, 'productID', 'productID');
+    }
 }

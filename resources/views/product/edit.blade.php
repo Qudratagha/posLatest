@@ -19,7 +19,7 @@
 
                     <label for="code" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Product Code: </label>
                     <div class="col-sm-8 col-md-6 col-lg-4">
-                        <input type="number" name="code" class="form-control" value="{{ old('code',  $product->code) }}" required>
+                        <input type="number" name="code" class="form-control" value="{{ old('code',  $product->code) }}" required onchange="productCode(this.value)">
                     </div>
                 </div>
 
@@ -49,17 +49,17 @@
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         <input type="number" name="productUnit" class="form-control" value="{{ old('productUnit', $product->productUnit) }}" required>
                     </div>
-                    <label for="salePrice" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Sale Price: </label>
+                    <label for="purchasePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Purchase Price: </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
-                        <input type="number" name="salePrice" class="form-control" value="{{ old('salePrice', $product->salePrice) }}" required>
+                        <input type="number" name="purchasePrice" class="form-control" value="{{ old('purchasePrice', $product->purchasePrice) }}" required>
                     </div>
                 </div>
 
 
                 <div class="form-group row mb-1">
-                    <label for="purchasePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Purchase Price: </label>
+                    <label for="salePrice" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Sale Price: </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
-                        <input type="number" name="purchasePrice" class="form-control" value="{{ old('purchasePrice', $product->purchasePrice) }}" required>
+                        <input type="number" name="salePrice" class="form-control" value="{{ old('salePrice', $product->salePrice) }}" required>
                     </div>
                     <label for="wholeSalePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Whole Sale Price: </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
@@ -70,11 +70,11 @@
                 <div class="form-group row mb-1">
                     <label for="alertQuantity" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Alert Quantity: </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
-                        <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity', $product->alertQuantity) }}" required>
+                        <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity', $product->alertQuantity) }}">
                     </div>
                     <label for="description" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Description: </label>
                     <div class=" col-sm-6 col-md-6 col-lg-4">
-                        <input type="text" name="description" class="form-control" value="{{ old('description', $product->description) }}" required>
+                        <input type="text" name="description" class="form-control" value="{{ old('description', $product->description) }}">
                     </div>
                 </div>
 
@@ -104,4 +104,24 @@
             </form>
         </div>
     </div>
+@endsection
+@section('more-script')
+    <script>
+        function productCode(productCode) {
+            $.ajax({
+                url: "{{ route('ajax.handle',"getProductCode") }}",
+                method: 'post',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    productCode: productCode,
+                },
+                success: function (result) {
+                    if (result.length > 0 && result[0].code) {
+                        alert('This code already exists.');
+                        $('input[name="code"]').val('');
+                    }
+                }
+            });
+        }
+    </script>
 @endsection

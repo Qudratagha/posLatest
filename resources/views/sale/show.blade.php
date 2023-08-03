@@ -21,32 +21,25 @@
                             <h5 class="text-center mb-3 mt-3">Sale Details</h5>
                             <dl class="row">
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Customer Name: </dt>
-                                    <dd class="fs-5">{{ $sale->account->name }}</dd>
+                                    <dt class="fs-5">Customer Name: {{ $sale->account->name }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Sale Status:</dt>
-                                    <dd class="fs-5">{{ ucfirst($sale->saleStatus) }}</dd>
+                                    <dt class="fs-5">Sale Status: {{ ucfirst($sale->saleStatus) }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Order Tax:</dt>
-                                    <dd class="fs-5">{{ $sale->orderTax }}</dd>
+                                    <dt class="fs-5">Order Tax: {{ $sale->orderTax }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Discount:</dt>
-                                    <dd class="fs-5">{{ $sale->discountValue }}</dd>
+                                    <dt class="fs-5">Discount: {{ $sale->discountValue }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Shipping Cost:</dt>
-                                    <dd class="fs-5">{{ $sale->shippingCost }}</dd>
+                                    <dt class="fs-5">Shipping Cost: {{ $sale->shippingCost }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Description:</dt>
-                                    <dd class="fs-5">{{ $sale->description }}</dd>
+                                    <dt class="fs-5">Description: {{ $sale->description }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Date:</dt>
-                                    <dd class="fs-5">{{ $sale->date }}</dd>
+                                    <dt class="fs-5">Date: {{ $sale->date }}</dt>
                                 </div>
                             </dl>
                         </div>
@@ -70,6 +63,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    @php $totalAmount = 0; @endphp
                                     @foreach($saleOrders as $order)
                                         <tr>
                                             <td>{{ $order->productID }}</td>
@@ -82,14 +76,13 @@
                                             <td>{{ $order->discount }}</td>
                                             <td>{{ $order->tax }}</td>
                                             <td>{{ $order->subTotal }}</td>
+                                            @php $totalAmount +=  $order->subTotal @endphp
                                         </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-
-
 
                         <div class="col-md-12">
                             <h5 class="text-center mb-3">Sale Delivered</h5>
@@ -118,10 +111,56 @@
 
                             </div>
                         </div>
+
+                        <div class="col-md-12">
+                            <h5 class="text-center mb-3">Sale Payments</h5>
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th>Amount</th>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php $receivedPayment = 0; @endphp
+                                    @foreach($salePayments as $receive)
+                                        <tr>
+                                            <td>{{ $receive->amount }}</td>
+                                            <td>{{ $receive->description }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($receive->date)->format('Y-m-d')  }}</td>
+                                        </tr>
+                                        @php $receivedPayment += $receive->amount @endphp
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </dl>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">Summary</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h5>Total Amount</h5>
+                                    <p>{{ $totalAmount + $sale->orderTax -  $sale->discountValue + $sale->shippingCost }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Received Payment</h5>
+                                    <p>{{ $receivedPayment }}</p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <h5>Remaining Amount</h5>
+                                    <p>{{ $totalAmount + $sale->orderTax -  $sale->discountValue + $sale->shippingCost - $receivedPayment }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-
             </dt>
         </div>
     </div>
