@@ -139,21 +139,22 @@
                 <div class="form-group row">
                     <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Order Tax:
                         <select name="orderTax" id="orderTax" class="form-select">
-                            <option value="No" >No</option>
-                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Yes" {{ !is_null($purchase->orderTax) && $purchase->orderTax > 0 ? 'selected' : '' }}>Yes</option>
+
                         </select>
                     </label>
 
                     <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount">
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" oninput="overallTaxAmount()" min="0" value="{{ is_null($purchase->orderTax) ? 0 : $purchase->orderTax }}" placeholder="Tax Amount">
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
-                        <input type="number" name="discount" class="form-control" min="0" value="{{ $purchase->discount }}" >
+                        <input type="number" name="discount" class="form-control" min="0" value="{{ $purchase->discount }}" oninput="overallDiscount()">
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" min="0" value="{{ $purchase->shippingCost }}">
+                        <input type="number" name="shippingCost" class="form-control" min="0" value="{{ $purchase->shippingCost }}" oninput="overallShippingCost()">
                     </label>
                 </div>
                 <div class="form-group row">
@@ -162,23 +163,51 @@
                     </label>
                 </div>
                 <div class="form-group row mt-2">
-                    <div class="offset-2">
-                        <input class="btn btn-primary" type="submit" value="Update">
-                    </div>
+                    <input class="btn btn-primary" type="submit" value="Update">
                 </div>
             </form>
+        </div>
+        <div class="container-fluid">
+            <table class="table table-bordered table-condensed totals">
+                <tbody>
+                <tr>
+                    <td>
+                        <strong>Items</strong>
+                        <span class="float-end" id="fItems">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Total</strong>
+                        <span class="float-end" id="fSubtotal">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Order Tax</strong>
+                        <span class="float-end" id="fOrderTax">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Order Discount</strong>
+                        <span class="float-end" id="fOrderDiscount">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Shipping Cost</strong>
+                        <span class="float-end" id="fShippingCost">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Grand Total</strong>
+                        <span class="float-end" id="fGrandTotal">0.00</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 @endsection
 
 @section('more-script')
     <script>
-
-
         $(document).ready(function() {
             $('.productField').select2();
+            rowData();
         })
-
         var units = @json($units);
         var existingProducts = [];
         var productsArr = @json($purchaseOrders);
@@ -189,50 +218,16 @@
             }
         });
 
-        $(document).ready(function() {
-            // Your code here
-            var totalQuantity = 0;
-            var totalDiscount = 0;
-            var totalTax = 0;
-            var subTotalAmount = 0;
+        var orderTaxDefault = {{ $purchase->orderTax ?? 0 }};
+        if (orderTaxDefault !== null && orderTaxDefault > 0) {
+            $('#taxAmountLabel').removeClass('d-none');
 
-            $('tr').each(function() {
-                var quantityInput = $(this).find('input[name^="quantity_"]');
-                var quantity = parseInt(quantityInput.val());
-                if (!isNaN(quantity)) {
-                    totalQuantity += quantity;
-                }
-                $('th#total-qty').text(totalQuantity);
-
-                var discountInput = $(this).find('input[name^="discount_"]');
-                var discount = parseInt(discountInput.val());
-                if (!isNaN(discount)) {
-                    totalDiscount += discount;
-                }
-
-                $('th#total-discount').text(totalDiscount);
-
-                var taxInput = $(this).find('input[name^="tax_"]');
-                var tax = parseInt(taxInput.val());
-                if (!isNaN(tax)) {
-                    totalTax += tax;
-                }
-
-                $('th#total-tax').text(totalTax);
-
-                var subtotalSpan = $(this).find('span[id^="subTotal_"]');
-                var subtotalValue = parseFloat(subtotalSpan.text().trim());
-                if (!isNaN(subtotalValue)) {
-                    subTotalAmount += subtotalValue;
-                }
-
-                $('th#total').text(subTotalAmount);
-            });
-        });
+        }
 
         $('#orderTax').change(function() {
             var selectedValue = $(this).val();
             if (selectedValue === 'Yes') {
+                console.log('yes');
                 $('#taxAmountLabel').removeClass('d-none');
             } else {
                 $('#taxAmountLabel').addClass('d-none');
@@ -273,21 +268,21 @@
                             strHTML += '<tr id="rowID_'+ v.productID +'">';
                             strHTML += '<td>' + v.name + '</td>';
                             strHTML += '<td>' + v.code + '</td>';
-                            strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" min="1" value="1" onkeyup="changeQuantity(this, '+id+')" style="border: none"></td>';
+                            strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" min="1" value="1" oninput="changeQuantity(this, '+id+')" style="border: none"></td>';
                             strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value=""></td>';
                             strHTML += `<td style="text-align: center;">${
                                 v.isExpire === 0 ?
                                     `<input type="date" id="date" class="form-control" name="expiryDate_${v.productID}" value="" required>`
                                     : '<div style="display: inline-block; text-align: center;">N/A</div>'
                             }</td>`;
-                            strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="'+ v.purchasePrice +'" onkeyup="changeNetUnitCost(this, '+id+')" > </td>';
+                            strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="'+ v.purchasePrice +'" oninput="changeNetUnitCost(this, '+id+')" > </td>';
                             strHTML += '<td width="10%"><select class="form-control" name="purchaseUnit_'+v.productID+'">';
                             units.forEach(function(unit) {
                                 strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
                             });
                             strHTML += '</select></td>';
-                            strHTML += '<td><input type="number" class="form-control" name="discount_'+v.productID+'" min="0" value="0" onkeyup="changeDiscount(this, '+id+')"></td>';
-                            strHTML += '<td><input type="number" class="form-control" name="tax_'+v.productID+'"  min="0" value="0" onkeyup="changeTax(this, '+id+')"></td>';
+                            strHTML += '<td><input type="number" class="form-control" name="discount_'+v.productID+'" min="0" value="0" oninput="changeDiscount(this, '+id+')"></td>';
+                            strHTML += '<td><input type="number" class="form-control" name="tax_'+v.productID+'"  min="0" value="0" oninput="changeTax(this, '+id+')"></td>';
                             strHTML += '<td> <span id="subTotal_'+v.productID+'">' + v.purchasePrice + '</span></td>';
                             strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.purchasePrice + '">';
                             strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.code + '">';
@@ -302,9 +297,7 @@
                 }
             });
             document.getElementById("productID").value = "";
-
         }
-
         function changeQuantity(input, id) {
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
@@ -324,7 +317,6 @@
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
            rowData();
         }
-
         function changeDiscount(input, id) {
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
@@ -344,7 +336,6 @@
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             rowData();
         }
-
         function changeTax(input, id) {
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
@@ -372,7 +363,6 @@
           rowData();
 
         }
-
         function changeNetUnitCost(input, id) {
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
@@ -392,12 +382,32 @@
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             rowData()
         }
-
         function rowData(){
             var subTotalAmount = 0;
             var totalQuantity = 0;
             var totalDiscount = 0;
             var totalTax = 0;
+
+            var overallDiscount = 0;
+            var overallShippingCost = 0;
+            var overAllTaxAmount = 0;
+
+            var inputOverallDiscount = $('input[name="discount"]');
+            var inputAllDiscount  = parseInt(inputOverallDiscount.val());
+            if (!isNaN(inputAllDiscount)) {
+                overallDiscount += inputAllDiscount ;
+            }
+            var inputOverallShippingCost = $('input[name="shippingCost"]');
+            var inputAllShippingCost  = parseInt(inputOverallShippingCost.val());
+            if (!isNaN(inputAllShippingCost)) {
+                overallShippingCost += inputAllShippingCost ;
+            }
+            var inputOverallTaxAmount = $('input[name="taxAmount"]');
+            var inputAllTaxAmount  = parseInt(inputOverallTaxAmount.val());
+            if (!isNaN(inputAllTaxAmount)) {
+                overAllTaxAmount += inputAllTaxAmount ;
+            }
+
             $('tr').each(function() {
                 var quantityInput = $(this).find('input[name^="quantity_"]');
                 var quantity = parseInt(quantityInput.val());
@@ -424,6 +434,23 @@
                 }
                 $('th#total-tax').text(totalTax).html();
             });
+            $('#fItems').text( existingProducts.length + '( ' + totalQuantity + ' )');
+            $('#fSubtotal').text(subTotalAmount);
+            $('#fOrderDiscount').text(overallDiscount.toFixed(2));
+            $('#fShippingCost').text(overallShippingCost.toFixed(2));
+            $('#fOrderTax').text(overAllTaxAmount.toFixed(2));
+            var payingAmount = subTotalAmount + overAllTaxAmount - totalDiscount + totalTax + overallShippingCost - overallDiscount;
+            $('#fGrandTotal').text(payingAmount.toFixed(2));
+        }
+
+        function overallDiscount(){
+            rowData();
+        }
+        function overallShippingCost() {
+            rowData();
+        }
+        function overallTaxAmount() {
+            rowData();
         }
 
     </script>

@@ -16,7 +16,7 @@
                     </label>
 
                     <label for="referenceNo" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Reference No:
-                        <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo') }}" required>
+                        <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo') }}" placeholder="Reference No" required>
                     </label>
 
                     <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Customer:
@@ -109,15 +109,15 @@
                     </label>
 
                     <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" min="0" value="0" placeholder="Tax Amount">
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" min="0" value="0" oninput="overallTaxAmount()" placeholder="Tax Amount" >
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
-                        <input type="number" name="discount" class="form-control" value="0" min="0" placeholder="Discount">
+                        <input type="number" name="discount" class="form-control" value="0" min="0" oninput="overallDiscount()" placeholder="Discount">
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" value="0" min="0" placeholder="Shipping Cost">
+                        <input type="number" name="shippingCost" class="form-control" value="0" min="0" oninput="overallShippingCost()" placeholder="Shipping Cost">
                     </label>
                 </div>
 
@@ -140,30 +140,18 @@
 
                 <div class="received-fields d-none">
                     <div class="form-group row">
-                        <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Receivable Amount *:
-                            <input type="number" name="receivableAmount" class="form-control" value="" step="any" disabled>
-                        </label>
-
                         <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Paying Amount *:
-                            <input type="number" name="amount" class="form-control paying-amount" max="" step="any">
-                            <span class="max-amount" style="display: none;"></span>
-                            <div class="invalid-feedback">The amount cannot exceed the maximum value.</div>
+                            <input type="number" name="paying-amount" class="form-control paying-amount" step="any">
+                            <div class="invalid-feedback" style="display: none;"></div>
                         </label>
-
-                        <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Date *:
-                            <input type="hidden" name="paidBy" value="0">
-                            <input type="date" name="date" value="{{ date("Y-m-d") }}" class="form-control">
-                        </label>
-                    </div>
-
-                    <div class="form-group row">
                         <label for="account" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Account *:
                             <select name="accountID" class="form-select">
-                            @foreach ($paymentAccounts as $account)
-                                <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
-                            @endforeach
+                                @foreach ($paymentAccounts as $account)
+                                    <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                                @endforeach
                             </select>
                         </label>
+
                         <label for="paymentNote" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Note *:
                             <textarea type="text" name="description" rows="5" class="form-control"></textarea>
                         </label>
@@ -171,7 +159,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="description" class="form-label col-form-label "> Note:
+                    <label for="description" class="form-label col-form-label"> Sale Note:
                         <textarea type="text" name="description" rows="5" class="form-control"></textarea>
                     </label>
                 </div>
@@ -181,24 +169,47 @@
                 </div>
             </form>
         </div>
+        <div class="container-fluid">
+            <table class="table table-bordered table-condensed totals">
+                <tbody>
+                <tr>
+                    <td>
+                        <strong>Items</strong>
+                        <span class="float-end" id="fItems">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Total</strong>
+                        <span class="float-end" id="fSubtotal">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Order Tax</strong>
+                        <span class="float-end" id="fOrderTax">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Order Discount</strong>
+                        <span class="float-end" id="fOrderDiscount">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Shipping Cost</strong>
+                        <span class="float-end" id="fShippingCost">0.00</span>
+                    </td>
+                    <td>
+                        <strong>Grand Total</strong>
+                        <span class="float-end" id="fGrandTotal">0.00</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
 @section('more-script')
     <script>
         var currentDate = new Date().toISOString().split("T")[0];
         document.getElementById("date").value = currentDate;
+        var pAmount =  $('input[name="paying-amount"]');
 
-        $(document).ready(function() {
-            $('.productField').select2();
-        })
-        $('#orderTax').change(function() {
-            var selectedValue = $(this).val();
-            if (selectedValue === 'Yes') {
-                $('#taxAmountLabel').removeClass('d-none');
-            } else {
-                $('#taxAmountLabel').addClass('d-none');
-            }
-        });
+
         $('#warehouseID').on('change', function() {
             var selectedWarehouseID = $(this).val();
             getProduct(selectedWarehouseID);
@@ -219,7 +230,6 @@
                         warehouseID: warehouseID
                     },
                     success: function(response) {
-                        console.log(response);
                         $('#productID').empty();
                         $('#productID').append('<option value="">Select Product</option>');
                         $.each(response.productsWithCreditDebtSum, function(index, product) {
@@ -239,8 +249,7 @@
         function getSelectedWarehouseID() {
             return $('#warehouseID').val();
         }
-        function productDetails(productID)
-        {
+        function productDetails(productID) {
             var warehouseID = getSelectedWarehouseID();
             var strHTML = "";
             $.ajax({
@@ -285,21 +294,21 @@
                                 strHTML += '<tr id="rowID_' + v.batchNumber + '">';
                                 strHTML += '<td>' + v.product.name + '</td>';
                                 strHTML += '<td>' + v.product.code + '</td>';
-                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.difference + '" value="1" onchange="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.difference + '</span> </div></td>';
+                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.difference + '" value="1" oninput="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.difference + '</span> </div></td>';
                                 strHTML += '<td> <span id="batchNumber_' + v.batchNumber + '">' + v.batchNumber + '</span></td>';
                                 strHTML += `<td style="text-align: center;">${
                                     v.product.isExpire === 0 ?
                                         `<input type="date" class="form-control" name="expiryDate_${v.batchNumber}" value="${getCurrentDate()}" required>`
                                         : '<div style="display: inline-block; text-align: center;">N/A</div>'
                                 }</td>`;
-                                strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" onkeyup="changeNetUnitCost(this, ' + id + ')" > </td>';
+                                strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this, ' + id + ')" > </td>';
                                 strHTML += '<td width="10%"><select class="form-control" name="saleUnit_' + v.batchNumber + '">';
                                 units.forEach(function (unit) {
                                     strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
                                 });
                                 strHTML += '</select></td>';
-                                strHTML += '<td><input type="number" class="form-control" name="discount_' + v.batchNumber + '" min="0" value="0" onkeyup="changeDiscount(this, ' + id + ')"></td>';
-                                strHTML += '<td><input type="number" class="form-control" name="tax_' + v.batchNumber + '" min="0" value="0" onkeyup="changeTax(this, ' + id + ')"></td>';
+                                strHTML += '<td><input type="number" class="form-control" name="discount_' + v.batchNumber + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';
+                                strHTML += '<td><input type="number" class="form-control" name="tax_' + v.batchNumber + '" min="0" value="0" oninput="changeTax(this, ' + id + ')"></td>';
                                 strHTML += '<td> <span id="subTotal_' + v.batchNumber + '">' + v.product.purchasePrice + '</span></td>';
                                 strHTML += '<td><input type="hidden" name="productID_' + v.batchNumber + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this, ' + v.productID + ')" id="' + v.productID + '"><i class="fa fa-trash"></i></button></td>';
                                 strHTML += '<input type="hidden" name="code_'+ v.batchNumber +'" value="' + v.product.code + '">';
@@ -394,6 +403,28 @@
             var totalQuantity = 0;
             var totalDiscount = 0;
             var totalTax = 0;
+
+            var overallDiscount = 0;
+            var overallShippingCost = 0;
+            var overAllTaxAmount = 0;
+
+            var inputOverallDiscount = $('input[name="discount"]');
+            var inputAllDiscount  = parseInt(inputOverallDiscount.val());
+            if (!isNaN(inputAllDiscount)) {
+                overallDiscount += inputAllDiscount ;
+            }
+            var inputOverallShippingCost = $('input[name="shippingCost"]');
+            var inputAllShippingCost  = parseInt(inputOverallShippingCost.val());
+            if (!isNaN(inputAllShippingCost)) {
+                overallShippingCost += inputAllShippingCost ;
+            }
+
+            var inputOverallTaxAmount = $('input[name="taxAmount"]');
+            var inputAllTaxAmount  = parseInt(inputOverallTaxAmount.val());
+            if (!isNaN(inputAllTaxAmount)) {
+                overAllTaxAmount += inputAllTaxAmount ;
+            }
+
             $('tr').each(function() {
                 var quantityInput = $(this).find('input[name^="quantity_"]');
                 var quantity = parseInt(quantityInput.val());
@@ -420,6 +451,17 @@
                 }
                 $('th#total-tax').text(totalTax).html();
             });
+            var payingAmount = subTotalAmount + overAllTaxAmount - totalDiscount + totalTax + overallShippingCost - overallDiscount;
+            pAmount.val(payingAmount);
+            pAmount.attr('max', payingAmount);
+
+            $('#fItems').text( existingProducts.length + '( ' + totalQuantity + ' )');
+            $('#fSubtotal').text(subTotalAmount);
+            $('#fOrderDiscount').text(overallDiscount.toFixed(2));
+            $('#fShippingCost').text(overallShippingCost.toFixed(2));
+            $('#fOrderTax').text(overAllTaxAmount.toFixed(2));
+            $('#fGrandTotal').text(payingAmount.toFixed(2));
+
         }
         function deleteRow(button, id) {
             existingProducts = $.grep(existingProducts, function(value) {
@@ -435,13 +477,58 @@
         function toggleReceivedFields() {
             const paymentStatus = document.getElementById('paymentStatus').value;
             const receivedFields = document.querySelector('.received-fields');
-
             if (paymentStatus === 'received') {
                 receivedFields.classList.remove('d-none');
             } else {
                 receivedFields.classList.add('d-none');
             }
         }
+        $('#orderTax').change(function() {
+            var selectedValue = $(this).val();
+            if (selectedValue === 'Yes') {
+                $('#taxAmountLabel').removeClass('d-none');
+            } else {
+                $('#taxAmountLabel').addClass('d-none');
+            }
+        });
+        $(document).ready(function() {
+            $('.productField').select2();
+        })
+        function handlePayingAmountChange() {
+            var inputPayingAmount = $('input[name="paying-amount"]');
+            var maxPayingAmount = parseFloat(inputPayingAmount.attr('max'));
+            var enteredPayingAmount = parseFloat(inputPayingAmount.val());
+
+            var errorMessage = $('.invalid-feedback');
+            if (!isNaN(maxPayingAmount) && !isNaN(enteredPayingAmount) && enteredPayingAmount > maxPayingAmount) {
+                errorMessage.text("The amount cannot exceed " + maxPayingAmount.toFixed(2));
+                errorMessage.css({
+                    'color': '#dc3545',
+                    'font-size': '20px',
+                    'margin-top': '10px'
+                });
+                errorMessage.show();
+                setTimeout(function() {
+                    errorMessage.hide();
+                }, 5000);
+                inputPayingAmount.val(maxPayingAmount);
+            } else {
+                errorMessage.hide();
+            }
+        }
+        pAmount.on('input', handlePayingAmountChange);
+        handlePayingAmountChange();
+
+        function overallDiscount(){
+            footerData();
+        }
+        function overallShippingCost() {
+            footerData();
+        }
+        function overallTaxAmount() {
+            footerData();
+        }
+
     </script>
 @endsection
 
