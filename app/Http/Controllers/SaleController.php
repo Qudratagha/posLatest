@@ -10,6 +10,7 @@ use App\Models\PurchaseStatus;
 use App\Models\Sale;
 use App\Models\SaleDelivered;
 use App\Models\SaleOrder;
+use App\Models\SalePayment;
 use App\Models\Stock;
 use App\Models\Unit;
 use App\Models\Warehouse;
@@ -23,7 +24,6 @@ class SaleController extends Controller
         $accounts = Account::where('type', 'business')->get();
         $warehouses = Warehouse::all();
         $sales = Sale::with('saleOrders')->orderByDesc('saleID')->get();
-
         return view('sale.index', compact( 'accounts', 'sales', 'warehouses'));
     }
 
@@ -32,7 +32,6 @@ class SaleController extends Controller
         $units = Unit::all();
         $warehouses = Warehouse::all();
         $paymentAccounts = Account::where('type', 'business')->get();
-
         $accounts = Account::where('type', 'customer')->get();
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::all();
@@ -41,6 +40,7 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
+
 
         $date = Carbon::now();
         $ref = getRef();
@@ -56,6 +56,17 @@ class SaleController extends Controller
             'date' => $request['date'],
             'refID' => $ref,
         ]);
+
+        if ($request['paymentStatus'] = 'received'){
+            SalePayment::create([
+                'saleID' => $sale->saleID,
+                'amount' => $request['paying-amount'],
+                'accountID' => $request['accountID'],
+                'description' => $request['description'],
+                'refID' => $ref,
+                'date' => $request['date']
+            ]);
+        }
 
         foreach ($request->all() as $key => $value) {
             if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
@@ -101,8 +112,6 @@ class SaleController extends Controller
                         'expiryDate' => $productExpiryDate,
                         'receivedQty' => $productQuantity,
                     ]);
-
-
                     Stock::create([
                         'warehouseID' =>  $warehouseID,
                         'productID' => $productID,
@@ -127,7 +136,6 @@ class SaleController extends Controller
         $paidAmount     = $sale->salePayments->sum('amount');
         $dueAmount      = $saleAmount - $paidAmount;
         $salePayments   = $sale->salePayments;
-
         $saleReceives   = $sale->saleReceive()->where('orderedQty', null)->get();
         return view('sale.show', compact('saleAmount', 'saleOrders', 'paidAmount', 'dueAmount', 'salePayments', 'sale', 'saleReceives'));
 
@@ -135,7 +143,6 @@ class SaleController extends Controller
 
     public function edit(Sale $sale , Request $request)
     {
-//        dd($sale->salePayments);
         foreach ($sale->saleReceive as $order) {
             $productID = $order['productID'];
             $orderedQty = $order['orderedQty'] ?? 0;

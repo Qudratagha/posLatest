@@ -14,7 +14,7 @@
                 @csrf
                 <div class="form-group row">
                     <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Date:
-                        <input type="date" name="date" class="form-control" id="date" value="{{ old('date') }}" required>
+                        <input type="date" name="date" class="form-control" id="date" value="{{ date("Y-m-d") }}" required>
                     </label>
                     <label for="warehouse" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Warehouse:
                         <select name="warehouseID" class="form-select" required>
@@ -112,16 +112,16 @@
                         </select>
                     </label>
 
-                    <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none"  id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount">
+                    <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel" oninput="overallTaxAmount()" > Tax Amount:
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" min="0" value="0" placeholder="Tax Amount">
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
-                        <input type="number" name="discount" class="form-control" min="0" value="0" placeholder="Discount">
+                        <input type="number" name="discount" class="form-control" min="0" value="0" oninput="overallDiscount()" placeholder="Discount">
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" min="0" value="0" placeholder="Shipping Cost" >
+                        <input type="number" name="shippingCost" class="form-control" min="0" value="0" oninput="overallShippingCost()" placeholder="Shipping Cost" >
                     </label>
                 </div>
                 <div class="form-group row">
@@ -131,11 +131,41 @@
                 </div>
 
                 <div class="form-group row mt-2">
-                    <div class="offset-2">
-                        <input class="btn btn-primary" type="submit" value="Save">
-                    </div>
+                    <input class="btn btn-primary" type="submit" value="Save">
                 </div>
             </form>
+        </div>
+        <div class="container-fluid">
+            <table class="table table-bordered table-condensed totals">
+                <tbody>
+                        <tr>
+                            <td>
+                                <strong>Items</strong>
+                                <span class="float-end" id="fItems">0.00</span>
+                            </td>
+                            <td>
+                                <strong>Total</strong>
+                                <span class="float-end" id="fSubtotal">0.00</span>
+                            </td>
+                            <td>
+                                <strong>Order Tax</strong>
+                                <span class="float-end" id="fOrderTax">0.00</span>
+                            </td>
+                            <td>
+                                <strong>Order Discount</strong>
+                                <span class="float-end" id="fOrderDiscount">0.00</span>
+                            </td>
+                            <td>
+                                <strong>Shipping Cost</strong>
+                                <span class="float-end" id="fShippingCost">0.00</span>
+                            </td>
+                            <td>
+                                <strong>Grand Total</strong>
+                                <span class="float-end" id="fGrandTotal">0.00</span>
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 @endsection
@@ -144,14 +174,11 @@
 
         var currentDate = new Date().toISOString().split("T")[0];
         document.getElementById("date").value = currentDate;
-
         $(document).ready(function() {
             $('.productField').select2();
         })
-
         var units = @json($units);
         var existingProducts = [];
-
         $('#orderTax').change(function() {
             var selectedValue = $(this).val();
             if (selectedValue === 'Yes') {
@@ -189,29 +216,30 @@
                         quantityInput.val(quantity);
                         var subtotal = (quantity * netUnitCost) - discount + tax;
                         $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal);
+
                     } else {
                         result.forEach(function (v) {
                             let id = v.productID;
                             strHTML += '<tr id="rowID_'+ v.productID +'">';
                             strHTML += '<td>' + v.name + '</td>';
                             strHTML += '<td>' + v.code + '</td>';
-                            strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" min="1" value="1" onkeyup="changeQuantity(this, '+id+')" style="border: none"></td>';
-                            strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value=""></td>';
+                            strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" min="1" value="1" oninput="changeQuantity(this, '+id+')" style="border: none"></td>';
+                            strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value="" required></td>';
                             strHTML += `<td style="text-align: center;">${
                                 v.isExpire === 0 ?
-                                    `<input type="date" class="form-control" name="expiryDate_${v.productID}" value="" required>`
+
+                                    `<input type="date" class="form-control" name="expiryDate_${v.productID}" value="{{ date("Y-m-d") }}" required>`
                                     : '<div style="display: inline-block; text-align: center;">N/A</div>'
                             }</td>`;
-                            strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="' + v.purchasePrice + '" onkeyup="changeNetUnitCost(this, '+id+')" > </td>';
+                            strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="' + v.purchasePrice + '" oninput="changeNetUnitCost(this, '+id+')" > </td>';
                             strHTML += '<td width="10%"><select class="form-control" name="purchaseUnit_'+v.productID+'">';
                             units.forEach(function(unit) {
                                 strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
                             });
                             strHTML += '</select></td>';
-                            strHTML += '<td><input type="number" class="form-control" name="discount_'+v.productID+'" min="0" value="0" onkeyup="changeDiscount(this, '+id+')"></td>';
-                            strHTML += '<td><input type="number" class="form-control" name="tax_'+v.productID+'" min="0" value="0" onkeyup="changeTax(this, '+id+')"></td>';
+                            strHTML += '<td><input type="number" class="form-control" name="discount_'+v.productID+'" min="0" value="0" oninput="changeDiscount(this, '+id+')"></td>';
+                            strHTML += '<td><input type="number" class="form-control" name="tax_'+v.productID+'" min="0" value="0" oninput="changeTax(this, '+id+')"></td>';
                             strHTML += '<td> <span id="subTotal_'+v.productID+'">' + v.purchasePrice + '</span></td>';
-                            // strHTML += '<input type="hidden" name="netUnitCosts_'+ v.productID +'" value="' + v.purchasePrice + '">';
                             strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.code + '">';
                             strHTML += '<td><input type="hidden" name="productID_'+v.productID+'" value="'+v.productID+'"><button type="button" class="btn btn-sm" onclick="deleteRow(this, '+v.productID+')" id="'+v.productID+'"><i class="fa fa-trash"></i></button></td>';
                             strHTML += '</tr>';
@@ -231,7 +259,6 @@
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            console.log(netUnitCost);
             let quantityIntoUnitCost = quantity * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
@@ -244,24 +271,8 @@
                 tax = 0;
             }
             var subtotal = quantityIntoUnitCost - discount + tax;
-
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
-            var subTotalAmount = 0;
-            var totalQuantity = 0;
-            $('tr').each(function() {
-                var quantityInput = $(this).find('input[name^="quantity_"]');
-                var quantity = parseInt(quantityInput.val());
-                if (!isNaN(quantity)) {
-                    totalQuantity += quantity;
-                }
-                $('th#total-qty').text(totalQuantity).html();
-                var subtotalSpan = $(this).find('span[id^="subTotal_"]');
-                var subtotalValue = parseFloat(subtotalSpan.text().trim());
-                if (!isNaN(subtotalValue)) {
-                    subTotalAmount += subtotalValue;
-                }
-                $('th#total').text(subTotalAmount).html();
-            });
+            rowData();
         }
         function changeQuantity(input, id) {
             let row = $(input).closest('tr');
@@ -280,22 +291,7 @@
             }
             var subtotal = quantityIntoUnitCost - discount + tax;
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
-            var subTotalAmount = 0;
-            var totalQuantity = 0;
-            $('tr').each(function() {
-                var quantityInput = $(this).find('input[name^="quantity_"]');
-                var quantity = parseInt(quantityInput.val());
-                if (!isNaN(quantity)) {
-                    totalQuantity += quantity;
-                }
-                $('th#total-qty').text(totalQuantity).html();
-                var subtotalSpan = $(this).find('span[id^="subTotal_"]');
-                var subtotalValue = parseFloat(subtotalSpan.text().trim());
-                if (!isNaN(subtotalValue)) {
-                    subTotalAmount += subtotalValue;
-                }
-                $('th#total').text(subTotalAmount).html();
-            });
+            rowData();
         }
         function changeDiscount(input, id) {
             let row = $(input).closest('tr');
@@ -348,6 +344,27 @@
             var totalQuantity = 0;
             var totalDiscount = 0;
             var totalTax = 0;
+
+            var overallDiscount = 0;
+            var overallShippingCost = 0;
+            var overAllTaxAmount = 0;
+
+            var inputOverallDiscount = $('input[name="discount"]');
+            var inputAllDiscount  = parseInt(inputOverallDiscount.val());
+            if (!isNaN(inputAllDiscount)) {
+                overallDiscount += inputAllDiscount ;
+            }
+            var inputOverallShippingCost = $('input[name="shippingCost"]');
+            var inputAllShippingCost  = parseInt(inputOverallShippingCost.val());
+            if (!isNaN(inputAllShippingCost)) {
+                overallShippingCost += inputAllShippingCost ;
+            }
+            var inputOverallTaxAmount = $('input[name="taxAmount"]');
+            var inputAllTaxAmount  = parseInt(inputOverallTaxAmount.val());
+            if (!isNaN(inputAllTaxAmount)) {
+                overAllTaxAmount += inputAllTaxAmount ;
+            }
+
             $('tr').each(function() {
                 var quantityInput = $(this).find('input[name^="quantity_"]');
                 var quantity = parseInt(quantityInput.val());
@@ -374,7 +391,26 @@
                 }
                 $('th#total-tax').text(totalTax).html();
             });
+
+            $('#fItems').text( existingProducts.length + '( ' + totalQuantity + ' )');
+            $('#fSubtotal').text(subTotalAmount);
+            $('#fOrderDiscount').text(overallDiscount.toFixed(2));
+            $('#fShippingCost').text(overallShippingCost.toFixed(2));
+            $('#fOrderTax').text(overAllTaxAmount.toFixed(2));
+            var payingAmount = subTotalAmount + overAllTaxAmount - totalDiscount + totalTax + overallShippingCost - overallDiscount;
+            $('#fGrandTotal').text(payingAmount.toFixed(2));
         }
+
+        function overallDiscount(){
+            rowData();
+        }
+        function overallShippingCost() {
+            rowData();
+        }
+        function overallTaxAmount() {
+            rowData();
+        }
+
 
 
     </script>

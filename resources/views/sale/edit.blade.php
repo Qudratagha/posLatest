@@ -234,63 +234,63 @@
                 },
                 success: function (result) {
                     {
-                        // let found = $.grep(existingProducts, function(element) {
-                        //     return element === result[0].batchNumber;
-                        // });
-                        // if (found.length > 0)
-                        // {
-                        //     var rowId = result[0].batchNumber;
-                        //     var row = $("#tbody #" +'rowID_'+ rowId);
-                        //     var quantityInput = row.find('[name="quantity_' + rowId + '"]');
-                        //     var netUnitCostInput = row.find('input[name="netUnitCost_' + rowId + '"]');
-                        //     var discountInput = row.find('[name="discount_' + rowId + '"]');
-                        //     var taxInput = row.find('[name="tax_' + rowId + '"]');
-                        //     var quantity = parseInt(quantityInput.val());
-                        //     var netUnitCost = parseInt(netUnitCostInput.val());
-                        //     var discount = parseInt(discountInput.val());
-                        //     var tax = parseInt(taxInput.val());
-                        //     quantity++;
-                        //     quantityInput.val(quantity);
-                        //     var subtotal = (quantity * netUnitCost) - discount + tax;
-                        //     $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal);
-                        //
-                        // }else {
-                        //     result.forEach(function (v) {
-                        //         let id = v.batchNumber;
-                        //         strHTML += '<tr id="rowID_' + v.batchNumber + '">';
-                        //         strHTML += '<td>' + v.product.name + '</td>';
-                        //         strHTML += '<td>' + v.product.code + '</td>';
-                        //         strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.credit_sum + '" value="1" onchange="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.credit_sum + '</span> </div></td>';
-                        //         strHTML += '<td><input type="number" class="form-control" name="batchNumber_' + v.batchNumber + '" value="' + v.batchNumber + '"></td>';
-                        //         strHTML += `<td style="text-align: center;">${
-                        //             v.product.isExpire === 0 ?
-                        //                 `<input type="date" id="date" class="form-control" name="expiryDate_${v.batchNumber}" value="${getCurrentDate()}">`
-                        //                 : '<div style="display: inline-block; text-align: center;">N/A</div>'
-                        //         }</td>`;
-                        //         strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" onkeyup="changeNetUnitCost(this, ' + id + ')" > </td>';
-                        //         strHTML += '<td width="10%"><select class="form-control" name="saleUnit_' + v.batchNumber + '">';
-                        //         units.forEach(function (unit) {
-                        //             strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
-                        //         });
-                        //         strHTML += '</select></td>';
-                        //         strHTML += '<td><input type="number" class="form-control" name="discount_' + v.batchNumber + '" min="0" value="0" onkeyup="changeDiscount(this, ' + id + ')"></td>';
-                        //         strHTML += '<td><input type="number" class="form-control" name="tax_' + v.batchNumber + '" min="0" value="0" onkeyup="changeTax(this, ' + id + ')"></td>';
-                        //         strHTML += '<td> <span id="subTotal_' + v.batchNumber + '">' + v.product.purchasePrice + '</span></td>';
-                        //         strHTML += '<td><input type="hidden" name="productID_' + v.batchNumber + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this, ' + v.productID + ')" id="' + v.productID + '"><i class="fa fa-trash"></i></button></td>';
-                        //         // strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.product.purchasePrice + '">';
-                        //         strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.product.code + '">';
-                        //         strHTML += '</tr>';
-                        //     });
-                        //     if (!existingProducts.includes(result[0].batchNumber)) {
-                        //         existingProducts.push(result[0].batchNumber);
-                        //     }
-                        // }
+                        let found = $.grep(existingProducts, function(element) {
+                            return element === result[0].batchNumber;
+                        });
+                        if (found.length > 0)
+                        {
+                            var rowId = result[0].batchNumber;
+                            var row = $("#tbody #" +'rowID_'+ rowId);
+                            var quantityInput = row.find('[name="quantity_' + rowId + '"]');
+                            var netUnitCostInput = row.find('input[name="netUnitCost_' + rowId + '"]');
+                            var discountInput = row.find('[name="discount_' + rowId + '"]');
+                            var taxInput = row.find('[name="tax_' + rowId + '"]');
+                            var quantity = parseInt(quantityInput.val());
+                            var netUnitCost = parseInt(netUnitCostInput.val());
+                            var discount = parseInt(discountInput.val());
+                            var tax = parseInt(taxInput.val());
+                            quantity++;
+                            quantityInput.val(quantity);
+                            var subtotal = (quantity * netUnitCost) - discount + tax;
+                            $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal);
+
+                        }else {
+                            result.forEach(function (v) {
+                                let id = v.batchNumber;
+                                strHTML += '<tr id="rowID_' + v.batchNumber + '">';
+                                strHTML += '<td>' + v.product.name + '</td>';
+                                strHTML += '<td>' + v.product.code + '</td>';
+                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.credit_sum + '" value="1" onchange="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.credit_sum + '</span> </div></td>';
+                                strHTML += '<td><input type="number" class="form-control" name="batchNumber_' + v.batchNumber + '" value="' + v.batchNumber + '"></td>';
+                                strHTML += `<td style="text-align: center;">${
+                                    v.product.isExpire === 0 ?
+                                        `<input type="date" id="date" class="form-control" name="expiryDate_${v.batchNumber}" value="${getCurrentDate()}">`
+                                        : '<div style="display: inline-block; text-align: center;">N/A</div>'
+                                }</td>`;
+                                strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" onkeyup="changeNetUnitCost(this, ' + id + ')" > </td>';
+                                strHTML += '<td width="10%"><select class="form-control" name="saleUnit_' + v.batchNumber + '">';
+                                units.forEach(function (unit) {
+                                    strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
+                                });
+                                strHTML += '</select></td>';
+                                strHTML += '<td><input type="number" class="form-control" name="discount_' + v.batchNumber + '" min="0" value="0" onkeyup="changeDiscount(this, ' + id + ')"></td>';
+                                strHTML += '<td><input type="number" class="form-control" name="tax_' + v.batchNumber + '" min="0" value="0" onkeyup="changeTax(this, ' + id + ')"></td>';
+                                strHTML += '<td> <span id="subTotal_' + v.batchNumber + '">' + v.product.purchasePrice + '</span></td>';
+                                strHTML += '<td><input type="hidden" name="productID_' + v.batchNumber + '" value="' + v.productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this, ' + v.productID + ')" id="' + v.productID + '"><i class="fa fa-trash"></i></button></td>';
+                                // strHTML += '<input type="hidden" name="netUnitCost_'+ v.productID +'" value="' + v.product.purchasePrice + '">';
+                                strHTML += '<input type="hidden" name="code_'+ v.productID +'" value="' + v.product.code + '">';
+                                strHTML += '</tr>';
+                            });
+                            if (!existingProducts.includes(result[0].batchNumber)) {
+                                existingProducts.push(result[0].batchNumber);
+                            }
+                        }
                     }
-                    // $('#tbody').append(strHTML);
-                    // footerData();
+                    $('#tbody').append(strHTML);
+                    footerData();
                 }
             });
-            // document.getElementById("productID").value = "";
+            document.getElementById("productID").value = "";
         }
 
 

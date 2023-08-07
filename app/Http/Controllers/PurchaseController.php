@@ -203,7 +203,7 @@ class PurchaseController extends Controller
             'date' => $request['date'],
             'supplierID' => $request['supplierID'],
             'purchaseStatus' => $request['purchaseStatus'],
-            'orderTax' => 100,
+            'orderTax' => $request['taxAmount'],
             'discount' => $request['discount'],
             'shippingCost' => $request['shippingCost'],
             'description' => $request['description'],
