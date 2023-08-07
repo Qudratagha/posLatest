@@ -33,14 +33,14 @@
                 <tbody>
                     @foreach ($users as $key => $user)
                         @if($user->hasRole('Owner'))
-                        @cannot('View Owner Account')
-                            @continue
-                        @endcannot
+                            @cannot('View Owner Account')
+                                @continue
+                            @endcannot
                         @endif
                         @if($user->hasRole('Admin'))
-                        @cannot('View Admin Account')
-                            @continue
-                        @endcannot
+                            @cannot('View Admin Account')
+                                @continue
+                            @endcannot
                         @endif
                         <tr>
                             <td>{{ $key+1 }}</td>
