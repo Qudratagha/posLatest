@@ -51,7 +51,7 @@
                 <div class="form-group row">
                     <label for="productID" class="form-label col-form-label col-sm-12"> Products:
                         <div class="col-sm-12">
-                            <select name="productID" id="productID"  class="form-select productField"  onchange="getProduct(this.value)">
+                            <select name="productID" id="productID"  class="form-control productField"  onchange="getProduct(this.value)">
                                 <option value="">Select Product</option>
                                 @foreach ($products as $product)
                                     <option value="{{ $product->productID }}">{{  $product->code .' | '. $product->name }}</option>
@@ -175,7 +175,17 @@
         var currentDate = new Date().toISOString().split("T")[0];
         document.getElementById("date").value = currentDate;
         $(document).ready(function() {
-            $('.productField').select2();
+           /*  $('.productField').select2(); */
+
+               /*  $(".productField").selectize(); */
+
+                new TomSelect(".productField",{
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                }
+            });
         })
         var units = @json($units);
         var existingProducts = [];

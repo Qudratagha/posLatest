@@ -51,7 +51,7 @@
 
                 <div class="form-group row">
                     <label for="product" class="form-label col-form-label col-sm-12"> Products:
-                        <select name="productID" id="productID" class="form-select form-control productField" onchange="productDetails(this.value)" autofocus>
+                        <select name="productID" id="productID" class="form-control productField" onchange="productDetails(this.value)" autofocus>
                             <option value="">Select Product</option>
                         </select>
                     </label>
@@ -492,7 +492,14 @@
             }
         });
         $(document).ready(function() {
-            $('.productField').select2();
+            /* $('.productField').select2(); */
+            new TomSelect(".productField",{
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                }
+            });
         })
         function handlePayingAmountChange() {
             var inputPayingAmount = $('input[name="paying-amount"]');

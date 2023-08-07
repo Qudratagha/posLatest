@@ -69,6 +69,10 @@ class CategoryController extends Controller
 
     public function destroy(Category $category, Request $request)
     {
+        $check = Category::where('parentID', $category->categoryID)->count();
+        if($check > 0){
+            return back()->with('error', "Category Can't be deleted");
+        }
         $category->delete();
         $request->session()->flash('error', 'Category Deleted Successfully!');
         return to_route('category.index');
