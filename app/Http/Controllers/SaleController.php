@@ -57,7 +57,7 @@ class SaleController extends Controller
             'refID' => $ref,
         ]);
 
-        if ($request['paymentStatus'] = 'received'){
+        if ($request['paymentStatus'] === 'received'){
             SalePayment::create([
                 'saleID' => $sale->saleID,
                 'amount' => $request['paying-amount'],
@@ -173,15 +173,29 @@ class SaleController extends Controller
         $accounts = Account::all();
         $purchaseStatuses = PurchaseStatus::all();
         $saleOrders = $sale->saleOrders;
-
+        $paymentAccounts = Account::where('type', 'business')->get();
         $selectedWarehouseID = $sale->saleOrders->pluck('warehouseID')->first();
-
-        return view('sale.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'units', 'sale', 'saleOrders', 'selectedWarehouseID'));
+        return view('sale.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'units', 'sale', 'saleOrders', 'selectedWarehouseID','paymentAccounts'));
     }
 
     public function update(Request $request, Sale $sale)
     {
-        //
+        dd($request->all());
+        $sale->saleOrders()->delete();
+        $sale->saleReceive()->delete();
+        $ref = getRef();
+
+        $sale->update([
+            'date' => $request['date'],
+            'customerID' => $request['customerID'],
+            'saleStatus' => $request['saleStatus'],
+            'orderTax' => $request['taxAmount'],
+            'discount' => $request['discount'],
+            'shippingCost' => $request['shippingCost'],
+            'description' => $request['description'],
+            'refID' => $ref
+        ]);
+        dd($request->all());
     }
 
     public function destroy(Sale $sale)

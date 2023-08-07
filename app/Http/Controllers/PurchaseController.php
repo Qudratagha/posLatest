@@ -196,7 +196,7 @@ class PurchaseController extends Controller
         $purchase->purchaseOrders()->delete();
         $purchase->purchaseReceive()->delete();
         $date = Carbon::now();
-//        $ref = getRef();
+        $ref = getRef();
 
         $warehouseID = $request['warehouseID'];
         $purchase->update([
@@ -207,7 +207,7 @@ class PurchaseController extends Controller
             'discount' => $request['discount'],
             'shippingCost' => $request['shippingCost'],
             'description' => $request['description'],
-            'refID' => 2
+            'refID' => $ref
         ]);
 
         foreach ($request->all() as $key => $value) {

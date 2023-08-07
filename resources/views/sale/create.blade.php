@@ -144,10 +144,6 @@
                             <input type="number" name="paying-amount" class="form-control paying-amount" step="any">
                             <div class="invalid-feedback" style="display: none;"></div>
                         </label>
-{{--                        <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Date *:--}}
-{{--                            <input type="hidden" name="paidBy" value="0">--}}
-{{--                            <input type="date" name="date" value="{{ date("Y-m-d") }}" class="form-control">--}}
-{{--                        </label>--}}
                         <label for="account" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Account *:
                             <select name="accountID" class="form-select">
                                 @foreach ($paymentAccounts as $account)
@@ -160,12 +156,6 @@
                             <textarea type="text" name="description" rows="5" class="form-control"></textarea>
                         </label>
                     </div>
-
-{{--                    <div class="form-group row">--}}
-{{--                        <label for="paymentNote" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Note *:--}}
-{{--                            <textarea type="text" name="description" rows="5" class="form-control"></textarea>--}}
-{{--                        </label>--}}
-{{--                    </div>--}}
                 </div>
 
                 <div class="form-group row">
@@ -470,7 +460,6 @@
             $('#fOrderDiscount').text(overallDiscount.toFixed(2));
             $('#fShippingCost').text(overallShippingCost.toFixed(2));
             $('#fOrderTax').text(overAllTaxAmount.toFixed(2));
-            var payingAmount = subTotalAmount + overAllTaxAmount - totalDiscount + totalTax + overallShippingCost - overallDiscount;
             $('#fGrandTotal').text(payingAmount.toFixed(2));
 
         }
@@ -529,16 +518,6 @@
         }
         pAmount.on('input', handlePayingAmountChange);
         handlePayingAmountChange();
-        function overallDiscount(){
-            footerData();
-        }
-        function overallShippingCost() {
-            footerData();
-        }
-        function overallTaxAmount() {
-            footerData();
-        }
-
 
         function overallDiscount(){
             footerData();

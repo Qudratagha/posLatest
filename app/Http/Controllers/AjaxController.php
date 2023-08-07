@@ -31,7 +31,6 @@ class AjaxController extends Controller
             ->where('warehouseID', $warehouseID)
             ->groupBy('productID', 'batchNumber')
             ->get();
-
         // Calculate the difference between credit_sum and debt_sum
         $productsWithCreditDebtSum->each(function ($stock) {
             $stock->difference = $stock->credit_sum - $stock->debt_sum;
