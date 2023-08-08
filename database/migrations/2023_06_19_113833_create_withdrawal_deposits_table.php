@@ -14,7 +14,8 @@ return new class extends Migration
             $table->string('paymentType');
             $table->integer('amount');
             $table->date('date');
-            $table->string('description');
+            $table->string('description')->nullable();
+            $table->integer('refID');
             $table->timestamps();
         });
     }

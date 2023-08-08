@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
+use App\Models\Transaction;
 use App\Models\WithdrawalDeposit;
 use Illuminate\Http\Request;
 
@@ -12,7 +14,8 @@ class WithdrawalDepositController extends Controller
      */
     public function index()
     {
-        //
+        $data = WithdrawalDeposit::with('account')->orderby('withdrawalDepositID','desc')->get();
+        return view('account.depositWithdrawals.index', compact('data'));
     }
 
     /**
@@ -20,7 +23,9 @@ class WithdrawalDepositController extends Controller
      */
     public function create()
     {
-        //
+        $accounts = Account::all();
+
+        return view('account.depositWithdrawals.create', compact('accounts'));
     }
 
     /**
@@ -28,7 +33,38 @@ class WithdrawalDepositController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(
+            [
+                'account' => 'required',
+                'amount' => 'required',
+                'date' => 'required',
+            ]
+        );
+
+        $ref = getRef();
+        WithdrawalDeposit::create(
+            [
+                'accountID' => $request->account,
+                'paymentType' => $request->type,
+                'amount' => $request->amount,
+                'date' => $request->date,
+                'description' => $request->notes,
+                'refID' => $ref,
+            ]
+        );
+        $cr = 0;
+        $db = 0;
+        if($request->type == "Deposit")
+        {
+            $cr = $request->amount;
+        }
+        if($request->type == "Withdraw")
+        {
+            $db = $request->amount;
+        }
+        addTransaction($request->account,$request->date,$request->type,$cr, $db, $ref, $request->notes);
+
+        return back()->with('success', 'Transaction Successful');
     }
 
     /**
@@ -58,8 +94,11 @@ class WithdrawalDepositController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(WithdrawalDeposit $withdrawalDeposit)
+    public function destroy($id)
     {
-        //
+        WithdrawalDeposit::where('refID', $id)->delete();
+        Transaction::where('refID', $id)->delete();
+
+        return back()->with('error', "Deleted Succesful");
     }
 }

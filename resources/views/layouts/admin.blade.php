@@ -200,7 +200,7 @@
                         @endcan
                     </ul>
                 </li>
-                @can('View Accounts')
+                @canany(['View Accounts', 'View Deposit/Withdrawals', 'View Transfers'])
                 <li class="menu">
                     <a href="#apps" data-bs-toggle="dropdown" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
@@ -212,10 +212,13 @@
                         </div>
                     </a>
                     <ul class="dropdown-menu submenu list-unstyled" id="apps" data-bs-parent="#accordionExample">
-                        <li>
-                            <a href="{{ route('account.index') }}"> Account </a>
-                        </li>
-
+                        @can('View Accounts')
+                           <li><a href="{{ route('account.index') }}"> Account </a></li> 
+                        @endcan
+                        @can('View Deposit/Withdrawals')
+                            <li><a href="{{url('/account/depositWithdrawals')}}"> Deposit / Withdrawals </a></li> 
+                        @endcan
+                       
                     </ul>
                 </li>
                 @endcan

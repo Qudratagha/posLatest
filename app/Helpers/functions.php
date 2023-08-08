@@ -28,3 +28,11 @@ function addTransaction($accountID, $date, $type, $credit, $debt, $refID, $desc)
         'description' => $desc
     ]);
 }
+
+function getAccountBalance($id)
+{
+    $cr = Transaction::where('accountID', $id)->sum('credit');
+    $db = Transaction::where('accountID', $id)->sum('debt');
+    
+    return $cr - $db;
+}

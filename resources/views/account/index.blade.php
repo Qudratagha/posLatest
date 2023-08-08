@@ -20,6 +20,7 @@
                     <th>Account Name</th>
                     <th>Account Type</th>
                     <th>Account Number</th>
+                    <th>Balance</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -30,7 +31,7 @@
                         <td>{{ $account->name }}</td>
                         <td>{{ $account->type }}</td>
                         <td>{{ $account->accountNumber }}</td>
-
+                        <td>{{getAccountBalance($account->accountID)}}</td>
                         <td>
                             <a href="{{ route('account.show', $account->accountID) }}">
                                 <i class="fas fa-eye"></i>

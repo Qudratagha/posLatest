@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\permissionsController;
 use App\Http\Controllers\rolesController;
 use App\Http\Controllers\usersController;
+use App\Http\Controllers\WithdrawalDepositController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,11 @@ Auth::routes();
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('/account/depositWithdrawals', [WithdrawalDepositController::class, 'index']);
+    Route::get('/account/depositWithdrawals/create', [WithdrawalDepositController::class, 'create']);
+    Route::post('/account/depositWithdrawals/store', [WithdrawalDepositController::class, 'store']);
+    Route::get('/account/depositWithdrawals/delete/{id}', [WithdrawalDepositController::class, 'destroy']);
+    
     Route::post('ajax/{method}', [App\Http\Controllers\AjaxController::class, 'handle'])->name('ajax.handle');
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -58,5 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/roles/store', [rolesController::class, 'store']);
     Route::post('/role/updatePermissions', [rolesController::class, 'updatePermissions']);
     Route::get('/permissions', [permissionsController::class, 'index']);
-    /* Route::post('/permissions/store', [permissionsController::class, 'store']); */
+    
+
+    
 });

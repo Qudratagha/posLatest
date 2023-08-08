@@ -185,7 +185,7 @@
                     field: "text",
                     direction: "asc"
                 }
-            });
+                });
         })
         var units = @json($units);
         var existingProducts = [];
