@@ -61,6 +61,11 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand, Request $request)
     {
+//        $check = Brand::where('parentID', $category->categoryID)->count();
+//        if($check > 0){
+//            return back()->with('error', "Category Can't be deleted");
+//        }
+
         $brand->delete();
         $request->session()->flash('error', 'Brand Deleted Successfully!');
         return to_route('brand.index');

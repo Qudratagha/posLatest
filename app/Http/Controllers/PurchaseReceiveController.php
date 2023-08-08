@@ -40,7 +40,7 @@ class PurchaseReceiveController extends Controller
                 'batchNumber' => $request['batchNumber_'.$productId],
                 'expiryDate' => $request['expiryDate_'.$productId],
                 'receivedQty' => $receiveQty,
-               'date' => $date
+                'date' => $date
             ]);
 
             Stock::create([

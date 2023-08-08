@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -69,8 +70,23 @@ class CategoryController extends Controller
 
     public function destroy(Category $category, Request $request)
     {
-        $category->delete();
-        $request->session()->flash('error', 'Category Deleted Successfully!');
-        return to_route('category.index');
+
+        $cat = Category::where('parentID', $category->categoryID)->count();
+        $pro = Product::where('categoryID', $category->categoryID)->count();
+
+        if($cat > 0){
+            return back()->with('error', "Category Can't be deleted");
+        }
+        elseif($pro > 0)
+        {
+            return back()->with('error', "Category Can't be deleted");
+        }
+        else {
+            $category->delete();
+            $request->session()->flash('error', 'Category Deleted Successfully!');
+            return to_route('category.index');
+        }
+
+
     }
 }

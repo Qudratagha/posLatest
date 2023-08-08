@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\permissionsController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\rolesController;
 use App\Http\Controllers\usersController;
+use App\Models\Stock;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/sale', \App\Http\Controllers\SaleController::class);
     Route::resource('/saleDelivered', \App\Http\Controllers\SaleDeliveredController::class);
     Route::resource('/salePayment', \App\Http\Controllers\SalePaymentController::class);
+
+    Route::get('/stocks','App\Http\Controllers\StockController@index')->name('stock.index');
+    Route::get('/stocks/{stockDetails}','App\Http\Controllers\StockController@show')->name('stock.show');
 
     Route::get('/users', [usersController::class, 'index']);
     Route::get('/user/add', [usersController::class, 'add']);
