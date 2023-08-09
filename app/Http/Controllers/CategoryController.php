@@ -75,15 +75,15 @@ class CategoryController extends Controller
         $pro = Product::where('categoryID', $category->categoryID)->count();
 
         if($cat > 0){
-            return back()->with('error', "Category Can't be deleted");
+            return back()->with('error', "Category Can't be deleted as it has some child categories");
         }
         elseif($pro > 0)
         {
-            return back()->with('error', "Category Can't be deleted");
+            return back()->with('error', "Category Can't be deleted as it has some products");
         }
         else {
             $category->delete();
-            $request->session()->flash('error', 'Category Deleted Successfully!');
+            $request->session()->flash('message', 'Category Deleted Successfully!');
             return to_route('category.index');
         }
 

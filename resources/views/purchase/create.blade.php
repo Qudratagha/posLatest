@@ -234,6 +234,7 @@
                         quantity++;
                         quantityInput.val(quantity);
                         let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
+
                         var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
                         $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal);
 
@@ -404,7 +405,7 @@
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let purchaseUnit = row.find('select[name="saleUnit_' + id + '"]').val()
+            let purchaseUnit = row.find('select[name="purchaseUnit_' + id + '"]').val()
             if (purchaseUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;

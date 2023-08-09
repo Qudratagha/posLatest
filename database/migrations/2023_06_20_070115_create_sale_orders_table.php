@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('discountValue')->nullable();
             $table->integer('tax')->nullable();
             $table->integer('subTotal');
-            $table->integer('saleUnit');
+            $table->foreignId('saleUnit')->constrained('units', 'unitID');
             $table->timestamps();
         });
     }

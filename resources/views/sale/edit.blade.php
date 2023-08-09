@@ -15,45 +15,42 @@
                 <input type="hidden" name="purchaseID" value="{{ $sale->saleID }}">
                 <div class="form-group row">
 
-                    <div class="form-group row">
-                        <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Date:
-                            <input type="date" name="date" class="form-control" id="date" value="{{ old('date', $sale->date) }}" required>
-                        </label>
+                <div class="form-group row">
+                    <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Date:
+                        <input type="date" name="date" class="form-control" id="date" value="{{ old('date', $sale->date) }}" required>
+                    </label>
 
-                        <label for="referenceNo" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Reference No:
-                            <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo', $sale->referenceNo) }}" required>
-                        </label>
+                    <label for="referenceNo" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Reference No:
+                        <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo', $sale->referenceNo) }}" required>
+                    </label>
 
-                        <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Customer:
-                            <select name="customerID" class="form-select" required>
-                                <option value="">Select Customer</option>
-                                @foreach ($accounts as $account)
-                                    <option value="{{ $account->accountID }}" {{ old('customerID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
-                                @endforeach
-                            </select>
-                        </label>
+                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Customer:
+                        <select name="customerID" class="form-select" required>
+                            <option value="">Select Customer</option>
+                            @foreach ($accounts as $account)
+                                <option value="{{ $account->accountID }}" {{ old('customerID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                            @endforeach
+                        </select>
+                    </label>
 
+                    <label for="warehouse" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Warehouse:
+                        <select name="warehouseID" class="form-select" onchange="getProduct(this.value)">
+                            <option value="">Select Warehouse</option>
+                            @foreach ($warehouses as $warehouse)
+                                <option value="{{ $warehouse->warehouseID }}" {{ old('warehouseID', $selectedWarehouseID) == $warehouse->warehouseID ? 'selected' : ''   }}>{{ $warehouse->name }}</option>
+                            @endforeach
+                        </select>
+                    </label>
 
-
-                        <label for="warehouse" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Warehouse:
-                            <select name="warehouseID" class="form-select" onchange="getProduct(this.value)">
-                                <option value="">Select Warehouse</option>
-                                @foreach ($warehouses as $warehouse)
-                                    <option value="{{ $warehouse->warehouseID }}" {{ old('warehouseID', $selectedWarehouseID) == $warehouse->warehouseID ? 'selected' : ''   }}>{{ $warehouse->name }}</option>
-                                @endforeach
-                            </select>
-                        </label>
-
-                        <label for="supplier" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Supplier:
-                            <select name="customerID" class="form-select">
-                                <option value="">Select Supplier</option>
-                                @foreach ($accounts as $account)
-                                    <option value="{{ $account->accountID }}" {{ old('customerID', $sale->customerID) == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
-                                @endforeach
-                            </select>
-                        </label>
+                    <label for="supplier" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Supplier:
+                        <select name="customerID" class="form-select">
+                            <option value="">Select Supplier</option>
+                            @foreach ($accounts as $account)
+                                <option value="{{ $account->accountID }}" {{ old('customerID', $sale->customerID) == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                            @endforeach
+                        </select>
+                    </label>
                 </div>
-
 
                 <div class="form-group row">
                     <label for="productID" class="form-label col-form-label col-sm-12"> Products:
@@ -74,11 +71,11 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Code</th>
-                                        <th width="12%">Quantity</th>
+                                        <th width="15%">Quantity</th>
                                         <th width="12%">Batch No</th>
-                                        <th width="8%">Expired Date</th>
+                                        <th width="3%">Expired Date</th>
                                         <th width="10%">Net Unit Cost</th>
-                                        <th width="15%">Purchase Unit</th>
+                                        <th width="16%">Sale Unit</th>
                                         <th width="10%">Discount</th>
                                         <th width="10%">Tax</th>
                                         <th>SubTotal</th>
@@ -87,10 +84,23 @@
                                     </thead>
                                     <tbody id="tbody">
                                     @foreach($saleOrders as $order)
+                                        <?php
+                                            $warehouseID = $order->warehouseID;
+                                            $productID = $order->productID;
+                                            $batchNumber = $order->batchNumber;
+                                            $stock = \App\Models\Stock::where('productID', $productID)
+                                                ->where('warehouseID', $warehouseID)
+                                                ->where('batchNumber', $batchNumber)
+                                                ->selectRaw('SUM(credit) - SUM(debt) as totalQuantity')
+                                                ->first();
+                                        $totalQuantity = $stock ? $stock->totalQuantity : 0;
+
+                                        ?>
                                         <tr id="rowID_{{ $order->batchNumber }}">
                                             <td>{{ $order->product->name }}</td>
                                             <td>{{ $order->code }}</td>
-                                            <td><input type="number" class="form-control" name="quantity_{{$order->batchNumber}}" value="{{ $order->quantity }}" oninput="changeQuantity(this,{{$order->batchNumber}})" style="border: none"></td>
+
+                                            <td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_{{$order->batchNumber}}" min="1" max="{{ $totalQuantity }}" value="{{ $order->quantity }}" oninput="changeQuantity(this,{{$order->batchNumber}})" style="border: none"></div> <div class="col-4"><span id="totalQuantity_{{$order->batchNumber}}">{{ $totalQuantity }}</span> </div></td>
                                             <td><input type="number" class="form-control" name="batchNumber_{{$order->batchNumber}}" value="{{ $order->batchNumber }}"></td>
                                             <td style="text-align: center;">
                                                 @if($order->expiryDate == '')
@@ -104,7 +114,7 @@
                                                 <select name="saleUnit_{{$order->batchNumber}}" id="" class="form-select" required onchange="changeSaleUnit(this,{{$order->batchNumber}} )">
                                                     <option value="">Select Unit</option>
                                                     @foreach($units as $unit)
-                                                        <option value="{{ $unit->unitID }}" @if ($unit->unitID == $order->purchaseUnitID) selected @endif > {{ $unit->name }}</option>
+                                                        <option value="{{ $unit->unitID }}" @if ($unit->unitID == $order->saleUnit) selected @endif > {{ $unit->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
@@ -138,22 +148,22 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4" > Order Tax:
+                    <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3" > Order Tax:
                         <select name="orderTax" id="orderTax" class="form-select" >
                             <option value="No" >No</option>
                             <option value="Yes">Yes</option>
                         </select>
                     </label>
 
-                    <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel"> Tax Amount:
+                    <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3 d-none" id="taxAmountLabel"> Tax Amount:
                         <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount" min="0" value="{{ $sale->orderTax ?? 0 }}" oninput="overallTaxAmount()">
                     </label>
 
-                    <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
+                    <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Discount:
                         <input type="number" name="discount" class="form-control" min="0" value="{{ $sale->discount ?? 0 }}" oninput="overallDiscount()" >
                     </label>
 
-                    <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
+                    <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Shipping Cost:
                         <input type="number" name="shippingCost" class="form-control" min="0" value="{{ $sale->shippingCost ?? 0 }}" oninput="overallShippingCost()">
                     </label>
                 </div>
@@ -331,6 +341,7 @@
                                 }
                             });
 
+
                             var discountInput = row.find('[name="discount_' + rowId + '"]');
                             var taxInput = row.find('[name="tax_' + rowId + '"]');
                             var quantity = parseInt(quantityInput.val());
@@ -384,10 +395,12 @@
             let unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let quantityElement= row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
 
-            let saleUnit = row.find('select[name="saleUnit_' + id + '"]').val()
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
@@ -397,6 +410,13 @@
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
@@ -412,10 +432,12 @@
             var unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let quantityElement= row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
 
-            let saleUnit = row.find('select[name="saleUnit_' + id + '"]').val()
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
@@ -425,6 +447,13 @@
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
 
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
@@ -445,10 +474,12 @@
             var unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let quantityElement= row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
 
-            let saleUnit = row.find('select[name="saleUnit_' + id + '"]').val()
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
@@ -458,8 +489,14 @@
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
-
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var discount = parseInt(discountInput);
             if(isNaN(discount)){
@@ -478,10 +515,12 @@
             var unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let quantityElement= row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
 
-            let saleUnit = row.find('select[name="saleUnit_' + id + '"]').val()
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
@@ -491,6 +530,13 @@
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
 
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
@@ -507,23 +553,32 @@
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             footerData();
         }
-
         function changeSaleUnit(input, id){
             var unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let quantityElement= row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let purchaseUnit = row.find('select[name="saleUnit_' + id + '"]').val()
-            if (purchaseUnit === '') {
+
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
             }
             units.forEach(function(unit) {
-                if(unit.unitID == purchaseUnit){
+                if(unit.unitID == saleUnit){
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
@@ -539,7 +594,6 @@
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             footerData();
         }
-
         function footerData(){
             var subTotalAmount = 0;
             var totalQuantity = 0;
@@ -603,7 +657,6 @@
             $('#fOrderTax').text(overAllTaxAmount.toFixed(2));
             $('#fGrandTotal').text(payingAmount.toFixed(2));
         }
-
         function deleteRow(button, id) {
             existingProducts = $.grep(existingProducts, function(value) {
                 return value !== id;

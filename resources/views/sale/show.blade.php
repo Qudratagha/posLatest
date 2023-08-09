@@ -60,22 +60,24 @@
                                         <th scope="col">Discount</th>
                                         <th scope="col">Tax</th>
                                         <th scope="col">Total</th>
+                                        <th scope="col">Sale Unit</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @php $totalAmount = 0; @endphp
                                     @foreach($saleOrders as $order)
                                         <tr>
-                                            <td>{{ $order->productID }}</td>
-                                            <td>{{ $order->warehouseID }}</td>
+                                            <td>{{ $order->product->name }}</td>
+                                            <td>{{ $order->warehouse->name }}</td>
                                             <td>{{ $order->code }}</td>
-                                            <td>{{ $order->quantity }}</td>
+                                            <td>{{ $order->quantity / $order->unit->value }}</td>
                                             <td>{{ $order->batchNumber ?? '' }}</td>
                                             <td>{{ $order->expiryDate ?? '' }}</td>
                                             <td>{{ $order->netUnitCost }}</td>
                                             <td>{{ $order->discount }}</td>
                                             <td>{{ $order->tax }}</td>
                                             <td>{{ $order->subTotal }}</td>
+                                            <td>{{ $order->unit->name }}</td>
                                             @php $totalAmount +=  $order->subTotal @endphp
                                         </tr>
                                     @endforeach

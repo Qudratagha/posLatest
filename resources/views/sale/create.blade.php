@@ -89,7 +89,7 @@
                                         <th>Batch No</th>
                                         <th width="8%">Expired Date</th>
                                         <th>Net Unit Cost</th>
-                                        <th>Purchase Unit</th>
+                                        <th>Sale Unit</th>
                                         <th>Discount</th>
                                         <th>Tax</th>
                                         <th>SubTotal</th>
@@ -325,7 +325,7 @@
                                 strHTML += '<tr id="rowID_' + v.batchNumber + '">';
                                 strHTML += '<td>' + v.product.name + '</td>';
                                 strHTML += '<td>' + v.product.code + '</td>';
-                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.difference + '" value="1" oninput="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.difference + '</span> </div></td>';
+                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.difference + '" value="1" oninput="changeQuantity(this, ' + id + ')" style="border: none" required> </div> <div class="col-4"><span id="totalQuantity_' + v.batchNumber + '">' + v.difference + '</span> </div></td>';
                                 strHTML += '<td> <span id="batchNumber_' + v.batchNumber + '">' + v.batchNumber + '</span></td>';
                                 strHTML += `<td style="text-align: center;">${
                                     v.product.isExpire === 0 ?
@@ -361,19 +361,28 @@
             var unitValue = 0;
 
             let row = $(input).closest('tr');
-            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let quantityElement = row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
 
-            let purchaseUnit = row.find('select[name="saleUnit_' + id + '"]').val()
-            if (purchaseUnit === '') {
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
             }
             units.forEach(function(unit) {
-                if(unit.unitID == purchaseUnit){
+                if(unit.unitID == saleUnit){
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
@@ -391,16 +400,23 @@
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let purchaseUnit = row.find('select[name="saleUnit_' + id + '"]').val()
-            if (purchaseUnit === '') {
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
             }
             units.forEach(function(unit) {
-                if(unit.unitID == purchaseUnit){
+                if(unit.unitID == saleUnit){
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
@@ -423,16 +439,23 @@
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
 
-            let purchaseUnit = row.find('select[name="saleUnit_' + id + '"]').val()
-            if (purchaseUnit === '') {
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
             }
             units.forEach(function(unit) {
-                if(unit.unitID == purchaseUnit){
+                if(unit.unitID == saleUnit){
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
 
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
@@ -455,16 +478,23 @@
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let purchaseUnit = row.find('select[name="saleUnit_' + id + '"]').val()
-            if (purchaseUnit === '') {
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
             }
             units.forEach(function(unit) {
-                if(unit.unitID == purchaseUnit){
+                if(unit.unitID == saleUnit){
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
@@ -483,20 +513,31 @@
 
         function changeSaleUnit(input, id){
             var unitValue = 0;
-
             let row = $(input).closest('tr');
-            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let quantityElement = row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let purchaseUnit = row.find('select[name="saleUnit_' + id + '"]').val()
-            if (purchaseUnit === '') {
+
+
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
                 alert('Please select Purchase Unit First');
                 return;
             }
             units.forEach(function(unit) {
-                if(unit.unitID == purchaseUnit){
+                if(unit.unitID == saleUnit){
                     unitValue = unit.value;
                 }
             });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+                quantity = 0;
+            }
             let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();

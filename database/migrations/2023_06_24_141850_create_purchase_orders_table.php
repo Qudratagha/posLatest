@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('batchNumber')->nullable();
             $table->date('expiryDate')->nullable();
             $table->integer('netUnitCost');
-            $table->integer('discount');
+            $table->integer('discount')->nullable();
             $table->integer('tax')->nullable();
             $table->integer('subTotal');
             $table->foreignId('purchaseUnit')->constrained('units', 'unitID');

@@ -98,7 +98,7 @@
                                         <tr id="rowID_{{ $order->productID }}">
                                             <td>{{ $order->product->name }}</td>
                                             <td>{{ $order->code }}</td>
-                                            <td><input type="number" class="form-control" name="quantity_{{$order->productID}}" value="{{ $order->quantity }}" onkeyup="changeQuantity(this,{{$order->productID}})" style="border: none"></td>
+                                            <td><input type="number" class="form-control" name="quantity_{{$order->productID}}" min="0" value="{{ $order->quantity }}" oninput="changeQuantity(this,{{$order->productID}})" style="border: none"></td>
                                             <td><input type="number" class="form-control" name="batchNumber_{{$order->productID}}" value="{{ $order->batchNumber }}"></td>
                                             <td style="text-align: center;">
                                                 @if($order->expiryDate == '')
@@ -107,17 +107,17 @@
                                                     <input type="date" class="form-control" id="date" name="expiryDate_{{$order->productID}}" value="{{ $order->expiryDate }}">
                                                 @endif
                                             </td>
-                                            <td><input type="number" class="form-control" name="netUnitCost_{{$order->productID}}" min="1" value="{{ $order->netUnitCost }}" onkeyup="changeNetUnitCost(this, {{$order->productID}})" > </td>
+                                            <td><input type="number" class="form-control" name="netUnitCost_{{$order->productID}}" min="1" value="{{ $order->netUnitCost }}" oninput="changeNetUnitCost(this, {{$order->productID}})" > </td>
                                             <td>
                                                 <select name="purchaseUnit_{{$order->productID}}" id="" class="form-select" required onchange="changePurchaseUnit(this, {{ $order->productID }})">
                                                     <option value="">Select Unit</option>
                                                     @foreach($units as $unit)
-                                                        <option value="{{ $unit->unitID }}" @if ($unit->unitID == $order->purchaseUnitID) selected @endif > {{ $unit->name }}</option>
+                                                        <option value="{{ $unit->unitID }}" @if ($unit->unitID == $order->purchaseUnit) selected @endif > {{ $unit->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td><input type="number" class="form-control" name="discount_{{$order->productID}}" min="0" value="{{ $order->discount }}" onkeyup="changeDiscount(this, {{$order->productID}} )"></td>
-                                            <td><input type="number" class="form-control" name="tax_{{$order->productID}}" min="0" value="{{ $order->tax }}" onkeyup="changeTax(this, {{$order->productID}})"></td>
+                                            <td><input type="number" class="form-control" name="discount_{{$order->productID}}" min="0" value="{{ $order->discount }}" oninput="changeDiscount(this, {{$order->productID}} )"></td>
+                                            <td><input type="number" class="form-control" name="tax_{{$order->productID}}" min="0" value="{{ $order->tax }}" oninput="changeTax(this, {{$order->productID}})"></td>
                                             <td> <span id="subTotal_{{$order->productID}}"> {{ $order->subTotal }} </span></td>
                                             <input type="hidden" name="code_{{ $order->productID }}" value="{{ $order->code }}">
                                             <input type="hidden" name="netUnitCost_{{ $order->productID }}" value="{{ $order->netUnitCost }}">
@@ -235,7 +235,6 @@
             $('#taxAmountLabel').removeClass('d-none');
 
         }
-
         $('#orderTax').change(function() {
             var selectedValue = $(this).val();
             if (selectedValue === 'Yes') {

@@ -112,6 +112,7 @@ class PurchaseController extends Controller
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
                         'orderedQty' => $productQuantity * $unit->value,
+                        'purchaseUnit' => $productPurchaseUnit
                     ]);
                     if($request['purchaseStatus'] === 'received'){
                         PurchaseReceive::create([
@@ -119,7 +120,8 @@ class PurchaseController extends Controller
                             'productID' => $productID,
                             'batchNumber' => $productBatchNumber,
                             'expiryDate' => $productExpiryDate,
-                            'receivedQty' => $productQuantity * $unit->value ?? 'NULL'
+                            'receivedQty' => $productQuantity * $unit->value ?? 'NULL',
+                            'purchaseUnit' => $productPurchaseUnit
                         ]);
 
                         Stock::create([
@@ -128,7 +130,7 @@ class PurchaseController extends Controller
                             'date' => $date,
                             'batchNumber' => $productBatchNumber,
                             'expiryDate' => $productExpiryDate,
-                            'credit' => $productQuantity * $unit->value ?? 'NULL',
+                            'credit' => $productQuantity * $unit->value,
                             'refID' => $ref,
                         ]);
                     }
@@ -193,6 +195,7 @@ class PurchaseController extends Controller
     {
         $purchase->purchaseOrders()->delete();
         $purchase->purchaseReceive()->delete();
+        $date = Carbon::now();
         $ref = getRef();
 
         $warehouseID = $request['warehouseID'];
@@ -220,8 +223,7 @@ class PurchaseController extends Controller
                 $productPurchaseUnit = $request['purchaseUnit_' . $productID];
 
                 $unit = Unit::where('unitID', $productPurchaseUnit)->first();
-
-                $subTotal = ($productNetUnitCost * $productQuantity) - $productDiscount + $productTax;
+                $subTotal = ($productNetUnitCost * $productQuantity * $unit->value) - $productDiscount + $productTax;
                 PurchaseOrder::create([
                     'purchaseID' => $purchase->purchaseID,
                     'productID' => $productID,
@@ -240,7 +242,29 @@ class PurchaseController extends Controller
                     'purchaseID' => $purchase->purchaseID,
                     'productID' => $productID,
                     'orderedQty' => $productQuantity * $unit->value,
+                    'purchaseUnit' => $productPurchaseUnit
+
                 ]);
+                if($request['purchaseStatus'] === 'received'){
+                    PurchaseReceive::create([
+                        'purchaseID' => $purchase->purchaseID,
+                        'productID' => $productID,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'receivedQty' => $productQuantity * $unit->value,
+                        'purchaseUnit' => $productPurchaseUnit
+                    ]);
+
+                    Stock::create([
+                        'warehouseID' =>  $warehouseID,
+                        'productID' => $productID,
+                        'date' => $date,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'credit' => $productQuantity * $unit->value,
+                        'refID' => $ref,
+                    ]);
+                }
             }
         }
         $request->session()->flash('message', 'Purchase Updated Successfully!');

@@ -48,7 +48,7 @@
                             $purchaseDelivered = $purchase->purchaseReceive->sum('receivedQty');
                             $sum = $purchaseOrders - $purchaseDelivered;
                         @endphp
-                        <td> @if($sum > 0) <div class="badge badge-danger">Pending</div> @else <div class="badge badge-success">Delivered</div> @endif</td>
+                        <td> @if($sum > 0) <div class="badge badge-danger">Pending</div> @else <div class="badge badge-success">Received</div> @endif</td>
                         <td>{{ $subTotal - $purchase->discount + $purchase->shippingCost + $purchase->orderTax }}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>
@@ -204,8 +204,10 @@
                                                 $batchNumber = $order['batchNumber'];
                                                 $expiryDate = $order['expiryDate'];
                                                 $productID = $order['productID'];
-                                                $orderedQty = $order['orderedQty'] ?? 0;
-                                                $receivedQty = $order['receivedQty'] ?? 0;
+                                                $purchaseUnit = $order->purchaseUnit;
+                                                $unit = \App\Models\Unit::where('unitID', $purchaseUnit)->first();
+                                                $orderedQty = $order['orderedQty'] /  $unit->value;
+                                                $receivedQty = $order['receivedQty'] /  $unit->value ;
 
                                                 if (!isset($summedData[$productID])) {
                                                     $summedData[$productID] = [
@@ -213,7 +215,9 @@
                                                         'expiryDate' => $expiryDate,
                                                         'batchNumber' => $batchNumber,
                                                         'orderedQty' => $orderedQty,
-                                                        'receivedQty' => $receivedQty
+                                                        'receivedQty' => $receivedQty,
+                                                        'purchaseUnit' => $purchaseUnit
+
                                                     ];
                                                 } else {
                                                     $summedData[$productID]['orderedQty'] += $orderedQty;
@@ -221,6 +225,7 @@
                                                 }
                                             ?>
                                         @endforeach
+
                                         @php
                                             $allProductsReceived = true;
                                         @endphp
@@ -234,6 +239,7 @@
                                                 @php $allProductsReceived = false;@endphp
                                                 <input type="hidden" name="batchNumber_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['batchNumber'] }}">
                                                 <input type="hidden" name="expiryDate_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['expiryDate'] }}">
+                                                <input type="hidden" name="purchaseUnit_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['purchaseUnit'] }}">
                                                 <div class="form-group row mb-3">
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Product Name:</label>
@@ -241,7 +247,7 @@
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Order Quantity:</label>
-                                                        <div class="form-control-plaintext order-quantity">{{ $modifiedOrderedQty }}</div>
+                                                        <div class="form-control-plaintext order-quantity">{{ $modifiedOrderedQty   }}</div>
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Warehouse:</label>

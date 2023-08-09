@@ -16,17 +16,23 @@ class unitsSeeder extends Seeder
         $units = [
             [
                 'code' => '112233',
-                'name' => 'Unit 1',
+                'name' => '1 in box',
                 'operator' => '*',
-                'value' => '10'
+                'value' => '1'
             ],
             [
                 'code' => '332211',
-                'name' => 'Unit 2',
+                'name' => '2 in box',
+                'operator' => '*',
+                'value' => '2'
+            ],
+            [
+                'code' => '332211',
+                'name' => '10 in box',
                 'operator' => '*',
                 'value' => '10'
-            ],
-            
+            ]
+
         ];
 
         foreach ($units as $key => $unit){

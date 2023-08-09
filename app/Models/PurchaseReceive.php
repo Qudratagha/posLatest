@@ -23,4 +23,8 @@ class PurchaseReceive extends Model
         return $this->belongsTo(\App\Models\Product::class, 'productID', 'productID');
     }
 
+    public function unit()
+    {
+        return $this->belongsTo(\App\Models\Unit::class, 'purchaseUnit', 'unitID');
+    }
 }

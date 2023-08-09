@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('orderedQty')->nullable();
             $table->integer('receivedQty')->nullable();
             $table->timestamp('date')->nullable();
+            $table->foreignId('saleUnit')->constrained('units', 'unitID');
+
         });
     }
 

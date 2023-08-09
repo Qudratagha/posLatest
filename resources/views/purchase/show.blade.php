@@ -62,23 +62,24 @@
                                         <th scope="col">Discount</th>
                                         <th scope="col">Tax</th>
                                         <th scope="col">Total</th>
+                                        <th scope="col">Purchase Unit</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @php $totalAmount = 0; @endphp
-
                                     @foreach($purchaseOrders as $order)
                                         <tr>
                                             <td>{{ $order->product->name }}</td>
                                             <td>{{ $order->warehouse->name }}</td>
                                             <td>{{ $order->code }}</td>
-                                            <td>{{ $order->quantity }}</td>
+                                            <td>{{ $order->quantity / $order->unit->value  }}</td>
                                             <td>{{ $order->batchNumber ?? '' }}</td>
                                             <td>{{ $order->expiryDate ?? '' }}</td>
                                             <td>{{ $order->netUnitCost }}</td>
                                             <td>{{ $order->discount }}</td>
                                             <td>{{ $order->tax }}</td>
                                             <td>{{ $order->subTotal }}</td>
+                                            <td>{{ $order->unit->name }}</td>
                                             @php $totalAmount +=  $order->subTotal @endphp
                                         </tr>
                                     @endforeach
@@ -100,9 +101,13 @@
                                     </thead>
                                     <tbody>
                                     @foreach($purchaseReceives as $receive)
+                                        <?php
+                                        $unit = \App\Models\Unit::where('unitID', $receive->purchaseUnit)->first();
+                                        ?>
+
                                         <tr>
                                             <td>{{ $receive->product->name }}</td>
-                                            <td>{{ $receive->receivedQty }}</td>
+                                            <td>{{ $receive->receivedQty / $unit['value']  }}</td>
                                             <td>{{ \Carbon\Carbon::parse($receive->date)->format('Y-m-d')  }}</td>
                                         </tr>
                                     @endforeach
