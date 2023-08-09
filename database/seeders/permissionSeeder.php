@@ -66,6 +66,8 @@ class permissionSeeder extends Seeder
         Permission::create(['name' => 'Create Transfers']);
         Permission::create(['name' => 'Delete Transfers']);
         Permission::create(['name' => 'View Accounts Statement']);
+        Permission::create(['name' => 'View Transfer']);
+        Permission::create(['name' => 'Delete Transfer']);
 
         $role = Role::findByName('Owner');
         $permissions = Permission::all();

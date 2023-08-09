@@ -218,7 +218,9 @@
                         @can('View Deposit/Withdrawals')
                             <li><a href="{{url('/account/depositWithdrawals')}}"> Deposit / Withdrawals </a></li> 
                         @endcan
-                       
+                        @can('View Transfer')
+                            <li><a href="{{url('/account/transfer')}}"> Transfer </a></li> 
+                        @endcan
                     </ul>
                 </li>
                 @endcan
