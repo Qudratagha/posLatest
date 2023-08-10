@@ -13,7 +13,6 @@
                 @method('PUT')
 
                 <input type="hidden" name="purchaseID" value="{{ $sale->saleID }}">
-                <div class="form-group row">
 
                 <div class="form-group row">
                     <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Date:
@@ -156,18 +155,17 @@
                     </label>
 
                     <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3 d-none" id="taxAmountLabel"> Tax Amount:
-                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount" min="0" value="{{ $sale->orderTax ?? 0 }}" oninput="overallTaxAmount()">
+                        <input type="number" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount" min="0" value="{{ isset($sale->orderTax) ? $sale->orderTax : 0 }}" oninput="overallTaxAmount()">
                     </label>
 
                     <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Discount:
-                        <input type="number" name="discount" class="form-control" min="0" value="{{ $sale->discount ?? 0 }}" oninput="overallDiscount()" >
+                        <input type="number" name="discount" class="form-control" min="0" value="{{ isset($sale->discount) ? $sale->discount : 0 }}" oninput="overallDiscount()" >
                     </label>
 
                     <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Shipping Cost:
-                        <input type="number" name="shippingCost" class="form-control" min="0" value="{{ $sale->shippingCost ?? 0 }}" oninput="overallShippingCost()">
+                        <input type="number" name="shippingCost" class="form-control" min="0" value="{{ isset($sale->shippingCost) ? $sale->shippingCost : 0 }}" oninput="overallShippingCost()">
                     </label>
                 </div>
-
                 <div class="form-group row">
                     <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Sale Status:
                         <select name="saleStatus" id="saleStatus" class="form-select">
@@ -183,7 +181,6 @@
                         </select>
                     </label>
                 </div>
-
                 <div class="received-fields d-none">
                     <div class="form-group row">
                         <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Paying Amount *:
@@ -203,14 +200,13 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="form-group row">
                     <label for="description" class="form-label col-form-label "> Sale Note:
                         <textarea type="text" name="description" rows="5" class="form-control">{{ $sale->description }}</textarea>
                     </label>
                 </div>
                 <div class="form-group row mt-2">
-                    <input class="btn btn-primary" type="submit" value="Update">
+                    <input class="btn btn-primary" id="saveButton" type="submit" value="Update">
                 </div>
             </form>
         </div>
@@ -721,10 +717,17 @@
 
         $(document).ready(function() {
             var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
-            window.addEventListener('beforeunload', function(event) {
-                event.returnValue = confirmationMessage;
-                return confirmationMessage;
+            var isSaveButtonClicked = false;
+
+            $('#saveButton').on('click', function() {
+                isSaveButtonClicked = true;
             });
-        })
+            window.addEventListener('beforeunload', function(event) {
+                if (!isSaveButtonClicked) {
+                    event.returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
+        });
     </script>
 @endsection

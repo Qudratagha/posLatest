@@ -102,7 +102,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($purchaseReceives as $receive)
+                                    @foreach($purchaseReceives as $index => $receive)
                                         <?php
                                         $unit = \App\Models\Unit::where('unitID', $receive->purchaseUnit)->first();
                                         ?>
@@ -112,6 +112,7 @@
                                             <td>{{ $receive->receivedQty / $unit['value']  }}</td>
                                             <td>{{ \Carbon\Carbon::parse($receive->date)->format('Y-m-d')  }}</td>
                                             <td>
+                                                @if ($loop->last)
                                                 <form action="{{ route('purchaseReceive.destroy', $receive->purchaseReceiveID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
                                                     @csrf
                                                     @method('DELETE')
@@ -122,6 +123,7 @@
                                                         <i class="text-red fa fa-trash"></i>
                                                     </a>
                                                 </form>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

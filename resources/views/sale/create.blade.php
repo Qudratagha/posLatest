@@ -47,26 +47,6 @@
                     </label>
                 </div>
 
-{{--                <div class="form-group row">--}}
-{{--                    <label for="warehouseID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Warehouse:--}}
-{{--                        <select name="warehouseID" id="warehouseID" class="form-select">--}}
-{{--                            <option value="">Select Warehouse</option>--}}
-{{--                            @foreach ($warehouses as $warehouse)--}}
-{{--                                <option value="{{ $warehouse->warehouseID }}" {{ old('warehouseID') == $warehouse->warehouseID ? 'selected' : '' }}>{{ $warehouse->name }}</option>--}}
-{{--                            @endforeach--}}
-{{--                        </select>--}}
-{{--                    </label>--}}
-
-{{--                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Biller:--}}
-{{--                        <select name="customerID" class="form-select" required>--}}
-{{--                            <option value="">Select Customer</option>--}}
-{{--                            @foreach ($accounts as $account)--}}
-{{--                                <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>--}}
-{{--                            @endforeach--}}
-{{--                        </select>--}}
-{{--                    </label>--}}
-{{--                </div>--}}
-
                 <div class="form-group row">
                     <label for="product" class="form-label col-form-label col-sm-12"> Products:
                         <select name="productID" id="productID" class="form-select form-control productField" onchange="productDetails(this.value)" autofocus>
@@ -117,7 +97,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="form-group row">
                     <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Order Tax:
                         <select name="orderTax" id="orderTax" class="form-select">
@@ -138,7 +117,6 @@
                         <input type="number" name="shippingCost" class="form-control" value="0" min="0" oninput="overallShippingCost()" placeholder="Shipping Cost">
                     </label>
                 </div>
-
                 <div class="form-group row">
                     <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-6"> Sale Status:
                         <select name="saleStatus" id="saleStatus" class="form-select">
@@ -154,8 +132,6 @@
                         </select>
                     </label>
                 </div>
-
-
                 <div class="received-fields d-none">
                     <div class="form-group row">
                         <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Paying Amount *:
@@ -175,15 +151,13 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="form-group row">
                     <label for="description" class="form-label col-form-label"> Sale Note:
                         <textarea type="text" name="description" rows="5" class="form-control"></textarea>
                     </label>
                 </div>
-
                 <div class="form-group row mt-2">
-                    <input class="btn btn-primary" type="submit" value="Save">
+                    <input class="btn btn-primary" id="saveButton" type="submit" value="Save">
                 </div>
             </form>
         </div>
@@ -687,11 +661,18 @@
 
         $(document).ready(function() {
             var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
-            window.addEventListener('beforeunload', function(event) {
-                event.returnValue = confirmationMessage;
-                return confirmationMessage;
+            var isSaveButtonClicked = false;
+
+            $('#saveButton').on('click', function() {
+                isSaveButtonClicked = true;
             });
-        })
+            window.addEventListener('beforeunload', function(event) {
+                if (!isSaveButtonClicked) {
+                    event.returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
+        });
     </script>
 @endsection
 

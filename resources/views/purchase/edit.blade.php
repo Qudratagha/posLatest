@@ -173,7 +173,7 @@
                     </label>
                 </div>
                 <div class="form-group row mt-2">
-                    <input class="btn btn-primary" type="submit" value="Update">
+                    <input class="btn btn-primary" id="saveButton" type="submit" value="Update">
                 </div>
             </form>
         </div>
@@ -558,11 +558,18 @@
 
         $(document).ready(function() {
             var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
-            window.addEventListener('beforeunload', function(event) {
-                event.returnValue = confirmationMessage;
-                return confirmationMessage;
+            var isSaveButtonClicked = false;
+
+            $('#saveButton').on('click', function() {
+                isSaveButtonClicked = true;
             });
-        })
+            window.addEventListener('beforeunload', function(event) {
+                if (!isSaveButtonClicked) {
+                    event.returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
+        });
 
     </script>
 @endsection
