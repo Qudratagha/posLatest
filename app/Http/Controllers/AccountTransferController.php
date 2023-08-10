@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\AccountTransfer;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,8 @@ class AccountTransferController extends Controller
      */
     public function index()
     {
-        //
+        $data = AccountTransfer::all();
+        return view('account.transfer.index', compact('data'));
     }
 
     /**
@@ -20,7 +22,9 @@ class AccountTransferController extends Controller
      */
     public function create()
     {
-        //
+        $accounts = Account::all();
+
+        return view('account.transfer.create', compact('accounts'));
     }
 
     /**

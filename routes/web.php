@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountTransferController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\permissionsController;
 use App\Http\Controllers\rolesController;
@@ -30,7 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/depositWithdrawals/create', [WithdrawalDepositController::class, 'create']);
     Route::post('/account/depositWithdrawals/store', [WithdrawalDepositController::class, 'store']);
     Route::get('/account/depositWithdrawals/delete/{id}', [WithdrawalDepositController::class, 'destroy']);
-    
+    Route::get('/account/transfer', [AccountTransferController::class, 'index']);
+    Route::get('/account/transfer/create', [AccountTransferController::class, 'create']);
+
     Route::post('ajax/{method}', [App\Http\Controllers\AjaxController::class, 'handle'])->name('ajax.handle');
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -64,7 +67,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/roles/store', [rolesController::class, 'store']);
     Route::post('/role/updatePermissions', [rolesController::class, 'updatePermissions']);
     Route::get('/permissions', [permissionsController::class, 'index']);
-    
 
-    
 });

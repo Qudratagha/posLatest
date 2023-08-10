@@ -29,8 +29,8 @@
                 @foreach($data  as $key=>$item)
                     <tr>
                         <td>{{ $key+1 }}</td>
-                        <td>{{ $item->from->name}}</td>
-                        <td>{{ $item->to->name}}</td>
+                        <td>{{ $item->accountFrom->name}}</td>
+                        <td>{{ $item->accountTo->name}}</td>
                         <td>{{ $item->date }}</td>
                         <td>{{ $item->description }}</td>
                         <td>{{ $item->amount }}</td>
@@ -41,7 +41,7 @@
                                 <i class="text-danger fa fa-trash"></i>
                             </a>
                             @endcan
-                           
+
                         </td>
                     </tr>
                 @endforeach

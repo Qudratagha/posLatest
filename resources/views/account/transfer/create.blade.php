@@ -4,7 +4,7 @@
     <div class="card card-default color-palette-box">
         <div class="card-header">
             <h4 class="card-title fw-semibold">
-                <i class="fas fa-users-cog"></i> Create Deposit / Withdrawal
+                <i class="fas fa-users-cog"></i> Create Transfer
             </h4>
         </div>
         <div class="card-body">
@@ -12,15 +12,28 @@
                 @csrf
 
                 <div class="form-group row mt-2">
-                    <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Select Account</label>
+                    <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">From</label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <select name="account" class="form-select productField">
+                        <select name="from" class="form-select productField">
                             @foreach ($accounts as $account)
                                 <option value="{{$account->accountID}}">{{$account->name}} ({{$account->type}})</option>
                             @endforeach
                         </select>
                     </div>
-                    @error('account')
+                    @error('from')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group row mt-2">
+                    <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">From</label>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <select name="from" class="form-select productField">
+                            @foreach ($accounts as $account)
+                                <option value="{{$account->accountID}}">{{$account->name}} ({{$account->type}})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('from')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
@@ -52,7 +65,7 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
                 </div>
-              
+
                 <div class="form-group row mt-2">
                     <label for="notes" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Notes: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
