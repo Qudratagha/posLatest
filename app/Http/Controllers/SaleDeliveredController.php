@@ -35,6 +35,9 @@ class SaleDeliveredController extends Controller
         }
         foreach ($productQuantities as $productId => $receiveQty) {
             $unit = Unit::where('unitID', $request['saleUnit_'.$productId])->first();
+            if ($receiveQty == 0){
+                continue;
+            }
             SaleDelivered::create([
                 'saleID' => $request['saleID'],
                 'productID' => $request['productID_'.$productId],

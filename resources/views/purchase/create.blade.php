@@ -509,8 +509,19 @@
         function overallTaxAmount() {
             rowData();
         }
+        // window.addEventListener('beforeunload', function(event) {
+        //     var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
+        //     event.returnValue = confirmationMessage;
+        //     return confirmationMessage;
+        // });
 
-
+        $(document).ready(function() {
+            var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
+            window.addEventListener('beforeunload', function(event) {
+                event.returnValue = confirmationMessage;
+                return confirmationMessage;
+            });
+        })
 
     </script>
 @endsection

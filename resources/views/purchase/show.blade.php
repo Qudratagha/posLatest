@@ -97,6 +97,8 @@
                                         <th>Product Name</th>
                                         <th>Received Quantity</th>
                                         <th>Date</th>
+                                        <th>Action</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -109,6 +111,18 @@
                                             <td>{{ $receive->product->name }}</td>
                                             <td>{{ $receive->receivedQty / $unit['value']  }}</td>
                                             <td>{{ \Carbon\Carbon::parse($receive->date)->format('Y-m-d')  }}</td>
+                                            <td>
+                                                <form action="{{ route('purchaseReceive.destroy', $receive->purchaseReceiveID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <input type="hidden" name="purchaseReceiveID" value="{{ $receive->purchaseReceiveID }}">
+                                                    <input type="hidden" name="purchaseID" value="{{ $purchase->purchaseID }}">
+
+                                                    <a class="ps-1 pe-1" href="javascript:void(0);" onclick="$(this).closest('form').submit();">
+                                                        <i class="text-red fa fa-trash"></i>
+                                                    </a>
+                                                </form>
+                                            </td>
                                         </tr>
                                     @endforeach
                                     </tbody>

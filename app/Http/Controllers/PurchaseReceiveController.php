@@ -37,6 +37,9 @@ class PurchaseReceiveController extends Controller
         foreach ($productQuantities as $productId => $receiveQty) {
             $unit = Unit::where('unitID', $request['purchaseUnit_'.$productId])->first();
 
+            if ($receiveQty == 0){
+                continue;
+            }
             PurchaseReceive::create([
                 'purchaseID' => $request['purchaseID'],
                 'productID' => $productId,
@@ -76,8 +79,14 @@ class PurchaseReceiveController extends Controller
         //
     }
 
-    public function destroy(PurchaseReceive $purchaseReceive)
+    public function destroy(Request $request)
     {
-        //
+        $purchaseReceiveID = $request['purchaseReceiveID'];
+        $purchaseID = $request['purchaseID'];
+
+        $purchaseReceive = PurchaseReceive::where('purchaseReceiveID', $purchaseReceiveID)->first();
+        $purchaseReceive->delete();
+        return redirect()->route('purchase.show', $purchaseID)->with('message', 'Purchase Receive Deleted Successfully!');
+
     }
 }

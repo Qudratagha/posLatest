@@ -258,7 +258,6 @@
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Warehouse:</label>
                                                         <select name="warehouseID_{{ $data['batchNumber'] }}" class="form-select" required>
-                                                            <option value="">Select Warehouse</option>
                                                             @foreach($warehouses as $warehouse)
                                                                 <option value="{{ $warehouse->warehouseID }}"> {{ $warehouse->name }} </option>
                                                             @endforeach
@@ -267,7 +266,7 @@
 
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Receive Quantity:</label>
-                                                        <input type="number" name="receiveQty_{{ $data['batchNumber'] }}" min="1" max="{{ $modifiedOrderedQty }}" class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
+                                                        <input type="number" name="receiveQty_{{ $data['batchNumber'] }}" min="0" max="{{ $modifiedOrderedQty }}" class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
                                                         <div class="invalid-feedback" style="display: none;">Delivered quantity cannot exceed order quantity.</div>
                                                     </div>
                                                 </div>

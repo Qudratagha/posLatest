@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/saleDelivered', \App\Http\Controllers\SaleDeliveredController::class);
     Route::resource('/salePayment', \App\Http\Controllers\SalePaymentController::class);
 
+    Route::resource('/purchaseReceive',\App\Http\Controllers\PurchaseReceiveController::class);
+
     Route::get('/stocks','App\Http\Controllers\StockController@index')->name('stock.index');
     Route::get('/stocks/{stockDetails}','App\Http\Controllers\StockController@show')->name('stock.show');
 

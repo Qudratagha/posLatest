@@ -98,7 +98,7 @@
                                         <tr id="rowID_{{ $order->productID }}">
                                             <td>{{ $order->product->name }}</td>
                                             <td>{{ $order->code }}</td>
-                                            <td><input type="number" class="form-control" name="quantity_{{$order->productID}}" min="0" value="{{ $order->quantity }}" oninput="changeQuantity(this,{{$order->productID}})" style="border: none"></td>
+                                            <td><input type="number" class="form-control" name="quantity_{{$order->productID}}" min="1" value="{{ $order->quantity }}" oninput="changeQuantity(this,{{$order->productID}})" style="border: none"></td>
                                             <td><input type="number" class="form-control" name="batchNumber_{{$order->productID}}" value="{{ $order->batchNumber }}"></td>
                                             <td style="text-align: center;">
                                                 @if($order->expiryDate == '')
@@ -121,8 +121,6 @@
                                             <td> <span id="subTotal_{{$order->productID}}"> {{ $order->subTotal }} </span></td>
                                             <input type="hidden" name="code_{{ $order->productID }}" value="{{ $order->code }}">
                                             <input type="hidden" name="netUnitCost_{{ $order->productID }}" value="{{ $order->netUnitCost }}">
-
-
                                             <td><input type="hidden" name="productID_{{ $order->productID }}" value=""><button type="button" class="btn btn-sm" onclick="deleteRow(this, {{$order->productID}})"><i class="fa fa-trash"></i></button></td>
                                         </tr>
                                     @endforeach
@@ -557,6 +555,14 @@
         function overallTaxAmount() {
             rowData();
         }
+
+        $(document).ready(function() {
+            var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
+            window.addEventListener('beforeunload', function(event) {
+                event.returnValue = confirmationMessage;
+                return confirmationMessage;
+            });
+        })
 
     </script>
 @endsection

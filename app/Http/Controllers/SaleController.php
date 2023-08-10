@@ -275,11 +275,19 @@ class SaleController extends Controller
 
     public function destroy(Sale $sale, Request $request)
     {
-        $sale->saleOrders()->delete();
-        $sale->saleReceive()->delete();
-        $sale->salePayments()->delete();
-        $sale->delete();
-        $request->session()->flash('message', 'Sale Del Successfully!');
-        return to_route('sale.index');
+        $receive = $sale->saleReceive->count();
+        $payment = $sale->salePayments->count();
+        if ($receive > 0){
+            return back()->with('error', 'You can not delete this sale as it has some products delivered');
+        }elseif($payment > 0){
+            return back()->with('error', 'You can not delete this sale as it has some payments received');
+        }else {
+            $sale->saleOrders()->delete();
+            $sale->saleReceive()->delete();
+            $sale->salePayments()->delete();
+            $sale->delete();
+            return back()->with('message', 'Sale Deleted Successfully!');
+
+        }
     }
 }
