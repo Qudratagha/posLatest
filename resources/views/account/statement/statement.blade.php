@@ -1,61 +1,4 @@
-<link rel="stylesheet" href="{{ asset('src/plugins/src/flatpickr/flatpickr.js') }}">
-<link rel="stylesheet" href="{{ asset('src/plugins/css/dark/flatpickr/custom-flatpickr.css') }}">
-<link rel="stylesheet" href="{{ asset('src/plugins/css/light/flatpickr/custom-flatpickr.css') }}">
-@section('more-script')
-    <script src="{{ asset('src/plugins/src/flatpickr/flatpickr.js') }}"></script>
-    <script>
 
-
-        $('#form').submit(function (e) {
-            e.preventDefault();
-            return false;
-        });
-        $(document).ready(function(){
-
-    get_items();
-    });
-
-    function get_items(){
-    var from = $('#from').val();
-    var to = $('#to').val();
-    $.ajax({
-    method: "get",
-    url: "{{url('/account/details/')}}/"+{{$account->accountID}}+"/"+from+"/"+to,
-    success: function(result){
-
-        $("#items").html(result);
-    }
-    });
-    }
-
-    /* function printPage(id){
-        var from = $("#from").val();
-        var to = $("#to").val();
-        var printWindow = window.open("{{url('/statement/pdf/')}}/"+id+"/"+from+"/"+to, '_blank');
-        printWindow.onload = function() {
-        printWindow.print();
-        setTimeout(function() {
-        printWindow.close();
-        }, 2000);
-
-    };
-    } */
-
-    var date = new Date();
-        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-        var f2 = flatpickr(document.getElementById('from'), {
-    dateFormat: "d-m-Y",
-    defaultDate: firstDay
-    });
-
-    var f2 = flatpickr(document.getElementById('to'), {
-    dateFormat: "d-m-Y",
-    defaultDate: lastDay
-    });
-    </script>
-@endsection
 
 @extends('layouts.admin')
 @section('title', 'Account Index')
@@ -105,26 +48,73 @@
                     <div class="col-md-6">
                         <form id="form">
                             <div class="row">
+                                @php
+                                    $currentYear = date('Y');
+                                    $currentMonth = date('m');
+                                    $firstDayOfMonth = date('Y-m-01', strtotime("$currentYear-$currentMonth-01"));
+                                    $lastDayOfMonth = date('Y-m-t', strtotime("$currentYear-$currentMonth-01"));
+                                @endphp
                                 <div class="col-md-6">
                                     <div class="form-group mt-2">
                                         <label for="from">From</label>
-                                        <input type="date" class="form-control" onchange="get_items()" name="from" id="from">
+                                        <input type="date" class="form-control" value="{{$firstDayOfMonth}}" onchange="get_items()" name="from" id="from">
                                     </div>
                                 </div>
                                 <div class="col-md-6 mt-2">
                                     <div class="form-group">
                                         <label for="to">To</label>
-                                        <input type="date" class="form-control" onchange="get_items()" name="to" id="to">
+                                        <input type="date" class="form-control" value="{{$lastDayOfMonth}}" onchange="get_items()" name="to" id="to">
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-            <div id="items" class="table-responsive"></div>
+            <div id="items"></div>
         </div>
     </div>
 </div>
 
 @endsection
 
+
+@section('more-script')
+    <script>
+        $('#form').submit(function (e) {
+            e.preventDefault();
+            return false;
+        });
+        $(document).ready(function(){
+
+    get_items();
+    });
+
+    function get_items(){
+    var from = $('#from').val();
+    var to = $('#to').val();
+    $.ajax({
+    method: "get",
+    url: "{{url('/account/details/')}}/"+{{$account->accountID}}+"/"+from+"/"+to,
+    success: function(result){
+
+        $("#items").html(result);
+    }
+    });
+    }
+
+    /* function printPage(id){
+        var from = $("#from").val();
+        var to = $("#to").val();
+        var printWindow = window.open("{{url('/statement/pdf/')}}/"+id+"/"+from+"/"+to, '_blank');
+        printWindow.onload = function() {
+        printWindow.print();
+        setTimeout(function() {
+        printWindow.close();
+        }, 2000);
+
+    };
+    } */
+
+  
+    </script>
+@endsection

@@ -49,7 +49,7 @@
 
                 <div class="form-group row">
                     <label for="product" class="form-label col-form-label col-sm-12"> Products:
-                        <select name="productID" id="productID" class="form-control productField" onchange="productDetails(this.value)" autofocus>
+                        <select name="productID" id="productID" class="form-control" onchange="productDetails(this.value)">
                             <option value="">Select Product</option>
                         </select>
                     </label>
@@ -139,7 +139,7 @@
                             <div class="invalid-feedback" style="display: none;"></div>
                         </label>
                         <label for="account" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Account *:
-                            <select name="accountID" class="form-select">
+                            <select name="accountID" class="form-select" >
                                 @foreach ($paymentAccounts as $account)
                                     <option value="{{ $account->accountID }}" {{ old('accountID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
                                 @endforeach
@@ -222,11 +222,14 @@
                         warehouseID: warehouseID
                     },
                     success: function(response) {
+                        
                         $('#productID').empty();
                         $('#productID').append('<option value="">Select Product</option>');
-                        $.each(response.productsWithCreditDebtSum, function(index, product) {
+                        var data = $.each(response.productsWithCreditDebtSum, function(index, product) {
                             $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">' + product.product.name +' | '+ product.batchNumber +' | '+ product.difference + '</option>');
                         });
+                        
+                       
                     },
                     error: function() {
                         alert('Failed to fetch products.');
@@ -623,7 +626,7 @@
         });
         $(document).ready(function() {
             /* $('.productField').select2(); */
-            new TomSelect(".productField",{
+            new TomSelect("#productID",{
                 create: false,
                 sortField: {
                     field: "text",

@@ -79,23 +79,23 @@ class AccountController extends Controller
 
     public function statementDetails($id, $from, $to)
     {
-        $from = Carbon::createFromFormat('d-m-Y', $from)->format('Y-m-d');
-        $to = Carbon::createFromFormat('d-m-Y', $to)->format('Y-m-d');
+        /* $from = Carbon::createFromFormat('d-m-Y', $from)->format('Y-m-d');
+        $to = Carbon::createFromFormat('d-m-Y', $to)->format('Y-m-d'); */
         $items = Transaction::where('accountID', $id)->where('date', '>=', $from)->where('date', '<=', $to)->get();
         $prev = Transaction::where('accountID', $id)->where('date', '<', $from)->get();
 
         $p_balance = 0;
         foreach ($prev as $item) {
-            $p_balance += $item->cr;
-            $p_balance -= $item->db;
+            $p_balance += $item->credit;
+            $p_balance -= $item->debt;
         }
 
         $all = Transaction::where('accountID', $id)->get();
 
         $c_balance = 0;
         foreach ($all as $item) {
-            $c_balance += $item->cr;
-            $c_balance -= $item->db;
+            $c_balance += $item->credit;
+            $c_balance -= $item->debt;
         }
         return view('account.statement.statment_details')->with(compact('items', 'p_balance', 'c_balance'));
     }

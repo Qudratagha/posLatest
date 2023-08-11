@@ -32,7 +32,49 @@ class AccountTransferController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(
+            [
+                'from' => 'required',
+                'to' => 'required|different:from',
+                'amount' => 'required',
+                'date' => 'required'
+            ],
+            [
+                'to.different' => "From and To Accounts must be different"
+            ]
+        );
+
+        $from = Account::find($request->from);
+        $to = Account::find($request->to);
+        $ref = getRef();
+        $desc = "<strong>Transfer to ".$to->name."</strong><br>" . $request->desc;
+        $desc1 = "<strong>Transfer from ".$from->name."</strong><br>" . $request->desc;
+
+        if($from->type == 'business' && $to->type == 'business'
+            || $from->type == 'customer' && $to->type == 'customer'
+            || $from->type == 'business' && $to->type == 'customer'
+            || $from->type == 'customer' && $to->type == 'business'){
+                addTransaction($request->from, $request->date, "Transfer", 0, $request->amount, $desc, "Transfer", $ref);
+                addTransaction($request->to, $request->date, "Transfer", $request->amount, 0, $desc1, "Transfer", $ref);
+        }       
+        if($from->type == 'Vendor' && $to->type == 'Vendor')
+           {
+            addTransaction($request->from, $request->date, "Transfer", $request->amount, 0, $desc, "Transfer", $ref);
+            addTransaction($request->to, $request->date, "Transfer", 0, $request->amount, $desc1, "Transfer", $ref);
+        }
+
+        if($from->type == 'Vendor' && $to->type == 'Business'
+            || $from->type == 'Vendor' && $to->type == 'Customer'){
+                addTransaction($request->from, $request->date, "Transfer", $request->amount, 0, $desc, "Transfer", $ref);
+                addTransaction($request->to, $request->date, "Transfer", $request->amount, 0, $desc1, "Transfer", $ref);
+        }
+        if($from->type == 'Business' && $to->type == 'Vendor'
+            || $from->type == 'Customer' && $to->type == 'Vendor'){
+                addTransaction($request->from, $request->date, "Transfer", 0, $request->amount, $desc, "Transfer", $ref);
+                addTransaction($request->to, $request->date, "Transfer", 0, $request->amount, $desc1, "Transfer", $ref);
+        }
+
+        return redirect('/transfer');
     }
 
     /**

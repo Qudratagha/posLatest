@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/depositWithdrawals/delete/{id}', [WithdrawalDepositController::class, 'destroy']);
     Route::get('/account/transfer', [AccountTransferController::class, 'index']);
     Route::get('/account/transfer/create', [AccountTransferController::class, 'create']);
+    Route::post('/account/transfer/store', [AccountTransferController::class, 'store']);
     Route::get('/account/statement/{id}', [AccountController::class, 'statement']);
     Route::get('/account/details/{id}/{from}/{to}', [AccountController::class, 'statementDetails']);
 
