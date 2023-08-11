@@ -46,6 +46,7 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
+
         $date = Carbon::now();
         $ref = getRef();
         if ($request->has('paidBy')){
@@ -86,13 +87,16 @@ class PurchaseController extends Controller
                     $productDiscount = $request['discount_' . $productID];
                     $productTax = $request['tax_' . $productID];
                     $productPurchaseUnit = $request['purchaseUnit_' . $productID];
-                    $subTotal = ($productNetUnitCost * $productQuantity) - $productDiscount + $productTax;
+
+                    $unit = Unit::where('unitID', $productPurchaseUnit)->first();
+
+                    $subTotal = ($productNetUnitCost * $productQuantity * $unit->value) - $productDiscount + $productTax;
                     $netAmount += $subTotal;
                     PurchaseOrder::create([
                         'purchaseID' => $purchase->purchaseID,
                         'productID' => $productID,
                         'code' => $productCode,
-                        'quantity' => $productQuantity,
+                        'quantity' => $productQuantity * $unit->value,
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
                         'netUnitCost' => $productNetUnitCost,
@@ -107,7 +111,8 @@ class PurchaseController extends Controller
                         'productID' => $productID,
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
-                        'orderedQty' => $productQuantity,
+                        'orderedQty' => $productQuantity * $unit->value,
+                        'purchaseUnit' => $productPurchaseUnit
                     ]);
                     if($request['purchaseStatus'] === 'received'){
                         PurchaseReceive::create([
@@ -115,7 +120,8 @@ class PurchaseController extends Controller
                             'productID' => $productID,
                             'batchNumber' => $productBatchNumber,
                             'expiryDate' => $productExpiryDate,
-                            'receivedQty' => $productQuantity ?? 'NULL'
+                            'receivedQty' => $productQuantity * $unit->value ?? 'NULL',
+                            'purchaseUnit' => $productPurchaseUnit
                         ]);
 
                         Stock::create([
@@ -124,17 +130,15 @@ class PurchaseController extends Controller
                             'date' => $date,
                             'batchNumber' => $productBatchNumber,
                             'expiryDate' => $productExpiryDate,
-                            'credit' => $productQuantity ?? 'NULL',
+                            'credit' => $productQuantity * $unit->value,
                             'refID' => $ref,
                         ]);
                     }
 
-
-
-
                 }
             }
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
+
             addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
             $request->session()->flash('message', 'Purchase Created Successfully!');
             return redirect()->route('purchase.index');
@@ -153,14 +157,12 @@ class PurchaseController extends Controller
         return view('purchase.show', compact('purchaseAmount', 'purchaseOrders', 'paidAmount', 'dueAmount', 'purchasePayments', 'purchase', 'purchaseReceives'));
 
     }
-
     public function edit(Purchase $purchase, Request $request)
     {
         foreach ($purchase->purchaseReceive as $order) {
             $productID = $order['productID'];
             $orderedQty = $order['orderedQty'] ?? 0;
             $receivedQty = $order['receivedQty'] ?? 0;
-
             if (!isset($summedData[$productID])) {
                 $summedData[$productID] = [
                     'productID' => $productID,
@@ -187,10 +189,8 @@ class PurchaseController extends Controller
         $purchaseStatuses = PurchaseStatus::all();
         $products = Product::all();
         $purchaseOrders = $purchase->purchaseOrders;
-
         return view('purchase.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'products', 'units', 'purchase','purchaseOrders'));
     }
-
     public function update(Request $request, Purchase $purchase)
     {
         $purchase->purchaseOrders()->delete();
@@ -221,12 +221,14 @@ class PurchaseController extends Controller
                 $productDiscount = $request['discount_' . $productID];
                 $productTax = $request['tax_' . $productID];
                 $productPurchaseUnit = $request['purchaseUnit_' . $productID];
-                $subTotal = ($productNetUnitCost * $productQuantity) - $productDiscount + $productTax;
+
+                $unit = Unit::where('unitID', $productPurchaseUnit)->first();
+                $subTotal = ($productNetUnitCost * $productQuantity * $unit->value) - $productDiscount + $productTax;
                 PurchaseOrder::create([
                     'purchaseID' => $purchase->purchaseID,
                     'productID' => $productID,
                     'code' => $productCode,
-                    'quantity' => $productQuantity,
+                    'quantity' => $productQuantity * $unit->value ,
                     'batchNumber' => $productBatchNumber,
                     'expiryDate' => $productExpiryDate,
                     'netUnitCost' => $productNetUnitCost,
@@ -239,8 +241,31 @@ class PurchaseController extends Controller
                 PurchaseReceive::create([
                     'purchaseID' => $purchase->purchaseID,
                     'productID' => $productID,
-                    'orderedQty' => $productQuantity,
+                    'orderedQty' => $productQuantity * $unit->value,
+                    'purchaseUnit' => $productPurchaseUnit
+
                 ]);
+                if($request['purchaseStatus'] === 'received'){
+
+                    PurchaseReceive::create([
+                        'purchaseID' => $purchase->purchaseID,
+                        'productID' => $productID,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'receivedQty' => $productQuantity * $unit->value,
+                        'purchaseUnit' => $productPurchaseUnit
+                    ]);
+
+                    Stock::create([
+                        'warehouseID' =>  $warehouseID,
+                        'productID' => $productID,
+                        'date' => $date,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'credit' => $productQuantity * $unit->value,
+                        'refID' => $ref,
+                    ]);
+                }
             }
         }
         $request->session()->flash('message', 'Purchase Updated Successfully!');
@@ -250,11 +275,19 @@ class PurchaseController extends Controller
 
     public function destroy(Purchase $purchase , Request $request)
     {
-        $purchase->purchaseOrders()->delete();
-        $purchase->purchaseReceive()->delete();
-        $purchase->purchasePayments()->delete();
-        $purchase->delete();
-        $request->session()->flash('message', 'Purchase Del Successfully!');
-        return to_route('purchase.index');
+        $receive = $purchase->purchaseReceive->count();
+        $payment = $purchase->purchasePayments->count();
+        if ($receive > 0){
+            return back()->with('error', 'You can not delete this purchase as it has some products received');
+        }elseif($payment > 0){
+            return back()->with('error', 'You can not delete this purchase as it has some payments received');
+        }else {
+            $purchase->purchaseOrders()->delete();
+            $purchase->purchaseReceive()->delete();
+            $purchase->purchasePayments()->delete();
+            $purchase->delete();
+            $request->session()->flash('message', 'Purchase Deleted Successfully!');
+            return to_route('purchase.index');
+        }
     }
 }

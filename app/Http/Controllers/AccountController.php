@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -68,5 +70,33 @@ class AccountController extends Controller
         $account->delete();
         $request->session()->flash('error', 'Account Deleted Successfully!');
         return to_route('account.index');
+    }
+
+    public function statement($id){
+        $account = Account::find($id);
+        return view('account.statement.statement', compact('account'));
+    }
+
+    public function statementDetails($id, $from, $to)
+    {
+        $from = Carbon::createFromFormat('d-m-Y', $from)->format('Y-m-d');
+        $to = Carbon::createFromFormat('d-m-Y', $to)->format('Y-m-d');
+        $items = Transaction::where('accountID', $id)->where('date', '>=', $from)->where('date', '<=', $to)->get();
+        $prev = Transaction::where('accountID', $id)->where('date', '<', $from)->get();
+
+        $p_balance = 0;
+        foreach ($prev as $item) {
+            $p_balance += $item->cr;
+            $p_balance -= $item->db;
+        }
+
+        $all = Transaction::where('accountID', $id)->get();
+
+        $c_balance = 0;
+        foreach ($all as $item) {
+            $c_balance += $item->cr;
+            $c_balance -= $item->db;
+        }
+        return view('account.statement.statment_details')->with(compact('items', 'p_balance', 'c_balance'));
     }
 }

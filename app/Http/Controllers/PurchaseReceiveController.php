@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PurchaseReceive;
 use App\Models\Reference;
 use App\Models\Stock;
+use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -34,13 +35,19 @@ class PurchaseReceiveController extends Controller
             }
         }
         foreach ($productQuantities as $productId => $receiveQty) {
+            $unit = Unit::where('unitID', $request['purchaseUnit_'.$productId])->first();
+
+            if ($receiveQty == 0){
+                continue;
+            }
             PurchaseReceive::create([
                 'purchaseID' => $request['purchaseID'],
                 'productID' => $productId,
                 'batchNumber' => $request['batchNumber_'.$productId],
                 'expiryDate' => $request['expiryDate_'.$productId],
-                'receivedQty' => $receiveQty,
-               'date' => $date
+                'receivedQty' => $receiveQty * $unit['value'],
+                'date' => $date,
+                'purchaseUnit' => $request['purchaseUnit_'.$productId]
             ]);
 
             Stock::create([
@@ -49,11 +56,10 @@ class PurchaseReceiveController extends Controller
                 'batchNumber' => $request['batchNumber_'.$productId],
                 'expiryDate' => $request['expiryDate_'.$productId],
                 'date' => $date,
-                'credit' => $receiveQty,
+                'credit' => $receiveQty * $unit['value'],
                 'refID' => $ref,
             ]);
         }
-
         $request->session()->flash('message', 'Product Received Successfully!');
         return to_route('purchase.index');
     }
@@ -73,8 +79,14 @@ class PurchaseReceiveController extends Controller
         //
     }
 
-    public function destroy(PurchaseReceive $purchaseReceive)
+    public function destroy(Request $request)
     {
-        //
+        $purchaseReceiveID = $request['purchaseReceiveID'];
+        $purchaseID = $request['purchaseID'];
+
+        $purchaseReceive = PurchaseReceive::where('purchaseReceiveID', $purchaseReceiveID)->first();
+        $purchaseReceive->delete();
+        return redirect()->route('purchase.show', $purchaseID)->with('message', 'Purchase Receive Deleted Successfully!');
+
     }
 }

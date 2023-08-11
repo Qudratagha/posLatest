@@ -46,5 +46,7 @@ class Purchase extends Model
 
 
 
+
+
 }
 

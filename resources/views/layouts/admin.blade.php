@@ -33,13 +33,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
-    integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" href="{{ asset('src/plugins/src/flatpickr/flatpickr.js') }}">
+    <link rel="stylesheet" href="{{ asset('src/plugins/css/dark/flatpickr/custom-flatpickr.css') }}">
+    <link rel="stylesheet" href="{{ asset('src/plugins/css/light/flatpickr/custom-flatpickr.css') }}">
 </head>
 <body class="layout-boxed enable-secondaryNav">
     <!-- BEGIN LOADER -->
@@ -213,13 +209,13 @@
                     </a>
                     <ul class="dropdown-menu submenu list-unstyled" id="apps" data-bs-parent="#accordionExample">
                         @can('View Accounts')
-                           <li><a href="{{ route('account.index') }}"> Account </a></li> 
+                           <li><a href="{{ route('account.index') }}"> Account </a></li>
                         @endcan
                         @can('View Deposit/Withdrawals')
-                            <li><a href="{{url('/account/depositWithdrawals')}}"> Deposit / Withdrawals </a></li> 
+                            <li><a href="{{url('/account/depositWithdrawals')}}"> Deposit / Withdrawals </a></li>
                         @endcan
                         @can('View Transfer')
-                            <li><a href="{{url('/account/transfer')}}"> Transfer </a></li> 
+                            <li><a href="{{url('/account/transfer')}}"> Transfer </a></li>
                         @endcan
                     </ul>
                 </li>
@@ -262,6 +258,45 @@
                     </ul>
                 </li>
                 @endcan
+
+                @can('View Sales')
+
+                    <li class="menu">
+                        <a href="#apps" data-bs-toggle="dropdown" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                                <span>Stock</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu submenu list-unstyled" id="apps" data-bs-parent="#accordionExample">
+                            <li>
+                                <a href="{{ route('stock.index') }}"> Stock </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="menu">
+                        <a href="#apps" data-bs-toggle="dropdown" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                                <span>Database</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu submenu list-unstyled" id="apps" data-bs-parent="#accordionExample">
+                            <li>
+                                <a href="{{ route('reset') }}"> Reset Database </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
+
+
 
             </ul>
         </nav>
@@ -314,7 +349,7 @@
 <!-- END GLOBAL MANDATORY SCRIPTS -->
 <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 {{--<script src=" {{ asset('../src/plugins/src/apex/apexcharts.min.js') }} "></script>--}}
-<script src=" {{ asset('../src/assets/js/dashboard/dash_1.js') }} "></script>
+{{-- <script src=" {{ asset('../src/assets/js/dashboard/dash_1.js') }} "></script> --}}
 <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 <!-- Datatables -->
 <script src="https://code.jquery.com/jquery-3.5.1.js" ></script>
@@ -324,12 +359,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="{{ asset('../src/plugins/src/tomSelect/tom-select.base.js')}}"></script>
     <script src="{{ asset('../src/plugins/src/tomSelect/custom-tom-select.js')}}"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
-        integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-        ></script>
+
     @yield('more-script')
 <script>
 

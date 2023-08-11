@@ -62,23 +62,24 @@
                                         <th scope="col">Discount</th>
                                         <th scope="col">Tax</th>
                                         <th scope="col">Total</th>
+                                        <th scope="col">Purchase Unit</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @php $totalAmount = 0; @endphp
-
                                     @foreach($purchaseOrders as $order)
                                         <tr>
                                             <td>{{ $order->product->name }}</td>
                                             <td>{{ $order->warehouse->name }}</td>
                                             <td>{{ $order->code }}</td>
-                                            <td>{{ $order->quantity }}</td>
+                                            <td>{{ $order->quantity / $order->unit->value  }}</td>
                                             <td>{{ $order->batchNumber ?? '' }}</td>
                                             <td>{{ $order->expiryDate ?? '' }}</td>
                                             <td>{{ $order->netUnitCost }}</td>
                                             <td>{{ $order->discount }}</td>
                                             <td>{{ $order->tax }}</td>
                                             <td>{{ $order->subTotal }}</td>
+                                            <td>{{ $order->unit->name }}</td>
                                             @php $totalAmount +=  $order->subTotal @endphp
                                         </tr>
                                     @endforeach
@@ -96,14 +97,34 @@
                                         <th>Product Name</th>
                                         <th>Received Quantity</th>
                                         <th>Date</th>
+                                        <th>Action</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($purchaseReceives as $receive)
+                                    @foreach($purchaseReceives as $index => $receive)
+                                        <?php
+                                        $unit = \App\Models\Unit::where('unitID', $receive->purchaseUnit)->first();
+                                        ?>
+
                                         <tr>
                                             <td>{{ $receive->product->name }}</td>
-                                            <td>{{ $receive->receivedQty }}</td>
+                                            <td>{{ $receive->receivedQty / $unit['value']  }}</td>
                                             <td>{{ \Carbon\Carbon::parse($receive->date)->format('Y-m-d')  }}</td>
+                                            <td>
+                                                @if ($loop->last)
+                                                <form action="{{ route('purchaseReceive.destroy', $receive->purchaseReceiveID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <input type="hidden" name="purchaseReceiveID" value="{{ $receive->purchaseReceiveID }}">
+                                                    <input type="hidden" name="purchaseID" value="{{ $purchase->purchaseID }}">
+
+                                                    <a class="ps-1 pe-1" href="javascript:void(0);" onclick="$(this).closest('form').submit();">
+                                                        <i class="text-red fa fa-trash"></i>
+                                                    </a>
+                                                </form>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                     </tbody>

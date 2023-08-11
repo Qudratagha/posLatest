@@ -48,7 +48,7 @@
                             $purchaseDelivered = $purchase->purchaseReceive->sum('receivedQty');
                             $sum = $purchaseOrders - $purchaseDelivered;
                         @endphp
-                        <td> @if($sum > 0) <div class="badge badge-danger">Pending</div> @else <div class="badge badge-success">Delivered</div> @endif</td>
+                        <td> @if($sum > 0) <div class="badge badge-danger">Pending</div> @else <div class="badge badge-success">Received</div> @endif</td>
                         <td>{{ $subTotal - $purchase->discount + $purchase->shippingCost + $purchase->orderTax }}</td>
                         <td>{{ $paidAmount }}</td>
                         <td>{{ $dueAmount }}</td>
@@ -204,8 +204,10 @@
                                                 $batchNumber = $order['batchNumber'];
                                                 $expiryDate = $order['expiryDate'];
                                                 $productID = $order['productID'];
-                                                $orderedQty = $order['orderedQty'] ?? 0;
-                                                $receivedQty = $order['receivedQty'] ?? 0;
+                                                $purchaseUnit = $order->purchaseUnit;
+                                                $unit = \App\Models\Unit::where('unitID', $purchaseUnit)->first();
+                                                $orderedQty = $order['orderedQty'] /  $unit->value;
+                                                $receivedQty = $order['receivedQty'] /  $unit->value ;
 
                                                 if (!isset($summedData[$productID])) {
                                                     $summedData[$productID] = [
@@ -213,7 +215,9 @@
                                                         'expiryDate' => $expiryDate,
                                                         'batchNumber' => $batchNumber,
                                                         'orderedQty' => $orderedQty,
-                                                        'receivedQty' => $receivedQty
+                                                        'receivedQty' => $receivedQty,
+                                                        'purchaseUnit' => $purchaseUnit
+
                                                     ];
                                                 } else {
                                                     $summedData[$productID]['orderedQty'] += $orderedQty;
@@ -221,10 +225,11 @@
                                                 }
                                             ?>
                                         @endforeach
+
                                         @php
                                             $allProductsReceived = true;
                                         @endphp
-                                        @forelse ($summedData as $data)
+                                        @forelse ($summedData as $index => $data)
                                             @php
                                                 $modifiedOrderedQty = $data['orderedQty'] - $data['receivedQty'];
                                                 $productID = $data['productID'];
@@ -234,6 +239,7 @@
                                                 @php $allProductsReceived = false;@endphp
                                                 <input type="hidden" name="batchNumber_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['batchNumber'] }}">
                                                 <input type="hidden" name="expiryDate_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['expiryDate'] }}">
+                                                <input type="hidden" name="purchaseUnit_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $data['purchaseUnit'] }}">
                                                 <div class="form-group row mb-3">
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Product Name:</label>
@@ -241,12 +247,11 @@
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Order Quantity:</label>
-                                                        <div class="form-control-plaintext order-quantity">{{ $modifiedOrderedQty }}</div>
+                                                        <div class="form-control-plaintext order-quantity">{{ $modifiedOrderedQty  }}</div>
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Warehouse:</label>
                                                         <select name="warehouseID_{{ $data['productID'] }}" class="form-select" required>
-                                                            <option value="">Select Warehouse</option>
                                                             @foreach($warehouses as $warehouse)
                                                                 <option value="{{ $warehouse->warehouseID }}"> {{ $warehouse->name }} </option>
                                                             @endforeach
@@ -254,7 +259,7 @@
                                                     </div>
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Receive Quantity:</label>
-                                                        <input type="number" name="receiveQty_{{ $data['productID'] }}" class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
+                                                        <input type="number" name="receiveQty_{{ $data['productID'] }}" min="0" data-row-index="{{ $index }}"  class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
                                                         <div class="invalid-feedback" style="display: none;">Receive quantity cannot exceed from order quantity.</div>
                                                     </div>
                                                 </div>
@@ -287,37 +292,41 @@
 @endsection
 @section('more-script')
     <script>
+
+
         $(document).ready(function() {
-
-            var currentDate = new Date().toISOString().split("T")[0];
-            document.getElementById("date").value = currentDate;
-
+            // Attach an event listener to all input elements with the class "receive-quantity"
             $('.receive-quantity').on('input', function() {
-                var orderQty = parseInt($(this).parent().siblings().find('.order-quantity').text());
-                var receiveQty = parseInt($(this).val());
+                var $input = $(this);
+                var $parentDiv = $input.closest('.form-group'); // Find the closest parent form-group
+                var orderedQty = parseFloat($parentDiv.find('.order-quantity').text()); // Get the ordered quantity from the corresponding element
+                var receiveQty = parseFloat($input.val());
 
-                if (receiveQty > orderQty) {
-                    $(this).addClass('is-invalid');
-                    $(this).val(orderQty); // Set the value to the maximum amount
-                    $(this).siblings('.invalid-feedback').show();
+                var $feedback = $input.next('.invalid-feedback');
+
+                if (receiveQty > orderedQty) {
+                    $input.val(orderedQty);
+                    $feedback.show();
                 } else {
-                    $(this).removeClass('is-invalid');
-                    $(this).siblings('.invalid-feedback').hide();
+                    $feedback.hide();
                 }
             });
         });
 
-        $('.paying-amount').on('input', function() {
-            var maxAmount = parseFloat($(this).next('.max-amount').text());
-            var enteredAmount = parseFloat($(this).val());
 
-            if (enteredAmount > maxAmount) {
-                $(this).addClass('is-invalid');
-                $(this).val(maxAmount); // Set the value to the maximum amount
 
-            } else {
-                $(this).removeClass('is-invalid');
-            }
+    $(document).ready(function() {
+            $('.paying-amount').on('input', function() {
+                var maxAmount = parseFloat($(this).next('.max-amount').text());
+                var enteredAmount = parseFloat($(this).val());
+
+                if (enteredAmount > maxAmount) {
+                    $(this).addClass('is-invalid');
+                    $(this).val(maxAmount); // Set the value to the maximum amount
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
         });
     </script>
 @endsection

@@ -213,7 +213,7 @@
 
                     <div class="form-group row mt-2">
                         <div class="offset-2">
-                            <input class="btn btn-primary" type="submit" value="Save">
+                            <input class="btn btn-primary" id="saveButton" type="submit" value="Save">
                         </div>
                     </div>
                 </form>
@@ -239,5 +239,21 @@
                 }
             });
         }
+        $(document).ready(function() {
+            var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
+            var isSaveButtonClicked = false;
+
+            $('#saveButton').on('click', function() {
+                isSaveButtonClicked = true;
+            });
+            window.addEventListener('beforeunload', function(event) {
+                if (!isSaveButtonClicked) {
+                    event.returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
+        });
+
+
     </script>
 @endsection

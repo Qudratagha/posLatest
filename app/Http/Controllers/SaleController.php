@@ -41,7 +41,6 @@ class SaleController extends Controller
     public function store(Request $request)
     {
 
-
         $date = Carbon::now();
         $ref = getRef();
         $warehouseID = $request['warehouseID'];
@@ -67,7 +66,6 @@ class SaleController extends Controller
                 'date' => $request['date']
             ]);
         }
-
         foreach ($request->all() as $key => $value) {
             if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
                 $pregMatchID = $matches[1];
@@ -79,14 +77,17 @@ class SaleController extends Controller
                 $productDiscount = $request['discount_' . $pregMatchID];
                 $productTax = $request['tax_' . $pregMatchID];
                 $productSaleUnit = $request['saleUnit_' . $pregMatchID];
+
+                $unit = Unit::where('unitID', $productSaleUnit)->first();
+
                 $productID = $request['productID_' . $pregMatchID];
-                $subTotal = ($productNetUnitCost * $productQuantity) - $productDiscount + $productTax;
+                $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  - $productDiscount + $productTax;
                 SaleOrder::create([
                     'saleID' => $sale->saleID,
                     'productID' => $productID,
                     'code' => $productCode,
                     'warehouseID' => $warehouseID,
-                    'quantity' => $productQuantity,
+                    'quantity' => $productQuantity * $unit->value ,
                     'batchNumber' => $productBatchNumber,
                     'expiryDate' => $productExpiryDate,
                     'netUnitCost' => $productNetUnitCost,
@@ -100,9 +101,9 @@ class SaleController extends Controller
                     'productID' => $productID,
                     'batchNumber' => $productBatchNumber,
                     'expiryDate' => $productExpiryDate,
-                    'orderedQty' => $productQuantity,
+                    'orderedQty' => $productQuantity * $unit->value,
+                    'saleUnit' => $productSaleUnit
                 ]);
-
                 if($request['saleStatus'] === 'completed')
                 {
                     SaleDelivered::create([
@@ -110,7 +111,9 @@ class SaleController extends Controller
                         'productID' => $productID,
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
-                        'receivedQty' => $productQuantity,
+                        'receivedQty' => $productQuantity * $unit->value,
+                        'saleUnit' => $productSaleUnit
+
                     ]);
                     Stock::create([
                         'warehouseID' =>  $warehouseID,
@@ -118,7 +121,7 @@ class SaleController extends Controller
                         'date' => $date,
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
-                        'debt' => $productQuantity,
+                        'debt' => $productQuantity * $unit->value,
                         'refID' => $ref,
                     ]);
                 }
@@ -140,7 +143,6 @@ class SaleController extends Controller
         return view('sale.show', compact('saleAmount', 'saleOrders', 'paidAmount', 'dueAmount', 'salePayments', 'sale', 'saleReceives'));
 
     }
-
     public function edit(Sale $sale , Request $request)
     {
         foreach ($sale->saleReceive as $order) {
@@ -177,29 +179,115 @@ class SaleController extends Controller
         $selectedWarehouseID = $sale->saleOrders->pluck('warehouseID')->first();
         return view('sale.edit', compact('warehouses', 'accounts', 'purchaseStatuses', 'units', 'sale', 'saleOrders', 'selectedWarehouseID','paymentAccounts'));
     }
-
     public function update(Request $request, Sale $sale)
     {
-        dd($request->all());
         $sale->saleOrders()->delete();
         $sale->saleReceive()->delete();
+        $date = Carbon::now();
         $ref = getRef();
+        $warehouseID = $request['warehouseID'];
 
         $sale->update([
             'date' => $request['date'],
             'customerID' => $request['customerID'],
             'saleStatus' => $request['saleStatus'],
             'orderTax' => $request['taxAmount'],
-            'discount' => $request['discount'],
+            'discountValue' => $request['discount'],
             'shippingCost' => $request['shippingCost'],
             'description' => $request['description'],
             'refID' => $ref
         ]);
-        dd($request->all());
+
+        if ($request['paymentStatus'] === 'received'){
+            SalePayment::create([
+                'saleID' => $sale->saleID,
+                'amount' => $request['paying-amount'],
+                'accountID' => $request['accountID'],
+                'description' => $request['description'],
+                'refID' => $ref,
+                'date' => $request['date']
+            ]);
+        }
+        foreach ($request->all() as $key => $value) {
+            if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
+                $pregMatchID = $matches[1];
+                $productCode = $request['code_' . $pregMatchID];
+                $productQuantity = $request['quantity_' . $pregMatchID];
+                $productBatchNumber = $request['batchNumber_' . $pregMatchID];
+                $productExpiryDate = $request['expiryDate_' . $pregMatchID];
+                $productNetUnitCost = $request['netUnitCost_' . $pregMatchID];
+                $productDiscount = $request['discount_' . $pregMatchID];
+                $productTax = $request['tax_' . $pregMatchID];
+                $productSaleUnit = $request['saleUnit_' . $pregMatchID];
+
+                $unit = Unit::where('unitID', $productSaleUnit)->first();
+
+                $productID = $request['productID_' . $pregMatchID];
+                $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  - $productDiscount + $productTax;
+                SaleOrder::create([
+                    'saleID' => $sale->saleID,
+                    'productID' => $productID,
+                    'code' => $productCode,
+                    'warehouseID' => $warehouseID,
+                    'quantity' => $productQuantity * $unit->value ,
+                    'batchNumber' => $productBatchNumber,
+                    'expiryDate' => $productExpiryDate,
+                    'netUnitCost' => $productNetUnitCost,
+                    'discountValue' => $productDiscount,
+                    'tax' => $productTax,
+                    'subTotal' => $subTotal,
+                    'saleUnit' => $productSaleUnit
+                ]);
+                SaleDelivered::create([
+                    'saleID' => $sale->saleID,
+                    'productID' => $productID,
+                    'batchNumber' => $productBatchNumber,
+                    'expiryDate' => $productExpiryDate,
+                    'orderedQty' => $productQuantity * $unit->value,
+                    'saleUnit' => $productSaleUnit
+                ]);
+                if($request['saleStatus'] === 'completed')
+                {
+                    SaleDelivered::create([
+                        'saleID' => $sale->saleID,
+                        'productID' => $productID,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'receivedQty' => $productQuantity * $unit->value,
+                        'saleUnit' => $productSaleUnit
+
+                    ]);
+                    Stock::create([
+                        'warehouseID' =>  $warehouseID,
+                        'productID' => $productID,
+                        'date' => $date,
+                        'batchNumber' => $productBatchNumber,
+                        'expiryDate' => $productExpiryDate,
+                        'debt' => $productQuantity * $unit->value,
+                        'refID' => $ref,
+                    ]);
+                }
+            }
+        }
+        $request->session()->flash('message', 'Sale Update Successfully!');
+        return redirect()->route('sale.index');
     }
 
-    public function destroy(Sale $sale)
+    public function destroy(Sale $sale, Request $request)
     {
-        //
+        $receive = $sale->saleReceive->count();
+        $payment = $sale->salePayments->count();
+        if ($receive > 0){
+            return back()->with('error', 'You can not delete this sale as it has some products delivered');
+        }elseif($payment > 0){
+            return back()->with('error', 'You can not delete this sale as it has some payments received');
+        }else {
+            $sale->saleOrders()->delete();
+            $sale->saleReceive()->delete();
+            $sale->salePayments()->delete();
+            $sale->delete();
+            return back()->with('message', 'Sale Deleted Successfully!');
+
+        }
     }
 }

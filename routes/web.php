@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountTransferController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\permissionsController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\rolesController;
 use App\Http\Controllers\usersController;
 use App\Http\Controllers\WithdrawalDepositController;
+use App\Models\Stock;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/depositWithdrawals/delete/{id}', [WithdrawalDepositController::class, 'destroy']);
     Route::get('/account/transfer', [AccountTransferController::class, 'index']);
     Route::get('/account/transfer/create', [AccountTransferController::class, 'create']);
+    Route::get('/account/statement/{id}', [AccountController::class, 'statement']);
+    Route::get('/account/details/{id}/{from}/{to}', [AccountController::class, 'statementDetails']);
 
     Route::post('ajax/{method}', [App\Http\Controllers\AjaxController::class, 'handle'])->name('ajax.handle');
 
@@ -51,6 +57,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('/sale', \App\Http\Controllers\SaleController::class);
     Route::resource('/saleDelivered', \App\Http\Controllers\SaleDeliveredController::class);
     Route::resource('/salePayment', \App\Http\Controllers\SalePaymentController::class);
+
+    Route::resource('/purchaseReceive',\App\Http\Controllers\PurchaseReceiveController::class);
+
+    Route::get('/stocks','App\Http\Controllers\StockController@index')->name('stock.index');
+    Route::get('/stocks/{stockDetails}','App\Http\Controllers\StockController@show')->name('stock.show');
+
+    Route::get('/reset', function() {
+        Artisan::call('migrate:fresh --seed');
+          return back()->with('message', 'Reset Successful');
+        })->name('reset');
 
     Route::get('/users', [usersController::class, 'index']);
     Route::get('/user/add', [usersController::class, 'add']);

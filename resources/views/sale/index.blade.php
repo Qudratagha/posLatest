@@ -208,8 +208,12 @@
                                             $batchNumber = $order['batchNumber'];
                                             $expiryDate = $order['expiryDate'];
                                             $productID = $order['productID'];
-                                            $orderedQty = $order['orderedQty'] ?? 0;
-                                            $receivedQty = $order['receivedQty'] ?? 0;
+
+                                            $saleUnit = $order['saleUnit'];
+                                            $unit = \App\Models\Unit::where('unitID', $saleUnit)->first();
+
+                                            $orderedQty = $order['orderedQty'] / $unit->value;
+                                            $receivedQty = $order['receivedQty'] / $unit->value;
 
                                             if (!isset($summedData[$productID])) {
                                                 $summedData[$productID] = [
@@ -217,7 +221,8 @@
                                                     'expiryDate' => $expiryDate,
                                                     'batchNumber' => $batchNumber,
                                                     'orderedQty' => $orderedQty,
-                                                    'receivedQty' => $receivedQty
+                                                    'receivedQty' => $receivedQty,
+                                                    'saleUnit' => $saleUnit
                                                 ];
                                             } else {
                                                 $summedData[$productID]['orderedQty'] += $orderedQty;
@@ -230,9 +235,6 @@
                                         @endphp
                                         @forelse ($summedData as $data)
                                             @php
-                                            /* echo '<pre>';
-                                            echo print_r($data);
-                                            echo '</pre>';*/
                                                 $modifiedOrderedQty = $data['orderedQty'] - $data['receivedQty'];
                                                 $productID = $data['productID'];
                                                 $productName = \App\Models\Product::where('productID', $productID)->pluck('name');
@@ -243,6 +245,7 @@
                                                 <input type="hidden" name="batchNumber_{{ $data['batchNumber'] }}" class="form-control receive-quantity" value="{{ $data['batchNumber'] }}">
                                                 <input type="hidden" name="expiryDate_{{ $data['batchNumber'] }}" class="form-control receive-quantity" value="{{ $data['expiryDate'] }}">
                                                 <input type="hidden" name="productID_{{ $data['batchNumber'] }}" class="form-control receive-quantity" value="{{ $data['productID'] }}">
+                                                <input type="hidden" name="saleUnit_{{ $data['batchNumber'] }}" class="form-control receive-quantity" value="{{ $data['saleUnit'] }}">
                                                 <div class="form-group row mb-3">
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Product Name:</label>
@@ -255,7 +258,6 @@
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Warehouse:</label>
                                                         <select name="warehouseID_{{ $data['batchNumber'] }}" class="form-select" required>
-                                                            <option value="">Select Warehouse</option>
                                                             @foreach($warehouses as $warehouse)
                                                                 <option value="{{ $warehouse->warehouseID }}"> {{ $warehouse->name }} </option>
                                                             @endforeach
@@ -264,7 +266,7 @@
 
                                                     <div class="col-sm-12 col-md-3">
                                                         <label class="form-label font-weight-bold">Receive Quantity:</label>
-                                                        <input type="number" name="receiveQty_{{ $data['batchNumber'] }}" min="1" max="{{ $modifiedOrderedQty }}" class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
+                                                        <input type="number" name="receiveQty_{{ $data['batchNumber'] }}" min="0" max="{{ $modifiedOrderedQty }}" class="form-control receive-quantity" value="{{ $modifiedOrderedQty }}">
                                                         <div class="invalid-feedback" style="display: none;">Delivered quantity cannot exceed order quantity.</div>
                                                     </div>
                                                 </div>

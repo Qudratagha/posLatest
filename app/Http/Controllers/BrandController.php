@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Brand;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function Symfony\Component\Mime\Header\all;
@@ -61,8 +62,12 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand, Request $request)
     {
-        $brand->delete();
-        $request->session()->flash('error', 'Brand Deleted Successfully!');
-        return to_route('brand.index');
+        $check = Product::where('brandID', $brand->brandID)->count();
+        if($check > 0){
+            return back()->with('error', "Brand Can't be deleted as it has some products");
+        }else{
+            $brand->delete();
+            return back()->with('message', "Brand Deleted Successfully!");
+        }
     }
 }

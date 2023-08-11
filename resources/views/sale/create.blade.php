@@ -2,24 +2,24 @@
 @section('title', 'Sale Create')
 @section('content')
     <div class="card card-default color-palette-box">
-        <div class="card-header">
-            <h4 class="card-title fw-semibold">
-                <i class="fas fa-users-cog"></i> Add New Sale
-            </h4>
-        </div>
+{{--        <div class="card-header">--}}
+{{--            <h4 class="card-title fw-semibold">--}}
+{{--                <i class="fas fa-users-cog"></i> Add New Sale--}}
+{{--            </h4>--}}
+{{--        </div>--}}
         <div class="card-body">
             <form class="form-horizontal" action="{{ route('sale.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group row">
-                    <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Date:
+                    <label for="date" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Date:
                         <input type="date" name="date" class="form-control" id="date" value="{{ old('date') }}" required>
                     </label>
 
-                    <label for="referenceNo" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Reference No:
+                    <label for="referenceNo" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Reference No:
                         <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo') }}" placeholder="Reference No" required>
                     </label>
 
-                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Customer:
+                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Customer:
                         <select name="customerID" class="form-select" required>
                             <option value="">Select Customer</option>
                             @foreach ($accounts as $account)
@@ -27,10 +27,8 @@
                             @endforeach
                         </select>
                     </label>
-                </div>
 
-                <div class="form-group row">
-                    <label for="warehouseID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Warehouse:
+                    <label for="warehouseID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Warehouse:
                         <select name="warehouseID" id="warehouseID" class="form-select">
                             <option value="">Select Warehouse</option>
                             @foreach ($warehouses as $warehouse)
@@ -39,7 +37,7 @@
                         </select>
                     </label>
 
-                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Biller:
+                    <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Biller:
                         <select name="customerID" class="form-select" required>
                             <option value="">Select Customer</option>
                             @foreach ($accounts as $account)
@@ -71,7 +69,7 @@
                                         <th>Batch No</th>
                                         <th width="8%">Expired Date</th>
                                         <th>Net Unit Cost</th>
-                                        <th>Purchase Unit</th>
+                                        <th>Sale Unit</th>
                                         <th>Discount</th>
                                         <th>Tax</th>
                                         <th>SubTotal</th>
@@ -99,45 +97,41 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="form-group row">
-                    <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Order Tax:
+                    <label for="orderTax" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Order Tax:
                         <select name="orderTax" id="orderTax" class="form-select">
                             <option value="No">No</option>
                             <option value="Yes">Yes</option>
                         </select>
                     </label>
 
-                    <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4 d-none" id="taxAmountLabel"> Tax Amount:
+                    <label for="taxAmount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3 d-none" id="taxAmountLabel"> Tax Amount:
                         <input type="number" name="taxAmount" id="taxAmount" class="form-control" min="0" value="0" oninput="overallTaxAmount()" placeholder="Tax Amount" >
                     </label>
 
-                    <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Discount:
+                    <label for="discount" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Discount:
                         <input type="number" name="discount" class="form-control" value="0" min="0" oninput="overallDiscount()" placeholder="Discount">
                     </label>
 
-                    <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Shipping Cost:
+                    <label for="shippingCost" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Shipping Cost:
                         <input type="number" name="shippingCost" class="form-control" value="0" min="0" oninput="overallShippingCost()" placeholder="Shipping Cost">
                     </label>
                 </div>
-
                 <div class="form-group row">
-                    <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Sale Status:
+                    <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-6"> Sale Status:
                         <select name="saleStatus" id="saleStatus" class="form-select">
                             <option value="completed">Completed</option>
                             <option value="pending">Pending</option>
                         </select>
                     </label>
 
-                    <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Payment Status:
+                    <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-6"> Payment Status:
                         <select name="paymentStatus" id="paymentStatus" class="form-select" onchange="toggleReceivedFields()">
                             <option value="pending">Pending</option>
                             <option value="received">Received</option>
                         </select>
                     </label>
                 </div>
-
-
                 <div class="received-fields d-none">
                     <div class="form-group row">
                         <label for="paymentStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Paying Amount *:
@@ -157,15 +151,13 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="form-group row">
                     <label for="description" class="form-label col-form-label"> Sale Note:
                         <textarea type="text" name="description" rows="5" class="form-control"></textarea>
                     </label>
                 </div>
-
                 <div class="form-group row mt-2">
-                    <input class="btn btn-primary" type="submit" value="Save">
+                    <input class="btn btn-primary" id="saveButton" type="submit" value="Save">
                 </div>
             </form>
         </div>
@@ -270,12 +262,24 @@
                         let found = $.grep(existingProducts, function(element) {
                             return element === result[0].batchNumber;
                         });
-                        if (found.length > 0)
-                        {
+                        if (found.length > 0) {
+                            let unitValue = 0;
                             var rowId = result[0].batchNumber;
                             var row = $("#tbody #" +'rowID_'+ rowId);
                             var quantityInput = row.find('[name="quantity_' + rowId + '"]');
                             var netUnitCostInput = row.find('input[name="netUnitCost_' + rowId + '"]');
+
+                            let saleUnit = row.find('select[name="saleUnit_' + rowId + '"]').val()
+                            if (saleUnit === '') {
+                                alert('Please select Purchase Unit First');
+                                return;
+                            }
+                            units.forEach(function(unit) {
+                                if(unit.unitID == saleUnit){
+                                    unitValue = unit.value;
+                                }
+                            });
+
                             var discountInput = row.find('[name="discount_' + rowId + '"]');
                             var taxInput = row.find('[name="tax_' + rowId + '"]');
                             var quantity = parseInt(quantityInput.val());
@@ -284,7 +288,8 @@
                             var tax = parseInt(taxInput.val());
                             quantity++;
                             quantityInput.val(quantity);
-                            var subtotal = (quantity * netUnitCost) - discount + tax;
+                            let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
+                            var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
                             $('td:has(span#subTotal_' + rowId + ')').find('span#subTotal_' + rowId).text(subtotal);
 
                         }else {
@@ -294,15 +299,15 @@
                                 strHTML += '<tr id="rowID_' + v.batchNumber + '">';
                                 strHTML += '<td>' + v.product.name + '</td>';
                                 strHTML += '<td>' + v.product.code + '</td>';
-                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.difference + '" value="1" oninput="changeQuantity(this, ' + id + ')" style="border: none"> </div> <div class="col-4"><span>' + v.difference + '</span> </div></td>';
+                                strHTML += '<td class="row align-items-center"><div class="col-8"><input type="number" class="form-control" name="quantity_' + v.batchNumber + '" min="1" max="' + v.difference + '" value="1" oninput="changeQuantity(this, ' + id + ')" style="border: none" required> </div> <div class="col-4"><span id="totalQuantity_' + v.batchNumber + '">' + v.difference + '</span> </div></td>';
                                 strHTML += '<td> <span id="batchNumber_' + v.batchNumber + '">' + v.batchNumber + '</span></td>';
                                 strHTML += `<td style="text-align: center;">${
                                     v.product.isExpire === 0 ?
                                         `<input type="date" class="form-control" name="expiryDate_${v.batchNumber}" value="${getCurrentDate()}" required>`
                                         : '<div style="display: inline-block; text-align: center;">N/A</div>'
                                 }</td>`;
-                                strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this, ' + id + ')" > </td>';
-                                strHTML += '<td width="10%"><select class="form-control" name="saleUnit_' + v.batchNumber + '">';
+                                strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this,'+ id +')" > </td>';
+                                strHTML += '<td width="15%"><select class="form-select" name="saleUnit_' + v.batchNumber + '" required onchange="changeSaleUnit(this,'+ id +')"> <option value="">Select Unit</option>';
                                 units.forEach(function (unit) {
                                     strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
                                 });
@@ -327,25 +332,66 @@
             document.getElementById("productID").value = "";
         }
         function changeQuantity(input, id) {
+            var unitValue = 0;
+
             let row = $(input).closest('tr');
-            let quantity = row.find('input[name="quantity_' + id + '"]').val();
+            let quantityElement = row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let quantityIntoUnitCost = quantity * netUnitCost;
+
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
+                alert('Please select Purchase Unit First');
+                return;
+            }
+            units.forEach(function(unit) {
+                if(unit.unitID == saleUnit){
+                    unitValue = unit.value;
+                }
+            });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+            }
+            let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
             var discount = parseInt(discountInput);
             if (isNaN(discount)){discount = 0;}
             var tax = parseInt(taxInput);
             if (isNaN(tax)){tax = 0;}
-            var subtotal = quantityIntoUnitCost - discount + tax;
+            var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             footerData();
         }
         function changeNetUnitCost(input, id) {
+            var unitValue = 0;
+
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let quantityIntoUnitCost = quantity * netUnitCost;
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
+                alert('Please select Purchase Unit First');
+                return;
+            }
+            units.forEach(function(unit) {
+                if(unit.unitID == saleUnit){
+                    unitValue = unit.value;
+                }
+            });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+            }
+            let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
             var discount = parseInt(discountInput);
@@ -356,15 +402,36 @@
             if (isNaN(tax)){
                 tax = 0;
             }
-            var subtotal = quantityIntoUnitCost - discount + tax;
+            var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             footerData();
         }
         function changeDiscount(input, id) {
+            let unitValue = 0;
+
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let quantityIntoUnitCost = quantity * netUnitCost;
+
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
+                alert('Please select Purchase Unit First');
+                return;
+            }
+            units.forEach(function(unit) {
+                if(unit.unitID == saleUnit){
+                    unitValue = unit.value;
+                }
+            });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+            }
+            let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
+
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var discount = parseInt(discountInput);
             if(isNaN(discount)){
@@ -375,15 +442,34 @@
             if(isNaN(tax)){
                 tax = 0;
             }
-            var subtotal = quantityIntoUnitCost - discount + tax;
+            var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             footerData();
         }
         function changeTax(input, id) {
+            var unitValue = 0;
+
             let row = $(input).closest('tr');
             let quantity = row.find('input[name="quantity_' + id + '"]').val();
             let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
-            let quantityIntoUnitCost = quantity * netUnitCost;
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
+                alert('Please select Purchase Unit First');
+                return;
+            }
+            units.forEach(function(unit) {
+                if(unit.unitID == saleUnit){
+                    unitValue = unit.value;
+                }
+            });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+            }
+            let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
             var discountInput = row.find('input[name="discount_' + id + '"]').val();
             var taxInput = row.find('input[name="tax_' + id + '"]').val();
             var discount = parseInt(discountInput);
@@ -394,10 +480,54 @@
             if(isNaN(tax)){
                 tax = 0;
             }
-            var subtotal = quantityIntoUnitCost - discount + tax;
+            var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             footerData();
         }
+
+        function changeSaleUnit(input, id){
+            var unitValue = 0;
+            let row = $(input).closest('tr');
+            let quantityElement = row.find('input[name="quantity_' + id + '"]');
+            let quantity = quantityElement.val();
+            let netUnitCost = row.find('input[name="' + 'netUnitCost_' + id + '"]').val();
+
+
+            let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
+            let saleUnit = saleUnitElement.val();
+            if (saleUnit === '') {
+                alert('Please select Purchase Unit First');
+                return;
+            }
+            units.forEach(function(unit) {
+                if(unit.unitID == saleUnit){
+                    unitValue = unit.value;
+                }
+            });
+            let totalRemainingQuantity = $('td:has(span#totalQuantity_' + id + ')').find('span#totalQuantity_' + id).text();
+            let saleQty = quantity * unitValue;
+            if(saleQty > totalRemainingQuantity){
+                alert('Sale Quantity "'+ saleQty +'"can not be exceeded from Available Quantity"'+ totalRemainingQuantity+'"');
+                saleUnitElement.val('')
+                quantityElement.val('')
+                quantity = 0;
+            }
+            let quantityIntoUnitCostIntoPurchaseUnit = (quantity  * unitValue)  * netUnitCost;
+            var discountInput = row.find('input[name="discount_' + id + '"]').val();
+            var taxInput = row.find('input[name="tax_' + id + '"]').val();
+            var discount = parseInt(discountInput);
+            if(isNaN(discount)){
+                discount = 0;
+            }
+            var tax = parseInt(taxInput);
+            if(isNaN(tax)){
+                tax = 0;
+            }
+            var subtotal = quantityIntoUnitCostIntoPurchaseUnit - discount + tax;
+            $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
+            footerData();
+        }
+
         function footerData(){
             var subTotalAmount = 0;
             var totalQuantity = 0;
@@ -536,6 +666,20 @@
             footerData();
         }
 
+        $(document).ready(function() {
+            var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
+            var isSaveButtonClicked = false;
+
+            $('#saveButton').on('click', function() {
+                isSaveButtonClicked = true;
+            });
+            window.addEventListener('beforeunload', function(event) {
+                if (!isSaveButtonClicked) {
+                    event.returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
+        });
     </script>
 @endsection
 

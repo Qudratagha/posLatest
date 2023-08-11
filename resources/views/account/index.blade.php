@@ -46,7 +46,9 @@
                                     <i class="text-red fa fa-trash"></i>
                                 </a>
                             </form>
-
+                            <a class="ps-1 pe-1" href="{{ url('/account/statement/') }}/{{ $account->accountID }}">
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+                            </a>
                         </td>
                     </tr>
                 @endforeach

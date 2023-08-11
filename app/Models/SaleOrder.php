@@ -16,4 +16,14 @@ class SaleOrder extends Model
     {
         return $this->belongsTo(\App\Models\Product::class, 'productID', 'productID');
     }
+
+    public function unit()
+    {
+        return $this->belongsTo(\App\Models\Unit::class, 'saleUnit', 'unitID');
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(\App\Models\Warehouse::class, 'warehouseID', 'warehouseID');
+    }
 }

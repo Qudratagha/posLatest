@@ -27,4 +27,9 @@ class PurchaseOrder extends Model
         return $this->belongsTo(\App\Models\Warehouse::class, 'warehouseID', 'warehouseID');
     }
 
+    public function unit()
+    {
+        return $this->belongsTo(\App\Models\Unit::class, 'purchaseUnit', 'unitID');
+    }
+
 }
