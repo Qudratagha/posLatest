@@ -14,11 +14,11 @@ class AccountTransfer extends Model
 
     public function accountFrom()
     {
-        return $this->belongsTo(\App\Models\Account::class, 'accountID', 'fromAccountID');
+        return $this->belongsTo(Account::class, 'fromAccountID');
     }
 
     public function accountTo()
     {
-        return $this->belongsTo(\App\Models\Account::class, 'accountID', 'toAccountID');
+        return $this->belongsTo(Account::class,'toAccountID');
     }
 }

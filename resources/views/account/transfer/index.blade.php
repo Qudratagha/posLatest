@@ -26,6 +26,7 @@
                 </tr>
                 </thead>
                 <tbody>
+
                 @foreach($data  as $key=>$item)
                     <tr>
                         <td>{{ $key+1 }}</td>

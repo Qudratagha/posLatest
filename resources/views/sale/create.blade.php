@@ -222,14 +222,14 @@
                         warehouseID: warehouseID
                     },
                     success: function(response) {
-                        
+
                         $('#productID').empty();
                         $('#productID').append('<option value="">Select Product</option>');
                         var data = $.each(response.productsWithCreditDebtSum, function(index, product) {
                             $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">' + product.product.name +' | '+ product.batchNumber +' | '+ product.difference + '</option>');
                         });
-                        
-                       
+
+
                     },
                     error: function() {
                         alert('Failed to fetch products.');
@@ -625,14 +625,14 @@
             }
         });
         $(document).ready(function() {
-            /* $('.productField').select2(); */
-            new TomSelect("#productID",{
+             $('.productField').select2();
+            /* new TomSelect("#productID",{
                 create: false,
                 sortField: {
                     field: "text",
                     direction: "asc"
                 }
-            });
+            }); */
         })
         function handlePayingAmountChange() {
             var inputPayingAmount = $('input[name="paying-amount"]');

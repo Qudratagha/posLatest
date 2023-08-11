@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sale;
 use App\Models\SalePayment;
 use Illuminate\Http\Request;
 
@@ -30,6 +31,10 @@ class SalePaymentController extends Controller
             'refID' => $ref,
             'date' => $request['date'],
         ]);
+
+        $sale = Sale::find($request->saleID);
+        addTransaction($sale->customerID, $request->date, "Sale Payment", 0, $request->amount, $ref, "Payment of Sale #".$request->saleID);
+        addTransaction($request->accountID, $request->date, "Sale Payment", $request->amount, 0, $ref, "Payment of Sale #".$request->saleID);
         $request->session()->flash('message', 'Sale Payment Created Successfully!');
         return redirect()->route('sale.index');
     }

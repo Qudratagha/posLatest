@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/transfer', [AccountTransferController::class, 'index']);
     Route::get('/account/transfer/create', [AccountTransferController::class, 'create']);
     Route::post('/account/transfer/store', [AccountTransferController::class, 'store']);
+    Route::get('/account/transfer/delete/{ref}', [AccountTransferController::class, 'destroy']);
     Route::get('/account/statement/{id}', [AccountController::class, 'statement']);
     Route::get('/account/details/{id}/{from}/{to}', [AccountController::class, 'statementDetails']);
 

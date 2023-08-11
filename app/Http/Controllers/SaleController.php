@@ -56,16 +56,7 @@ class SaleController extends Controller
             'refID' => $ref,
         ]);
 
-        if ($request['paymentStatus'] === 'received'){
-            SalePayment::create([
-                'saleID' => $sale->saleID,
-                'amount' => $request['paying-amount'],
-                'accountID' => $request['accountID'],
-                'description' => $request['description'],
-                'refID' => $ref,
-                'date' => $request['date']
-            ]);
-        }
+        $pro_total = 0;
         foreach ($request->all() as $key => $value) {
             if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
                 $pregMatchID = $matches[1];
@@ -82,6 +73,7 @@ class SaleController extends Controller
 
                 $productID = $request['productID_' . $pregMatchID];
                 $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  - $productDiscount + $productTax;
+                $pro_total += $subTotal;
                 SaleOrder::create([
                     'saleID' => $sale->saleID,
                     'productID' => $productID,
@@ -127,7 +119,21 @@ class SaleController extends Controller
                 }
             }
         }
+        $total_bill = $subTotal + $request['taxAmount'] + $request['shippingCost'] - $request['discount'];
+        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $ref, "Pending of Sale #". $sale->saleID);
+        if ($request['paymentStatus'] === 'received'){
+            SalePayment::create([
+                'saleID' => $sale->saleID,
+                'amount' => $request['paying-amount'],
+                'accountID' => $request['accountID'],
+                'description' => $request['description'],
+                'refID' => $ref,
+                'date' => $request['date']
+            ]);
 
+            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $ref, "Payment of Sale #". $sale->saleID);
+            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $ref, "Payment of Sale #". $sale->saleID);
+        }
         $request->session()->flash('message', 'Sale Created Successfully!');
         return redirect()->route('sale.index');
     }
