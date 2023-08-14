@@ -1,0 +1,141 @@
+@extends('layouts.admin')
+@section('title', 'Product Create')
+@section('content')
+    <div class="card card-default color-palette-box">
+        <div class="card-header">
+            <h4 class="card-title fw-semibold">
+                <i class="fas fa-users-cog"></i> {{ $product->name }}
+            </h4>
+        </div>
+        <div class="card-body">
+            <form class="form-horizontal" action="{{ route('product.update',$product->productID) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="form-group row mb-1">
+                    <label for="name" class="form-label required col-sm-4 col-md-6 col-lg-2  col-form-label">Product Name: </label>
+                    <div class="col-sm-8 col-md-6 col-lg-4">
+                        <input type="text" name="name" class="form-control" value="{{ old('name', $product->name) }}" required>
+                    </div>
+
+                    <label for="code" class="form-label required col-sm-4 col-md-6 col-lg-2 col-form-label">Product Code: </label>
+                    <div class="col-sm-8 col-md-6 col-lg-4">
+                        <input type="number" name="code" class="form-control" value="{{ old('code',  $product->code) }}" required onchange="productCode(this.value)">
+                    </div>
+                </div>
+
+                <div class="form-group row mb-1">
+                    <label for="brandID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Brand : </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <select name="brandID" class="form-select" required>
+                            <option value="">Select Brand</option>
+                            @foreach ($brands as $brand)
+                                <option value="{{ $brand->brandID }}" {{ old('brandID', $product->brandID) == $brand->brandID ? 'selected' : '' }}>{{ $brand->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <label for="categoryID" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Category : </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4" >
+                        <select name="categoryID" class="form-select" required>
+                            <option value="">Select Category</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->categoryID }}" {{ old('categoryID', $product->categoryID) == $category->categoryID ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-1">
+                    <label for="productUnit" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Product Unit: </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <input type="number" name="productUnit" class="form-control" value="{{ old('productUnit', $product->productUnit) }}" required>
+                    </div>
+                    <label for="purchasePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Purchase Price: </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <input type="number" name="purchasePrice" class="form-control" value="{{ old('purchasePrice', $product->purchasePrice) }}" required>
+                    </div>
+                </div>
+
+
+                <div class="form-group row mb-1">
+                    <label for="salePrice" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Sale Price: </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <input type="number" name="salePrice" class="form-control" value="{{ old('salePrice', $product->salePrice) }}" required>
+                    </div>
+                    <label for="wholeSalePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Whole Sale Price: </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <input type="number" name="wholeSalePrice" class="form-control" value="{{ old('wholeSalePrice', $product->wholeSalePrice) }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-1">
+                    <label for="alertQuantity" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Alert Quantity: </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <input type="number" name="alertQuantity" class="form-control" value="{{ old('alertQuantity', $product->alertQuantity) }}">
+                    </div>
+                    <label for="description" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Description: </label>
+                    <div class=" col-sm-6 col-md-6 col-lg-4">
+                        <input type="text" name="description" class="form-control" value="{{ old('description', $product->description) }}">
+                    </div>
+                </div>
+
+                <div class="form-group row mb-1">
+                    <label for="image" class=" form-label col-sm-6 col-md-6 col-lg-2 col-form-label">Picture: </label>
+                    <div class=" col-sm-6 col-md-6 col-lg-4">
+                        <input type="file" name="image" class="form-control" value="{{ $product->image }}">
+                        <img width="30%" class="mt-2 img-circle" src="{{ asset('storage/images/product/'.$product->image) }}" />
+                    </div>
+
+                    <label for="name" class=" form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Is-Expiry: </label>
+                    <div class="col-sm-6 col-md-6 col-lg-4 py-2">
+                        <label class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" name="isExpire" value="0" @if($product->isExpire == 0) checked @endif> <span class="form-check-label">Yes</span>
+                        </label>
+                        <label class="form-check form-check-inline">
+                            <input type="radio" class="form-check-input" name="isExpire" value="1" @if( $product->isExpire == 1) checked @endif> <span class="form-check-label">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="offset-2">
+                        <input class="btn btn-primary" id="saveButton" type="submit" value="Save">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection
+@section('more-script')
+    <script>
+        function productCode(productCode) {
+            $.ajax({
+                url: "{{ route('ajax.handle',"getProductCode") }}",
+                method: 'post',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    productCode: productCode,
+                },
+                success: function (result) {
+                    if (result.length > 0 && result[0].code) {
+                        alert('This code already exists.');
+                        $('input[name="code"]').val('');
+                    }
+                }
+            });
+        }
+        $(document).ready(function() {
+            var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
+            var isSaveButtonClicked = false;
+
+            $('#saveButton').on('click', function() {
+                isSaveButtonClicked = true;
+            });
+            window.addEventListener('beforeunload', function(event) {
+                if (!isSaveButtonClicked) {
+                    event.returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
+        });
+    </script>
+@endsection
