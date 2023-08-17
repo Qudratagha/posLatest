@@ -56,7 +56,16 @@ class SaleController extends Controller
             'refID' => $ref,
         ]);
 
-        $pro_total = 0;
+        if ($request['paymentStatus'] === 'received'){
+            SalePayment::create([
+                'saleID' => $sale->saleID,
+                'amount' => $request['paying-amount'],
+                'accountID' => $request['accountID'],
+                'description' => $request['description'],
+                'refID' => $ref,
+                'date' => $request['date']
+            ]);
+        }
         foreach ($request->all() as $key => $value) {
             if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
                 $pregMatchID = $matches[1];
@@ -73,7 +82,6 @@ class SaleController extends Controller
 
                 $productID = $request['productID_' . $pregMatchID];
                 $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  - $productDiscount + $productTax;
-                $pro_total += $subTotal;
                 SaleOrder::create([
                     'saleID' => $sale->saleID,
                     'productID' => $productID,
