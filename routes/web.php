@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/salePayment', \App\Http\Controllers\SalePaymentController::class);
 
     Route::resource('/purchaseReceive',\App\Http\Controllers\PurchaseReceiveController::class);
+    Route::resource('/purchaseReturn',\App\Http\Controllers\PurchaseReturnController::class);
+    Route::resource('/purchaseReturnPayment',\App\Http\Controllers\PurchaseReturnPaymentsController::class);
 
     Route::get('/stocks','App\Http\Controllers\StockController@index')->name('stock.index');
     Route::get('/stocks/{stockDetails}','App\Http\Controllers\StockController@show')->name('stock.show');

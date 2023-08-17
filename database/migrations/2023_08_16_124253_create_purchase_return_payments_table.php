@@ -11,19 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchaseReturnDetails', function (Blueprint $table) {
-            $table->id('purchaseReturnDetailID');
+        Schema::create('purchaseReturnPayments', function (Blueprint $table) {
+            $table->id('purchaseReturnPaymentID');
             $table->foreignId('purchaseReturnID')->constrained('purchaseReturns', 'purchaseReturnID');
-            $table->foreignId('productID')->constrained('products', 'productID');
-            $table->integer('batchNumber');
-            $table->integer('returnQuantity');
-            $table->date('expiryDate')->nullable();
-            $table->integer('deductionAmount')->nullable();
-            $table->integer('subTotal');
+            $table->foreignId('accountID')->constrained('accounts', 'accountID');
+            $table->integer('amount');
             $table->string('description')->nullable();
             $table->integer('refID');
             $table->date('date');
-        });
+           });
     }
 
     /**
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchaseReturnDetails');
+        Schema::dropIfExists('purchaseReturnPayments');
     }
 };

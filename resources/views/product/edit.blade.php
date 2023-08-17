@@ -125,6 +125,7 @@
         }
         $(document).ready(function() {
             var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
+<<<<<<< Updated upstream
             var isSaveButtonClicked = false;
 
             $('#saveButton').on('click', function() {
@@ -135,6 +136,19 @@
                     event.returnValue = confirmationMessage;
                     return confirmationMessage;
                 }
+=======
+            var shouldShowConfirmation = true; // Flag to control confirmation message
+
+            window.addEventListener('beforeunload', function(event) {
+                if (shouldShowConfirmation) {
+                    event.returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
+
+            $('#saveButton').click(function() {
+                shouldShowConfirmation = false;
+>>>>>>> Stashed changes
             });
         });
     </script>

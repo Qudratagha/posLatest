@@ -241,6 +241,7 @@
         }
         $(document).ready(function() {
             var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
+<<<<<<< Updated upstream
             var isSaveButtonClicked = false;
 
             $('#saveButton').on('click', function() {
@@ -248,12 +249,26 @@
             });
             window.addEventListener('beforeunload', function(event) {
                 if (!isSaveButtonClicked) {
+=======
+            var shouldShowConfirmation = true; // Flag to control confirmation message
+
+            window.addEventListener('beforeunload', function(event) {
+                if (shouldShowConfirmation) {
+>>>>>>> Stashed changes
                     event.returnValue = confirmationMessage;
                     return confirmationMessage;
                 }
             });
+<<<<<<< Updated upstream
         });
 
+=======
+
+            $('#saveButton').click(function() {
+                shouldShowConfirmation = false;
+            });
+        });
+>>>>>>> Stashed changes
 
     </script>
 @endsection

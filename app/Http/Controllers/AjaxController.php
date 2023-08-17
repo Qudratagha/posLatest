@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Purchase;
 use App\Models\PurchaseReceive;
 use App\Models\Stock;
 use Illuminate\Http\Request;
@@ -76,8 +77,20 @@ class AjaxController extends Controller
         $productCode = $arguments['productCode'];
         $productDetails = Product::where('code', $productCode)->get();
         return response()->json($productDetails); // Assuming you want to return a JSON response
-
     }
+
+    public function getPurchase($arguments)
+    {
+        $purchaseID = $arguments['purchaseID'];
+        $purchase = Purchase::where('purchaseID', $purchaseID)->get();
+        $purchase->load('purchaseReceive');
+        $purchase->load('purchaseReturns.purchaseReturnDetails');
+
+
+        return response()->json(['purchase'=>$purchase]);
+    }
+
+
 
 
 }

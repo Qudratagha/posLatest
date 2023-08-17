@@ -11,10 +11,11 @@ class PurchaseReturn extends Model
     protected $primaryKey = 'purchaseReturnID';
     protected $table = 'purchaseReturns';
     protected $guarded = [];
+    public $timestamps = false;
 
     public function account()
     {
-        return $this->belongsTo(\App\Models\Account::class, 'accountID', 'accountID');
+        return $this->belongsTo(\App\Models\Account::class, 'supplierID', 'accountID');
     }
 
     public function purchase()
@@ -27,6 +28,15 @@ class PurchaseReturn extends Model
         return $this->hasMany(\App\Models\PurchaseReturnDetail::class, 'purchaseReturnID', 'purchaseReturnID');
     }
 
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class, 'productID', 'productID');
+    }
+
+    public function purchaseReturnPayments()
+    {
+        return $this->hasMany(\App\Models\PurchaseReturnPayments::class, 'purchaseReturnID', 'purchaseReturnID');
+    }
 
 
 

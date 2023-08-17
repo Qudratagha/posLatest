@@ -14,14 +14,13 @@ return new class extends Migration
         Schema::create('purchaseReturns', function (Blueprint $table) {
             $table->id('purchaseReturnID');
             $table->foreignId('purchaseID')->constrained('purchases', 'purchaseID');
-            $table->foreignId('accountID')->constrained('accounts', 'accountID');
+            $table->foreignId('accountID')->nullable()->constrained('accounts', 'accountID');
             $table->foreignId('supplierID')->constrained('accounts', 'accountID');
-            $table->integer('amount');
-            $table->integer('shippingCost');
+            $table->integer('amount')->nullable();
+            $table->integer('shippingCost')->nullable();
             $table->date('date');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('refID');
-            $table->timestamps();
         });
     }
 

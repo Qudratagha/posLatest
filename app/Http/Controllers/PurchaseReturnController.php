@@ -2,62 +2,104 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
+use App\Models\Purchase;
+use App\Models\PurchaseOrder;
 use App\Models\PurchaseReturn;
+use App\Models\PurchaseReturnDetail;
+use App\Models\Unit;
+use App\Models\Warehouse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use function Symfony\Component\HttpKernel\DataCollector\doDump;
 
 class PurchaseReturnController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $purchaseReturns = PurchaseReturn::all();
+        $accounts = Account::where('type', 'business')->get();
+
+        return view('purchaseReturn.index', compact('purchaseReturns', 'accounts'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $units = Unit::all();
+        $purchases = Purchase::all();
+        return view('purchaseReturn.create', compact('purchases', 'units'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $ref = getRef();
+        $date = Carbon::now();
+        $purchases = Purchase::where('purchaseID', $request['purchaseID'])->with('purchaseOrders')->get();
+        $requestData = $request->all();
+        $supplierIDs = [];
+        foreach ($requestData as $key => $value) {
+            if (strpos($key, 'supplierID_') === 0) {
+                $supplierID = $value;
+                $supplierIDs[] = $supplierID;
+            }
+        }
+        $supplierID = $supplierIDs[0];
+        $purchaseReturn = PurchaseReturn::create([
+           'purchaseID' => $request['purchaseID'],
+           'supplierID' => $supplierID,
+           'shippingCost' => $request['shippingCost'],
+           'date' => $date,
+           'refID' => $ref,
+
+        ]);
+
+        foreach ($requestData as $key => $value) {
+            if (preg_match('/^returnQuantity_(\d+)$/', $key, $matches)) {
+                $returnBatchNumber = $matches[1];
+                $returnQty = $request['returnQuantity_' . $returnBatchNumber];
+                $returnDesc = $request['description_' . $returnBatchNumber];
+                $productID = $request['productID_' . $returnBatchNumber];
+                $expiryDate = null;
+                if (!empty($request['expiryDate_' . $returnBatchNumber])) {
+                    $expiryDate = date('Y-m-d H:i:s', strtotime($request['expiryDate_' . $returnBatchNumber]));
+                }
+
+                $netUnitCost = PurchaseOrder::where('purchaseID', $request['purchaseID'])->where('productID', $productID)->where('batchNumber', $returnBatchNumber)->pluck('netUnitCost');
+                PurchaseReturnDetail::create([
+                    'purchaseReturnID' => $purchaseReturn->purchaseReturnID,
+                    'productID' => $productID,
+                    'batchNumber' => $returnBatchNumber,
+                    'returnQuantity' => $returnQty,
+                    'expiryDate' => $expiryDate,
+                    'subTotal' => $returnQty * $netUnitCost[0],
+                    'description' => $returnDesc,
+                    'refID' => $ref,
+                    'date' => $date,
+                ]);
+            }
+        }
+        return redirect()->route('purchaseReturn.index')->with('success', 'Purchase Return Create Successfully!' );
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(PurchaseReturn $purchaseReturn)
     {
-        //
+        $totalAmount = $purchaseReturn->purchaseReturnDetails->sum('subTotal');
+        return view('purchaseReturn.show', compact('purchaseReturn', 'totalAmount'));
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(PurchaseReturn $purchaseReturn)
     {
-        //
+        $units = Unit::all();
+        $purchases = Purchase::all();
+        return view('purchaseReturn.edit', compact('purchaseReturn','purchases', 'units'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, PurchaseReturn $purchaseReturn)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(PurchaseReturn $purchaseReturn)
     {
         //

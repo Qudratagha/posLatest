@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PurchaseReturnDetail extends Model
+class PurchaseReturnPayments extends Model
 {
     use HasFactory;
-    protected $primaryKey = 'purchaseReturnDetailID';
-    protected $table = 'purchaseReturnDetails';
+    protected $primaryKey = 'purchaseReturnPaymentID';
+    protected $table = 'purchaseReturnPayments';
     protected $guarded = [];
     public $timestamps = false;
 
@@ -18,9 +18,8 @@ class PurchaseReturnDetail extends Model
         return $this->belongsTo(\App\Models\PurchaseReturn::class, 'purchaseReturnID', 'purchaseReturnID');
     }
 
-    public function product()
+    public function account()
     {
-        return $this->belongsTo(\App\Models\Product::class, 'productID', 'productID');
+        return $this->belongsTo(\App\Models\Account::class, 'accountID', 'accountID');
     }
-
 }

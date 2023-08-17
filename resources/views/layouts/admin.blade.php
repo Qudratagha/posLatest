@@ -235,6 +235,9 @@
                         <li>
                             <a href="{{ route('purchase.index') }}"> Purchase </a>
                         </li>
+                        <li>
+                            <a href="{{ route('purchaseReturn.index') }}"> Purchase Return </a>
+                        </li>
 
                     </ul>
                 </li>
