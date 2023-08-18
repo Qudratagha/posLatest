@@ -187,13 +187,7 @@
 
                /*  $(".productField").selectize(); */
 
-                new TomSelect(".productField",{
-                create: false,
-                sortField: {
-                    field: "text",
-                    direction: "asc"
-                }
-                });
+               $("select").selectize(options);
         })
         var units = @json($units);
         var existingProducts = [];

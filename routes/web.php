@@ -3,6 +3,8 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountTransferController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\permissionsController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\rolesController;
@@ -35,10 +37,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/depositWithdrawals/create', [WithdrawalDepositController::class, 'create']);
     Route::post('/account/depositWithdrawals/store', [WithdrawalDepositController::class, 'store']);
     Route::get('/account/depositWithdrawals/delete/{id}', [WithdrawalDepositController::class, 'destroy']);
+
     Route::get('/account/transfer', [AccountTransferController::class, 'index']);
     Route::get('/account/transfer/create', [AccountTransferController::class, 'create']);
     Route::post('/account/transfer/store', [AccountTransferController::class, 'store']);
     Route::get('/account/transfer/delete/{ref}', [AccountTransferController::class, 'destroy']);
+
+    Route::get('/account/expense/category', [ExpenseCategoryController::class, 'index']);
+    Route::get('/account/expense/category/create', [ExpenseCategoryController::class, 'create']);
+    Route::post('/account/expense/category/store', [ExpenseCategoryController::class, 'store']);
+    Route::get('/account/expense/category/edit/{id}', [ExpenseCategoryController::class, 'edit']);
+    Route::post('/account/expense/category/update', [ExpenseCategoryController::class, 'update']);
+    Route::get('/account/expense/category/delete/{id}', [ExpenseCategoryController::class, 'destroy']);
+    
+    Route::get('/account/expense', [ExpenseController::class, 'index']);
+    Route::get('/account/expense/create', [ExpenseController::class, 'create']);
+    Route::post('/account/expense/store', [ExpenseController::class, 'store']);
+    Route::get('/account/expense/delete/{ref}', [ExpenseController::class, 'destroy']);
+
     Route::get('/account/statement/{id}', [AccountController::class, 'statement']);
     Route::get('/account/details/{id}/{from}/{to}', [AccountController::class, 'statementDetails']);
 

@@ -1,18 +1,17 @@
 @extends('layouts.admin')
-@section('title', 'Account Create')
+@section('title', 'Expense')
 @section('content')
     <div class="card card-default color-palette-box">
         <div class="card-header">
             <h4 class="card-title fw-semibold">
-                <i class="fas fa-users-cog"></i> Create Deposit / Withdrawal
+                <i class="fas fa-users-cog"></i> Create Expense
             </h4>
         </div>
         <div class="card-body">
-            <form class="form-horizontal" action="{{ url('/account/depositWithdrawals/store') }}" method="POST">
+            <form class="form-horizontal" action="{{ url('/account/expense/store') }}" method="POST">
                 @csrf
-
                 <div class="form-group row mt-2">
-                    <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Select Account</label>
+                    <label for="account" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Select Account</label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <select name="account" class="form-select productField">
                             @foreach ($accounts as $account)
@@ -25,23 +24,26 @@
                     @enderror
                 </div>
                 <div class="form-group row mt-2">
-                    <label for="type" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Payment Type</label>
+                    <label for="cat" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Select Category</label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        <select name="type" class="form-select">
-                            <option>Deposit</option>
-                            <option>Withdraw</option>
+                        <select name="cat" class="form-select productField">
+                            @foreach ($cats as $cat)
+                                <option value="{{$cat->expenseCategoryID}}">{{$cat->name}}</option>
+                            @endforeach
                         </select>
                     </div>
+                    @error('cat')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
-
                 <div class="form-group row mt-2">
                     <label for="initialBalance" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Amount: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <input type="number" name="amount" class="form-control" value="{{ old('amount') }}" value="0" placeholder="Enter Amount">
                     </div>
                     @error('amount')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
                 <div class="form-group row mt-2">
                     <label for="date" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Date: </label>
@@ -49,8 +51,8 @@
                         <input type="date" name="date" class="form-control" value="{{ old('date', date('Y-m-d')) }}" placeholder="Date">
                     </div>
                     @error('date')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
               
                 <div class="form-group row mt-2">

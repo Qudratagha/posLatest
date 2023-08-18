@@ -14,6 +14,9 @@
                     <label for="name" class=" form-label col-sm-4 col-md-2 col-lg-2  col-form-label">Account Name: </label>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         <input type="text" name="name" class="form-control" value="{{ old('name') }}" required placeholder="Account Name">
+                        @error('name')
+                            <span class="text-danger">{{$message}}</span>
+                        @enderror
                     </div>
                 </div>
 
