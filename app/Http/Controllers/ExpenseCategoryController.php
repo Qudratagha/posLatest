@@ -31,9 +31,14 @@ class ExpenseCategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:expensecategories,name'
+            'name' => 'required'
         ]);
 
+        $check = ExpenseCategory::where('name', $request->name)->count();
+        if($check > 0)
+        {
+            return back()->with('error', "Category already exists");
+        }
         ExpenseCategory::create(
             [
                 'name' => $request->name
