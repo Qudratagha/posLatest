@@ -114,25 +114,25 @@ class SaleController extends Controller
                         'batchNumber' => $productBatchNumber,
                         'expiryDate' => $productExpiryDate,
                         'debt' => $productQuantity * $unit->value,
-                        'refID' => $ref,
+                        'refID' => $sale->refID,
                     ]);
                 }
             }
         }
-        $total_bill = $subTotal + $request['taxAmount'] + $request['shippingCost'] - $request['discount'];
-        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $ref, "Pending of Sale #". $sale->saleID);
+        $total_bill = $pro_total + $request['taxAmount'] + $request['shippingCost'] - $request['discount'];
+        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $sale->refID, "Pending of Sale #". $sale->saleID);
         if ($request['paymentStatus'] === 'received'){
             SalePayment::create([
                 'saleID' => $sale->saleID,
                 'amount' => $request['paying-amount'],
                 'accountID' => $request['accountID'],
                 'description' => $request['description'],
-                'refID' => $ref,
+                'refID' => $sale->refID,
                 'date' => $request['date']
             ]);
 
-            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $ref, "Payment of Sale #". $sale->saleID);
-            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $ref, "Payment of Sale #". $sale->saleID);
+            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $sale->refID, "Payment of Sale #". $sale->saleID);
+            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->rafID, "Payment of Sale #". $sale->saleID);
         }
         $request->session()->flash('message', 'Sale Created Successfully!');
         return redirect()->route('sale.index');

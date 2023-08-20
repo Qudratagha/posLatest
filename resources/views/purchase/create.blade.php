@@ -59,7 +59,7 @@
                 <div class="form-group row">
                     <label for="productID" class="form-label col-form-label col-sm-12"> Products:
                         <div class="col-sm-12">
-                            <select name="productID" id="productID"  class="form-control productField"  onchange="getProduct(this.value)">
+                            <select name="productID" id="productID"  class="selectize"  onchange="getProduct(this.value)">
                                 <option value="">Select Product</option>
                                 @foreach ($products as $product)
                                     <option value="{{ $product->productID }}">{{  $product->code .' | '. $product->name }}</option>
@@ -183,11 +183,18 @@
         var currentDate = new Date().toISOString().split("T")[0];
         document.getElementById("date").value = currentDate;
         $(document).ready(function() {
-           /*  $('.productField').select2(); */
+            var selectized = $('.selectize').selectize()[0].selectize;
+            selectized.focus();
+            selectized.on("type", function(str) {
+            const results = selectized.search(str);
+            /* console.log("Number of found items:", this.currentResults.items.length); */
+            if(this.currentResults.items.length === 1)
+            {
+               /*  console.log(this.currentResults.items[0].id); */
+               getProduct(this.currentResults.items[0].id);
 
-               /*  $(".productField").selectize(); */
-
-               $("select").selectize(options);
+            }
+            });
         })
         var units = @json($units);
         var existingProducts = [];
@@ -278,6 +285,8 @@
                 }
             });
             document.getElementById("productID").value = "";
+            $("#productID-selectized").val("");
+            $("#productID-selectized").focus();
         }
         function changeNetUnitCost(input, id) {
             var unitValue = 0;

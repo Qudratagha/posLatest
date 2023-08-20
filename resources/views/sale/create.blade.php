@@ -29,7 +29,7 @@
                     </label>
 
                     <label for="warehouseID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-3"> Warehouse:
-                        <select name="warehouseID" id="warehouseID" class="form-select">
+                        <select name="warehouseID" id="warehouseID" autofocus class="form-select">
                             <option value="">Select Warehouse</option>
                             @foreach ($warehouses as $warehouse)
                                 <option value="{{ $warehouse->warehouseID }}" {{ old('warehouseID') == $warehouse->warehouseID ? 'selected' : '' }}>{{ $warehouse->name }}</option>
@@ -49,7 +49,7 @@
 
                 <div class="form-group row">
                     <label for="product" class="form-label col-form-label col-sm-12"> Products:
-                        <select name="productID" id="productID" class="form-control" onchange="productDetails(this.value)">
+                        <select name="productID" id="productID" class="selectize" onchange="productDetails(this.value)">
                             <option value="">Select Product</option>
                         </select>
                     </label>
@@ -205,6 +205,7 @@
         $('#warehouseID').on('change', function() {
             var selectedWarehouseID = $(this).val();
             getProduct(selectedWarehouseID);
+
         });
         $('#productID').on('click', function() {
             if ($('#productID').children('option').length === 1) {
@@ -228,7 +229,19 @@
                         var data = $.each(response.productsWithCreditDebtSum, function(index, product) {
                             $('#productID').append('<option value="' + product.productID+ '_'+ product.batchNumber + '">' + product.product.name +' | '+ product.batchNumber +' | '+ product.difference + '</option>');
                         });
+                        $('.selectize').removeClass("form-select");
+                        var selectized = $('.selectize').selectize()[0].selectize;
+                        selectized.focus();
+                        selectized.on("type", function(str) {
+                        const results = selectized.search(str);
+                        /* console.log("Number of found items:", this.currentResults.items.length); */
+                        if(this.currentResults.items.length === 1)
+                        {
+                        /*  console.log(this.currentResults.items[0].id); */
+                        productDetails(this.currentResults.items[0].id);
 
+                        }
+                        });
 
                     },
                     error: function() {
@@ -333,6 +346,8 @@
                 }
             });
             document.getElementById("productID").value = "";
+            $("#productID-selectized").val("");
+            $("#productID-selectized").focus();
         }
         function changeQuantity(input, id) {
             var unitValue = 0;
@@ -625,14 +640,8 @@
             }
         });
         $(document).ready(function() {
-             $('.productField').select2();
-            /* new TomSelect("#productID",{
-                create: false,
-                sortField: {
-                    field: "text",
-                    direction: "asc"
-                }
-            }); */
+        $('.selectize').addClass("form-select");
+
         })
         function handlePayingAmountChange() {
             var inputPayingAmount = $('input[name="paying-amount"]');
@@ -669,32 +678,6 @@
             footerData();
         }
 
-        $(document).ready(function() {
-            var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';
-<<<<<<< Updated upstream
-            var isSaveButtonClicked = false;
 
-            $('#saveButton').on('click', function() {
-                isSaveButtonClicked = true;
-            });
-            window.addEventListener('beforeunload', function(event) {
-                if (!isSaveButtonClicked) {
-=======
-            var shouldShowConfirmation = true; // Flag to control confirmation message
-            window.addEventListener('beforeunload', function(event) {
-                if (shouldShowConfirmation) {
->>>>>>> Stashed changes
-                    event.returnValue = confirmationMessage;
-                    return confirmationMessage;
-                }
-            });
-<<<<<<< Updated upstream
-=======
-            $('#saveButton').click(function() {
-                shouldShowConfirmation = false;
-            });
->>>>>>> Stashed changes
-        });
     </script>
 @endsection
-
