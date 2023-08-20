@@ -9,6 +9,6 @@ class ExpenseCategory extends Model
 {
     use HasFactory;
     protected $primaryKey = 'expenseCategoryID';
-    protected $table = 'expenseCategories';
+    protected $table = 'expensecategories';
     protected $guarded = [];
 }
