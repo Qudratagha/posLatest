@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Expense;
+use App\Models\ExpenseCategory;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
@@ -12,7 +15,8 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        //
+        $data = Expense::orderBy('expenseID', 'desc')->get();
+        return view('account.expense.index', compact('data'));
     }
 
     /**
@@ -20,15 +24,40 @@ class ExpenseController extends Controller
      */
     public function create()
     {
-        //
-    }
+        $accounts = Account::where('type','business')->get();
+        $cats = ExpenseCategory::all();
 
+        return view('account.expense.create', compact('accounts', 'cats'));
+    }
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(
+            [
+                'account' => 'required',
+                'cat' => 'required',
+                'amount' => 'required',
+                'date' => 'required',
+            ]
+        );
+
+        $ref = getRef();
+        $expense = Expense::create(
+            [
+                'expenseCategoryID' => $request->cat,
+                'accountID' => $request->account,
+                'amount' => $request->amount,
+                'date' => $request->date,
+                'description' => $request->notes,
+                'refID' => $ref,
+            ]
+        );
+
+        addTransaction($request->account, $request->date, "Expense", 0, $request->amount, $ref, $request->notes);
+
+        return redirect('/account/expense')->with('message', 'Expense Saved');
     }
 
     /**
@@ -55,11 +84,10 @@ class ExpenseController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Expense $expense)
+    public function destroy($ref)
     {
-        //
+        Expense::where('refID', $ref)->delete();
+        Transaction::where('refID', $ref)->delete();
+        return back()->with('message', "Expense Deleted");
     }
 }

@@ -19,6 +19,7 @@
         <th>#</th>
         <th>Ref#</th>
         <th>Date</th>
+        <th>Type</th>
         <th>Description</th>
         <th class="text-end">Cradit +</th>
         <th class="text-end">Debit -</th>
@@ -42,6 +43,7 @@
         <td>{{ $item->transactionID }}</td>
         <td>{{ $item->refID }}</td>
         <td>{{ date("d M Y",strtotime($item->date)) }}</td>
+        <td>{{$item->type }}</td>
         <td>{!! $item->description !!}</td>
         <td class="text-end">{{ $item->credit == null ? '-' : round($item->credit,2)}}</td>
         <td class="text-end">{{ $item->debt == null ? '-' : round($item->debt,2)}}</td>

@@ -64,7 +64,7 @@ class WithdrawalDepositController extends Controller
         }
         addTransaction($request->account,$request->date,$request->type,$cr, $db, $ref, $request->notes);
 
-        return back()->with('success', 'Transaction Successful');
+        return redirect('/account/depositWithdrawals')->with('success', 'Transaction Successful');
     }
 
     /**

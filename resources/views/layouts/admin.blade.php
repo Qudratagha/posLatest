@@ -36,6 +36,12 @@
     <link rel="stylesheet" href="{{ asset('src/plugins/src/flatpickr/flatpickr.js') }}">
     <link rel="stylesheet" href="{{ asset('src/plugins/css/dark/flatpickr/custom-flatpickr.css') }}">
     <link rel="stylesheet" href="{{ asset('src/plugins/css/light/flatpickr/custom-flatpickr.css') }}">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
+    integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"/>
 </head>
 <body class="layout-boxed enable-secondaryNav">
     <!-- BEGIN LOADER -->
@@ -217,6 +223,9 @@
                         @can('View Transfer')
                             <li><a href="{{url('/account/transfer')}}"> Transfer </a></li>
                         @endcan
+                        @can('View Expenses')
+                            <li><a href="{{url('/account/expense')}}"> Expense </a></li>
+                        @endcan
                     </ul>
                 </li>
                 @endcan
@@ -362,6 +371,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="{{ asset('../src/plugins/src/tomSelect/tom-select.base.js')}}"></script>
     <script src="{{ asset('../src/plugins/src/tomSelect/custom-tom-select.js')}}"></script>
+    <script
+  src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+  integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
 
     @yield('more-script')
 <script>
