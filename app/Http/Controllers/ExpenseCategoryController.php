@@ -12,7 +12,9 @@ class ExpenseCategoryController extends Controller
      */
     public function index()
     {
-        //
+        $data = ExpenseCategory::all();
+
+        return view('account.expense.category.index', compact('data'));
     }
 
     /**
@@ -20,7 +22,7 @@ class ExpenseCategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('account.expense.category.create');
     }
 
     /**
@@ -28,7 +30,22 @@ class ExpenseCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required'
+        ]);
+
+        $check = ExpenseCategory::where('name', $request->name)->count();
+        if($check > 0)
+        {
+            return back()->with('error', "Category already exists");
+        }
+        ExpenseCategory::create(
+            [
+                'name' => $request->name
+            ]
+        );
+
+        return redirect('/account/expense/category')->with('message', "Category Created");
     }
 
     /**
@@ -42,9 +59,11 @@ class ExpenseCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ExpenseCategory $expenseCategory)
+    public function edit($id)
     {
-        //
+        $data = ExpenseCategory::find($id);
+
+        return view('account.expense.category.edit', compact('data'));
     }
 
     /**
@@ -52,14 +71,18 @@ class ExpenseCategoryController extends Controller
      */
     public function update(Request $request, ExpenseCategory $expenseCategory)
     {
-        //
+        $cat = ExpenseCategory::find($request->id);
+        $cat->name = $request->name;
+        $cat->save();
+        return redirect('/account/expense/category')->with('message', 'Category Updated');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ExpenseCategory $expenseCategory)
+    public function destroy($id)
     {
-        //
+        ExpenseCategory::find($id)->delete();
+        return back()->with('message', "Category Deleted");
     }
 }

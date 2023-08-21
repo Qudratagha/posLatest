@@ -34,25 +34,25 @@ class PurchaseReturnController extends Controller
     {
         $ref = getRef();
         $date = Carbon::now();
-        $purchases = Purchase::where('purchaseID', $request['purchaseID'])->with('purchaseOrders')->get();
+        $purchases = Purchase::where('purchaseID', $request['purchaseID'])->with('purchaseOrders')->first();
         $requestData = $request->all();
-        $supplierIDs = [];
+        /* $supplierIDs = [];
         foreach ($requestData as $key => $value) {
             if (strpos($key, 'supplierID_') === 0) {
                 $supplierID = $value;
                 $supplierIDs[] = $supplierID;
             }
         }
-        $supplierID = $supplierIDs[0];
+        $supplierID = $supplierIDs[0]; */
         $purchaseReturn = PurchaseReturn::create([
            'purchaseID' => $request['purchaseID'],
-           'supplierID' => $supplierID,
+           'supplierID' => $purchases->supplierID,
            'shippingCost' => $request['shippingCost'],
-           'date' => $date,
+           'date' => $request->date,
            'refID' => $ref,
 
         ]);
-
+        $total = 0;
         foreach ($requestData as $key => $value) {
             if (preg_match('/^returnQuantity_(\d+)$/', $key, $matches)) {
                 $returnBatchNumber = $matches[1];
@@ -65,6 +65,7 @@ class PurchaseReturnController extends Controller
                 }
 
                 $netUnitCost = PurchaseOrder::where('purchaseID', $request['purchaseID'])->where('productID', $productID)->where('batchNumber', $returnBatchNumber)->pluck('netUnitCost');
+                $total += $returnQty * $netUnitCost[0];
                 PurchaseReturnDetail::create([
                     'purchaseReturnID' => $purchaseReturn->purchaseReturnID,
                     'productID' => $productID,
@@ -74,10 +75,12 @@ class PurchaseReturnController extends Controller
                     'subTotal' => $returnQty * $netUnitCost[0],
                     'description' => $returnDesc,
                     'refID' => $ref,
-                    'date' => $date,
+                    'date' => $request->date,
                 ]);
             }
         }
+        $total += $request->shippingCost;
+        addTransaction($purchases->supplierID, $request->date, "Purchase Return", 0, $total, $ref, "Purchase Return Pendings");
         return redirect()->route('purchaseReturn.index')->with('success', 'Purchase Return Create Successfully!' );
     }
 

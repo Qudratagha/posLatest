@@ -50,16 +50,17 @@ class PurchaseController extends Controller
         $date = Carbon::now();
         $ref = getRef();
         if ($request->has('paidBy')){
-           $purchasePayment =  PurchasePayment::create([
+                $purchase = Purchase::find($request['purchaseID']);
+                $purchasePayment =  PurchasePayment::create([
                 'purchaseID' => $request['purchaseID'],
                 'amount' => $request['amount'],
                 'accountID' => $request['accountID'],
                 'description' => $request['description'],
-                'refID' => $ref,
+                'refID' => $purchase->refID,
                 'date' => $request['date'],
             ]);
-            addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $ref, $request['description']);
-            addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $ref, $request['description']);
+            addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $purchase->refID, $request['description']);
+            addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $purchase->refID, $request['description']);
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
             return redirect()->route('purchase.index');
         }
@@ -131,7 +132,7 @@ class PurchaseController extends Controller
                             'batchNumber' => $productBatchNumber,
                             'expiryDate' => $productExpiryDate,
                             'credit' => $productQuantity * $unit->value,
-                            'refID' => $ref,
+                            'refID' => $purchase->refID,
                         ]);
                     }
 
@@ -139,7 +140,8 @@ class PurchaseController extends Controller
             }
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
 
-            addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $ref, $request['description']);
+            $desc = "<b>Purchase</b><br> Pending Amount of Purchase #" . $purchase->purchaseID;
+            addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $purchase->refID, $desc);
             $request->session()->flash('message', 'Purchase Created Successfully!');
             return redirect()->route('purchase.index');
 

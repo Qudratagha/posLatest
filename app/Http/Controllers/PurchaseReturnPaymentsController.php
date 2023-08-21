@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PurchaseReturn;
 use App\Models\PurchaseReturnPayments;
 use Illuminate\Http\Request;
 
@@ -29,6 +30,10 @@ class PurchaseReturnPaymentsController extends Controller
             'date' => $request['date'],
             'refID' => $ref,
         ]);
+        $return = PurchaseReturn::where('purchaseReturnID', $request['purchaseReturnID'])->first();
+        addTransaction($return->supplierID, $request->date, "Purchase Return Payment", $request->amount, 0, $ref, $request['description']);
+        addTransaction($request->accountID, $request->date, "Purchase Return Payment", $request->amount, 0, $ref, $request['description']);
+
         return back()->with('message', 'Payment Received Successfully!');
     }
 

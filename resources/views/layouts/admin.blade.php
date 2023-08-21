@@ -24,9 +24,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('../src/plugins/src/tomSelect/tom-select.default.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('../src/plugins/css/light/tomSelect/custom-tomSelect.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('../src/plugins/css/dark/tomSelect/custom-tomSelect.css')}}">
+
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     {{--    data tables--}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -36,6 +34,7 @@
     <link rel="stylesheet" href="{{ asset('src/plugins/src/flatpickr/flatpickr.js') }}">
     <link rel="stylesheet" href="{{ asset('src/plugins/css/dark/flatpickr/custom-flatpickr.css') }}">
     <link rel="stylesheet" href="{{ asset('src/plugins/css/light/flatpickr/custom-flatpickr.css') }}">
+    <link rel="stylesheet" href="{{ asset('src/plugins/src/bootstrap-select/bootstrap-select.min.css') }}">
 </head>
 <body class="layout-boxed enable-secondaryNav">
     <!-- BEGIN LOADER -->
@@ -217,6 +216,9 @@
                         @can('View Transfer')
                             <li><a href="{{url('/account/transfer')}}"> Transfer </a></li>
                         @endcan
+                        @can('View Expenses')
+                            <li><a href="{{url('/account/expense')}}"> Expense </a></li>
+                        @endcan
                     </ul>
                 </li>
                 @endcan
@@ -360,8 +362,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script src="{{ asset('../src/plugins/src/tomSelect/tom-select.base.js')}}"></script>
-    <script src="{{ asset('../src/plugins/src/tomSelect/custom-tom-select.js')}}"></script>
+    <script src="{{ asset('src/plugins/src/bootstrap-select/bootstrap-select.min.js') }}"></script>
 
     @yield('more-script')
 <script>
