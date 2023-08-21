@@ -33,8 +33,8 @@
                                         <th width="7%">Name</th>
                                         <th width="10%">Batch No</th>
                                         <th width="10%">Expired Date</th>
-                                        <th width="10%">Received Quantity</th>
-                                        <th width="15%">Purchase Unit</th>
+                                        <th width="10%">Delivered Quantity</th>
+                                        <th width="15%">Sale Unit</th>
                                         <th width="17%">Return Quantity</th>
                                         <th>Reason</th>
                                         <th width="7%"><i class="fa fa-trash"></i></th>
@@ -48,11 +48,11 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label for="description" class="form-label col-form-label "> Note:
-                        <textarea type="text" name="description" rows="5" class="form-control"></textarea>
-                    </label>
-                </div>
+{{--                <div class="form-group row">--}}
+{{--                    <label for="description" class="form-label col-form-label "> Note:--}}
+{{--                        <textarea type="text" name="description" rows="5" class="form-control"></textarea>--}}
+{{--                    </label>--}}
+{{--                </div>--}}
 
                 <div class="form-group row mt-2">
                     <input class="btn btn-primary" id="saveButton" type="submit" value="Save">

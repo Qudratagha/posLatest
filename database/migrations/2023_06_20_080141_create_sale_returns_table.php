@@ -15,11 +15,9 @@ return new class extends Migration
             $table->id('saleReturnID');
             $table->foreignId('saleID')->constrained('sales', 'saleID');
             $table->foreignId('customerID')->constrained('accounts', 'accountID');
-            $table->foreignId('accountID')->constrained('accounts', 'accountID');
-            $table->integer('amount');
             $table->integer('refID');
             $table->date('date');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
