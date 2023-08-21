@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/expense/category/edit/{id}', [ExpenseCategoryController::class, 'edit']);
     Route::post('/account/expense/category/update', [ExpenseCategoryController::class, 'update']);
     Route::get('/account/expense/category/delete/{id}', [ExpenseCategoryController::class, 'destroy']);
-    
+
     Route::get('/account/expense', [ExpenseController::class, 'index']);
     Route::get('/account/expense/create', [ExpenseController::class, 'create']);
     Route::post('/account/expense/store', [ExpenseController::class, 'store']);
@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/sale', \App\Http\Controllers\SaleController::class);
     Route::resource('/saleDelivered', \App\Http\Controllers\SaleDeliveredController::class);
     Route::resource('/salePayment', \App\Http\Controllers\SalePaymentController::class);
+    Route::resource('/saleReturn', \App\Http\Controllers\SaleReturnController::class);
 
     Route::resource('/purchaseReceive',\App\Http\Controllers\PurchaseReceiveController::class);
     Route::resource('/purchaseReturn',\App\Http\Controllers\PurchaseReturnController::class);

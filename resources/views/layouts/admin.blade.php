@@ -260,6 +260,9 @@
                         <li>
                             <a href="{{ route('sale.index') }}"> Sale </a>
                         </li>
+                        <li>
+                            <a href="{{ route('saleReturn.index') }}"> Sale Return </a>
+                        </li>
                     </ul>
                 </li>
                 @endcan

@@ -328,7 +328,7 @@
 
                             let saleUnit = row.find('select[name="saleUnit_' + rowId + '"]').val()
                             if (saleUnit === '') {
-                                alert('Please select Purchase Unit First');
+                                alert('Please select Sale Unit First');
                                 return;
                             }
                             units.forEach(function(unit) {
@@ -398,7 +398,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -435,7 +435,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -477,7 +477,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -518,7 +518,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -560,7 +560,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {

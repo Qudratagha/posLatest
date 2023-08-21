@@ -2,62 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Purchase;
+use App\Models\Sale;
 use App\Models\SaleReturn;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 
 class SaleReturnController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $sales = Sale::all();
+        return view('saleReturn.index', compact( 'sales'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $units = Unit::all();
+        $sales = Sale::all();
+        return view('saleReturn.create', compact('sales', 'units'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(SaleReturn $saleReturn)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(SaleReturn $saleReturn)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, SaleReturn $saleReturn)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(SaleReturn $saleReturn)
     {
         //

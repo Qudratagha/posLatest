@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseReceive;
+use App\Models\Sale;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 use function PHPUnit\TextUI\CliArguments\argument;
@@ -86,8 +87,20 @@ class AjaxController extends Controller
         $purchase->load('purchaseReceive');
         $purchase->load('purchaseReturns.purchaseReturnDetails');
 
-
         return response()->json(['purchase'=>$purchase]);
+    }
+
+    public function getSale($arguments){
+        $saleID = $arguments['saleID'];
+        $sale = Sale::where('saleID', $saleID)
+            ->with(['saleReceive' => function ($query) {
+                $query->whereNotNull('receivedQty');
+            }])
+            ->get();
+        return response()->json(['sale'=>$sale]);
+
+
+
     }
 
 
