@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('supplierID')->constrained('accounts', 'accountID');
             $table->integer('amount')->nullable();
             $table->integer('shippingCost')->nullable();
-            $table->date('date');
             $table->string('description')->nullable();
+            $table->date('date');
             $table->integer('refID');
         });
     }

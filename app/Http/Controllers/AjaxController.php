@@ -8,6 +8,7 @@ use App\Models\PurchaseReceive;
 use App\Models\Sale;
 use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use function PHPUnit\TextUI\CliArguments\argument;
 
 class AjaxController extends Controller
@@ -92,12 +93,39 @@ class AjaxController extends Controller
 
     public function getSale($arguments){
         $saleID = $arguments['saleID'];
-        $sale = Sale::where('saleID', $saleID)
-            ->with(['saleReceive' => function ($query) {
-                $query->whereNotNull('receivedQty');
-            }])
-            ->get();
-        return response()->json(['sale'=>$sale]);
+        DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
+        $strQuery = "SELECT
+                        sd.productID,
+                        sd.saleID,
+                        sd.expiryDate,
+                        sd.saleUnit,
+                        sales.customerID,
+                        sd.batchNumber,
+                        products.name,
+
+                        SUM(sd.receivedQty) AS totalQty,
+                        IFNULL(SUM(srd.returnQuantity), 0) AS returnQuantity,
+                        SUM(sd.receivedQty) - IFNULL(SUM(srd.returnQuantity), 0) AS remainingQty
+                    FROM
+                        saledelivered sd
+                    LEFT JOIN
+                        salereturndetails srd
+                    ON
+                        sd.productID = srd.productID
+                        AND sd.batchNumber = srd.batchNumber
+                    LEFT JOIN
+                        sales
+                    ON
+                        sales.saleID = sd.saleID
+                    LEFT JOIN
+                        products
+                    ON
+                        products.productID = sd.productID
+                    WHERE
+                        sales.saleID = $saleID
+                    GROUP BY
+                        sd.productID, sd.saleID, sd.expiryDate, sd.saleUnit, sales.customerID, sd.batchNumber, products.name";
+        return DB::select($strQuery);
 
 
 

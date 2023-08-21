@@ -105,6 +105,7 @@
                         const [productID, batchNumber] = key.split('-');
                         const productBatch = productBatchData[key];
 
+
                         strHTML += '<tr>';
                         strHTML += '<td>' + productID + '</td>';
                         strHTML += '<td>' + batchNumber + '</td>';

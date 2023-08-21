@@ -48,9 +48,8 @@ class PurchaseReturnController extends Controller
            'purchaseID' => $request['purchaseID'],
            'supplierID' => $purchases->supplierID,
            'shippingCost' => $request['shippingCost'],
-           'date' => $request->date,
-           'refID' => $ref,
-
+           'date' => $date,
+           'refID' => $ref
         ]);
         $total = 0;
         foreach ($requestData as $key => $value) {

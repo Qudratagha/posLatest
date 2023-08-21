@@ -75,23 +75,45 @@
                     saleID: saleID,
                 },
                 success: function (result) {
-                    console.log(result);
+                    var strHTML = '';
+                    result.forEach(function (v) {
+                        console.log(v);
+                        let id = v.batchNumber;
+                        strHTML += '<tr id="rowID_'+ id +'">';
+                        strHTML += '<td> ' + v.name + '</td>';
+                        strHTML += '<td>' + id + '</td>';
+                        strHTML += '<td>' + (v.expiryDate || 'N/A') + '</td>';
+                        strHTML += '<td>' + v.remainingQty + '</td>';
+                        // strHTML += '<td><input type="number" class="form-control" name="remainingQuantity'+id+'" min="1" value="'+v.remainingQty+'" oninput="changeQuantity(this, '+id+')" style="border: none"></td>';
+                        strHTML += '<td><select class="form-control" name="purchaseUnit_' + id + '" required> <option value="">Select Unit</option>';
+                        units.forEach(function (unit) {
+                            const isSelected = (unit.unitID === v.saleUnit) ? 'selected' : '';
+                            strHTML += '<option value="' + unit.unitID + '" ' + isSelected + '>' + unit.name + '</option>';
+                        });
+                        strHTML += '</select></td>';
+                        strHTML += '<td><input type="number" class="form-control" name="returnQuantity_' + id + '" min="0" max="' + v.remainingQty + '" oninput="validateReturnQuantity(this, ' + v.remainingQty + ')" placeholder="Return Quantity" required></td>';
+                        strHTML += '<td><input type="text" class="form-control" name="description_' + id + '" placeholder="Reason"></td>';
+                        strHTML += '<input type="hidden" name="saleID" value="'+v.saleID+'">';
+                        strHTML += '<input type="hidden" name="customerID_' + id + '" value="'+v.customerID+'">';
+                        strHTML += '<td><input type="hidden" name="productID_'+ id +'" value="'+v.productID+'"><button type="button" class="btn btn-sm" onclick="deleteRow(this, '+v.productID+')" id="'+v.productID+'"><i class="fa fa-trash"></i></button></td>';
+                        strHTML += '</tr>';
+                    });
+                    $('#tbody').html(strHTML);
                 }
             });
             document.getElementById("saleID").value = "";
-
         }
 
-        // function deleteRow(button) {
-        //     $(button).closest('tr').remove();
-        // }
-        // function validateReturnQuantity(inputElement, maxQuantity) {
-        //     const returnQuantity = parseInt(inputElement.value, 10);
-        //     if (returnQuantity > maxQuantity) {
-        //         alert('Return quantity cannot be greater than received quantity (' + maxQuantity + ').');
-        //         inputElement.value = maxQuantity; // Reset the input value to the maximum allowed
-        //     }
-        // }
+        function deleteRow(button) {
+            $(button).closest('tr').remove();
+        }
+        function validateReturnQuantity(inputElement, maxQuantity) {
+            const returnQuantity = parseInt(inputElement.value, 10);
+            if (returnQuantity > maxQuantity) {
+                alert('Return quantity cannot be greater than received quantity (' + maxQuantity + ').');
+                inputElement.value = maxQuantity; // Reset the input value to the maximum allowed
+            }
+        }
 
         // $(document).ready(function() {
         //     var confirmationMessage = 'You may have unsaved changes. Are you sure you want to leave?';

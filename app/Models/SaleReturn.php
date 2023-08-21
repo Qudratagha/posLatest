@@ -12,6 +12,8 @@ class SaleReturn extends Model
     protected $table = 'saleReturns';
     protected $guarded = [];
 
+    public $timestamps = false;
+
     public function account()
     {
         return $this->belongsTo(\App\Models\Account::class, 'accountID', 'accountID');

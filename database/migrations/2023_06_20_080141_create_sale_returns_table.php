@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id('saleReturnID');
             $table->foreignId('saleID')->constrained('sales', 'saleID');
             $table->foreignId('customerID')->constrained('accounts', 'accountID');
-            $table->integer('refID');
-            $table->date('date');
+            $table->integer('shippingCost')->nullable();
             $table->string('description')->nullable();
-            $table->timestamps();
+            $table->date('date');
+            $table->integer('refID');
         });
     }
 
