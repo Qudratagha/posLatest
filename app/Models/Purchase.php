@@ -43,14 +43,5 @@ class Purchase extends Model
     {
         return $this->hasMany(\App\Models\PurchaseReceive::class, 'purchaseID', 'purchaseID');
     }
-
-
-
-
-
-
-
-
-
 }
 

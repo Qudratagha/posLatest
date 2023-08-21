@@ -258,11 +258,22 @@
                             strHTML += '<td>' + v.code + '</td>';
                             strHTML += '<td><input type="number" class="form-control" name="quantity_'+v.productID+'" min="1" value="1" oninput="changeQuantity(this, '+id+')" style="border: none"></td>';
                             strHTML += '<td><input type="number" class="form-control" name="batchNumber_'+v.productID+'" value="" required></td>';
-                            strHTML += `<td style="text-align: center;">${
-                                v.isExpire === 0 ?
-                                    `<input type="date" class="form-control" name="expiryDate_${v.productID}" value="{{ date("Y-m-d") }}" required>`
-                                    : '<div style="display: inline-block; text-align: center;">N/A</div>'
-                            }</td>`;
+
+
+                            strHTML += '<td style="text-align: center;">';
+                            if (v.isExpire === 0) {
+                                const inputElement = document.createElement('input');
+                                inputElement.type = 'date';
+                                inputElement.className = 'form-control';
+                                inputElement.name = `expiryDate_${v.productID}`;
+                                inputElement.setAttribute('required', 'required');
+                                strHTML += inputElement.outerHTML;
+                            } else {
+                                strHTML += '<div style="display: inline-block; text-align: center;">N/A</div>';
+                            }
+                            strHTML += '</td>';
+
+
                             strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="' + v.purchasePrice + '" oninput="changeNetUnitCost(this, '+id+')" > </td>';
                             strHTML += '<td width="15%"><select class="form-control" name="purchaseUnit_'+v.productID+'" required onchange="changePurchaseUnit(this,'+id+')"> <option value="">Select Unit</option>';
                             units.forEach(function(unit) {

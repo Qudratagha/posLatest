@@ -678,6 +678,10 @@
             footerData();
         }
 
+<<<<<<< HEAD
+        
+=======
 
+>>>>>>> hafeez_new
     </script>
 @endsection

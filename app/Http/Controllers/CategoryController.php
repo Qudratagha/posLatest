@@ -86,7 +86,5 @@ class CategoryController extends Controller
             $request->session()->flash('message', 'Category Deleted Successfully!');
             return to_route('category.index');
         }
-
-
     }
 }

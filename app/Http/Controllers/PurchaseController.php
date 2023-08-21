@@ -139,6 +139,7 @@ class PurchaseController extends Controller
                 }
             }
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
+
             $desc = "<b>Purchase</b><br> Pending Amount of Purchase #" . $purchase->purchaseID;
             addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $purchase->refID, $desc);
             $request->session()->flash('message', 'Purchase Created Successfully!');
