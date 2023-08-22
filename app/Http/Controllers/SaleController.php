@@ -66,6 +66,7 @@ class SaleController extends Controller
                 'date' => $request['date']
             ]);
         }
+        $pro_total = 0;
         foreach ($request->all() as $key => $value) {
             if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
                 $pregMatchID = $matches[1];
@@ -82,6 +83,7 @@ class SaleController extends Controller
 
                 $productID = $request['productID_' . $pregMatchID];
                 $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  - $productDiscount + $productTax;
+                $pro_total += $subTotal;
                 SaleOrder::create([
                     'saleID' => $sale->saleID,
                     'productID' => $productID,

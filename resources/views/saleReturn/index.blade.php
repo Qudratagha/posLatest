@@ -1,14 +1,14 @@
 @extends('layouts.admin')
-@section('title', 'Purchase Return')
+@section('title', 'Sale Return')
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title">
-                <i class="fas fa-user-graduate"></i> Purchases Return
+                <i class="fas fa-user-graduate"></i> Sale Return
             </h3>
             <div class="card-actions">
-                <a href="{{route('purchaseReturn.create')}}" class="btn btn-primary d-none d-sm-inline-block">
-                    <i class="fas fa-plus"></i> Add Purchase Return
+                <a href="{{route('saleReturn.create')}}" class="btn btn-primary d-none d-sm-inline-block">
+                    <i class="fas fa-plus"></i> Add Sale Return
                 </a>
             </div>
         </div>
@@ -17,8 +17,8 @@
                 <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Supplier</th>
-                    <th>Purchase-ID</th>
+                    <th>Customer</th>
+                    <th>Sale-ID</th>
                     <th>Shipping Cost</th>
                     <th>Total Amount</th>
                     <th>Received Amount</th>
@@ -29,36 +29,39 @@
                 </thead>
                 <tbody>
 
-                @foreach($purchaseReturns as $key => $return)
+                @foreach($saleReturns as $key => $return)
+{{--                    @dd($return->saleReturnDetails[0]->subTotal)--}}
                     @php
-                        $subTotal = $return->purchaseReturnDetails->sum('subTotal');
+                        $subTotal = $return->saleReturnDetails[0]->subTotal;
                         $shippingCost = $return->shippingCost;
-                        $paidAmount = $return->purchaseReturnPayments->sum('amount');
+                        $paidAmount = $return->saleReturnPayments->sum('amount');
                         $dueAmount = $subTotal + $shippingCost - $paidAmount;
-                       /* $allPayments = $purchase->purchasePayments;*/
+                      /*$allPayments = $purchase->purchasePayments;*/
                     @endphp
                     <tr>
                         <td>{{ $return->date  }}</td>
-                        <td>{{ $return->account->name }}</td>
-                        <td>{{ $return->purchaseID  }}</td>
+                        <td></td>
+                        <td>{{ $return->saleID }}</td>
                         <td>{{ $return->shippingCost ? $return->shippingCost : 'No Shipping Cost' }}</td>
                         <td>{{ $subTotal + $shippingCost }}</td>
                         <td>{{ $paidAmount }}</td>
-                        <td>{{ $dueAmount  }}</td>
+                        <td>{{ $dueAmount }}</td>
                         <td>@if($dueAmount - $paidAmount > 0) <div class="badge badge-danger">Due</div> @else <div class="badge badge-success">Paid</div> @endif</td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn dropdown-toggle form-select" type="button" id="dropdownMenuButton_{{ $return->purchaseReturnID }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn dropdown-toggle form-select" type="button" id="dropdownMenuButton_{{ $return->saleReturnID }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Actions
                                 </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_{{ $return->purchaseReturnID }}">
-                                    <a class="dropdown-item" href="{{ route('purchaseReturn.show', $return->purchaseReturnID) }}">
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_{{ $return->saleReturnID }}">
+                                    <a class="dropdown-item" href="{{ route('saleReturn.show', $return->saleReturnID) }}">
                                         <i class="fas fa-eye"></i> View
                                     </a>
-                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addPaymentModal_{{ $return->purchaseReturnID }}">
+
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addPaymentModal_{{ $return->saleReturnID }}">
                                         <i class="text-yellow fa fa-plus"></i> Add Payment
                                     </a>
-                                    <form action="{{ route('purchase.destroy', $return->purchaseReturnID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
+
+                                    <form action="{{ route('saleReturn.destroy', $return->saleReturnID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
                                         @method('DELETE')
                                         @csrf
                                         <button type="submit" class="dropdown-item">
@@ -69,17 +72,17 @@
                             </div>
                         </td>
                     </tr>
-                    <div class="modal fade" id="addPaymentModal_{{ $return->purchaseReturnID }}" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="addPaymentModal_{{ $return->saleReturnID }}" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg"> <!-- Add "modal-dialog-white" class -->
                             <div class="modal-content" style="background-color: white; color: #000000"> <!-- Add "modal-content-white" class -->
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="addPaymentModalLabel" style="color: black; font-weight: bold">Add Payment {{ $return->purchaseReturnID }}</h5>
+                                    <h5 class="modal-title" id="addPaymentModalLabel" style="color: black; font-weight: bold">Add Payment {{ $return->saleReturnID }}</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form class="form-horizontal" action="{{ route('purchaseReturnPayment.store') }}" method="POST">
+                                    <form class="form-horizontal" action="{{ route('saleReturnPayment.store') }}" method="POST">
                                         @csrf
-                                        <input type="hidden" name="purchaseReturnID" value="{{ $return->purchaseReturnID }}">
+                                        <input type="hidden" name="saleReturnID" value="{{ $return->saleReturnID }}">
                                         <div class="row">
                                             <div class="col-sm-12 col-md-6 col-lg-6 mt-1">
                                                 <label>Receivable Amount *</label>
@@ -90,8 +93,8 @@
                                                 <label>Paying Amount *</label>
 
                                                 <!-- Input field with Bootstrap classes -->
-                                                <input type="number" name="amount" class="form-control paying-amount" max="{{ $dueAmount }}" step="any" required placeholder="">
-                                                <span class="max-amount" style="display: none;">{{ $dueAmount }}</span>
+                                                <input type="number" name="amount" class="form-control paying-amount1" max="{{ $dueAmount }}" step="any" required placeholder="">
+                                                <span class="max-amount1" style="display: none;">{{ $dueAmount }}</span>
                                                 <div class="invalid-feedback">The amount cannot exceed the maximum value.</div>
 
                                             </div>
@@ -157,8 +160,8 @@
 
 
         $(document).ready(function() {
-            $('.paying-amount').on('input', function() {
-                var maxAmount = parseFloat($(this).next('.max-amount').text());
+            $('.paying-amount1').on('input', function() {
+                var maxAmount = parseFloat($(this).next('.max-amount1').text());
                 var enteredAmount = parseFloat($(this).val());
 
                 if (enteredAmount > maxAmount) {
@@ -169,6 +172,8 @@
                 }
             });
         });
+
+
     </script>
 @endsection
 

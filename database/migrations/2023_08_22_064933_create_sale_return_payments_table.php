@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saleReturns', function (Blueprint $table) {
-            $table->id('saleReturnID');
-            $table->foreignId('saleID')->constrained('sales', 'saleID');
-            $table->foreignId('customerID')->constrained('accounts', 'accountID');
-            $table->integer('shippingCost')->nullable();
+        Schema::create('saleReturnPayments', function (Blueprint $table) {
+            $table->id('saleReturnPaymentID');
+            $table->foreignId('saleReturnID')->constrained('saleReturns', 'saleReturnID');
+            $table->foreignId('accountID')->constrained('accounts', 'accountID');
+            $table->integer('amount');
             $table->string('description')->nullable();
-            $table->date('date');
             $table->integer('refID');
+            $table->date('date');
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saleReturns');
+        Schema::dropIfExists('saleReturnPayments');
     }
 };

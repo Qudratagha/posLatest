@@ -12,8 +12,20 @@ class SaleReturn extends Model
     protected $table = 'saleReturns';
     protected $guarded = [];
 
+    public $timestamps = false;
+
     public function account()
     {
         return $this->belongsTo(\App\Models\Account::class, 'accountID', 'accountID');
     }
+
+    public function saleReturnDetails(){
+        return $this->hasMany(\App\Models\SaleReturnDetail::class, 'saleReturnID', 'saleReturnID');
+    }
+
+    public function saleReturnPayments(){
+        return $this->hasMany(\App\Models\SaleReturnPayment::class, 'saleReturnID', 'saleReturnID');
+    }
+
+
 }

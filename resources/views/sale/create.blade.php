@@ -49,7 +49,7 @@
 
                 <div class="form-group row">
                     <label for="product" class="form-label col-form-label col-sm-12"> Products:
-                        <select name="productID" id="productID" class="selectize" onchange="productDetails(this.value)">
+                        <select name="productID" id="productID" class="selectize form-select" onchange="productDetails(this.value)">
                             <option value="">Select Product</option>
                         </select>
                     </label>
@@ -68,7 +68,7 @@
                                         <th width="12%">Quantity</th>
                                         <th>Batch No</th>
                                         <th width="8%">Expired Date</th>
-                                        <th>Net Unit Cost</th>
+                                        <th width="8%">Net Unit Cost</th>
                                         <th>Sale Unit</th>
                                         <th>Discount</th>
                                         <th>Tax</th>
@@ -236,11 +236,10 @@
                         const results = selectized.search(str);
                         /* console.log("Number of found items:", this.currentResults.items.length); */
                         if(this.currentResults.items.length === 1)
-                        {
-                        /*  console.log(this.currentResults.items[0].id); */
-                        productDetails(this.currentResults.items[0].id);
-
-                        }
+                            {
+                            /*  console.log(this.currentResults.items[0].id); */
+                            productDetails(this.currentResults.items[0].id);
+                            }
                         });
 
                     },
@@ -287,7 +286,7 @@
 
                             let saleUnit = row.find('select[name="saleUnit_' + rowId + '"]').val()
                             if (saleUnit === '') {
-                                alert('Please select Purchase Unit First');
+                                alert('Please select Sale Unit First');
                                 return;
                             }
                             units.forEach(function(unit) {
@@ -322,7 +321,7 @@
                                         `<input type="date" class="form-control" name="expiryDate_${v.batchNumber}" value="${getCurrentDate()}" required>`
                                         : '<div style="display: inline-block; text-align: center;">N/A</div>'
                                 }</td>`;
-                                strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this,'+ id +')" > </td>';
+                                strHTML += '<td width="10%"><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this,'+ id +')" > </td>';
                                 strHTML += '<td width="15%"><select class="form-select" name="saleUnit_' + v.batchNumber + '" required onchange="changeSaleUnit(this,'+ id +')"> <option value="">Select Unit</option>';
                                 units.forEach(function (unit) {
                                     strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
@@ -360,7 +359,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -395,7 +394,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -434,7 +433,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -473,7 +472,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -514,7 +513,7 @@
             let saleUnitElement = row.find('select[name="saleUnit_' + id + '"]');
             let saleUnit = saleUnitElement.val();
             if (saleUnit === '') {
-                alert('Please select Purchase Unit First');
+                alert('Please select Sale Unit First');
                 return;
             }
             units.forEach(function(unit) {
@@ -677,11 +676,5 @@
         function overallTaxAmount() {
             footerData();
         }
-
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> hafeez_new
     </script>
 @endsection

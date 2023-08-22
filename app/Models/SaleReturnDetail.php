@@ -11,4 +11,5 @@ class SaleReturnDetail extends Model
     protected $primaryKey = 'saleReturnDetailID';
     protected $table = 'saleReturnDetails';
     protected $guarded = [];
+    public $timestamps = false;
 }

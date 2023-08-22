@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Purchase Return Show')
+@section('title', 'Sale Return Show')
 @section('content')
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -11,26 +11,25 @@
             <dt>
                 <div class="card-body">
                     <dl class="row">
-                        <h3 class="text-center">Details</h3>
                         <div class="col-md-12">
-                            <h5 class="text-center mb-3 mt-3">Purchase Return</h5>
+                            <h5 class="text-center mb-3 mt-3">Sale Return</h5>
                             <dl class="row">
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Supplier Name: {{ $purchaseReturn->account->name }} </dt>
+                                    <dt class="fs-5">Customer Name: {{ $saleReturn->customerID }} </dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Shipping Cost: {{ $purchaseReturn->shippingCost }}</dt>
+                                    <dt class="fs-5">Shipping Cost: {{ $saleReturn->shippingCost }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Description: {{ $purchaseReturn->description }}</dt>
+                                    <dt class="fs-5">Description: {{ $saleReturn->description }}</dt>
                                 </div>
                                 <div class="col-sm-6">
-                                    <dt class="fs-5">Date:{{ $purchaseReturn->date }}</dt>
+                                    <dt class="fs-5">Date:{{ $saleReturn->date }}</dt>
                                 </div>
                             </dl>
                         </div>
                         <div class="col-md-12">
-                            <h5 class="text-center mb-3">Purchase Return</h5>
+                            <h5 class="text-center mb-3">Sale Return</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover table-striped">
                                     <thead class="thead-dark">
@@ -40,17 +39,17 @@
                                         <th scope="col">Return Quantity</th>
                                         <th scope="col">Expiry Date</th>
                                         <th scope="col">Total Amount</th>
-                                        </tr>
+                                    </tr>
                                     </thead>
                                     <tbody>
                                     @php
                                         $totalAmount = 0;
-                                        $shippingCost = $purchaseReturn->shippingCost;
+                                        $shippingCost = $saleReturn->shippingCost;
                                     @endphp
-                                    @foreach($purchaseReturn->purchaseReturnDetails as $return)
+                                    @foreach($saleReturn->saleReturnDetails as $return)
                                         @php $totalAmount +=  $return->subTotal; @endphp
                                         <tr>
-                                            <td>{{ $return->product->name }}</td>
+                                            <td>{{ $return->productID }}</td>
                                             <td>{{ $return->batchNumber }}</td>
                                             <td>{{ $return->returnQuantity }}</td>
                                             <td>{{ $return->expiryDate   }}</td>
@@ -63,7 +62,7 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <h5 class="text-center mb-3">Purchase Return Payments</h5>
+                            <h5 class="text-center mb-3">Sale Return Payments</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover table-striped">
                                     <thead class="thead-dark">
@@ -75,7 +74,7 @@
                                     </thead>
                                     <tbody>
                                     @php $receivedPayment = 0; @endphp
-                                    @foreach($purchaseReturn->purchaseReturnPayments as $payment)
+                                    @foreach($saleReturn->saleReturnPayments as $payment)
                                         <tr>
                                             <td>{{ $payment->amount }}</td>
                                             <td>{{ $payment->description }}</td>

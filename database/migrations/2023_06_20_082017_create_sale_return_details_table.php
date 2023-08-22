@@ -15,10 +15,14 @@ return new class extends Migration
             $table->id('saleReturnDetailID');
             $table->foreignId('saleReturnID')->constrained('saleReturns', 'saleReturnID');
             $table->foreignId('productID')->constrained('products', 'productID');
+            $table->integer('batchNumber');
             $table->integer('returnQuantity');
-            $table->integer('deductionAmount');
+            $table->date('expiryDate')->nullable();
+            $table->integer('deductionAmount')->nullable();
             $table->integer('subTotal');
-            $table->timestamps();
+            $table->string('description')->nullable();
+            $table->integer('refID');
+            $table->date('date');
         });
     }
 

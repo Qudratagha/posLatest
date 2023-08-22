@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseReceive;
+use App\Models\Sale;
 use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use function PHPUnit\TextUI\CliArguments\argument;
 
 class AjaxController extends Controller
@@ -86,8 +88,52 @@ class AjaxController extends Controller
         $purchase->load('purchaseReceive');
         $purchase->load('purchaseReturns.purchaseReturnDetails');
 
-
         return response()->json(['purchase'=>$purchase]);
+    }
+
+    public function getSale($arguments){
+        $saleID = $arguments['saleID'];
+        DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
+        $strQuery = "SELECT
+                        sd.productID,
+                        sd.saleID,
+                        sd.expiryDate,
+                        sd.saleUnit,
+                        sales.customerID,
+                        sd.batchNumber,
+                        products.NAME,
+                        SUM(sd.receivedQty) AS totalQty,
+                        IFNULL(returnQty, 0) AS returnQuantity,
+                        SUM(sd.receivedQty) - IFNULL(returnQty, 0) AS remainingQty
+                    FROM
+                        saledelivered sd
+                    LEFT JOIN
+                        sales ON sales.saleID = sd.saleID
+                    LEFT JOIN
+                        products ON products.productID = sd.productID
+                    LEFT JOIN (
+                        SELECT
+                            productID,
+                            batchNumber,
+                            SUM(returnQuantity) AS returnQty
+                        FROM
+                            salereturndetails
+                        GROUP BY
+                            productID,
+                            batchNumber
+                    ) AS srd ON sd.productID = srd.productID
+                        AND sd.batchNumber = srd.batchNumber
+                    WHERE
+                        sales.saleID = $saleID
+                    GROUP BY
+                        sd.productID,
+                        sd.saleID,
+                        sd.expiryDate,
+                        sd.saleUnit,
+                        sales.customerID,
+                        sd.batchNumber,
+                        products.NAME";
+        return DB::select($strQuery);
     }
 
 
