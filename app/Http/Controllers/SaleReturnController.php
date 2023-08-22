@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Purchase;
 use App\Models\PurchaseReturn;
 use App\Models\Sale;
+use App\Models\SaleDelivered;
+use App\Models\SaleOrder;
 use App\Models\SaleReturn;
 use App\Models\SaleReturnDetail;
 use App\Models\Unit;
@@ -15,8 +18,9 @@ class SaleReturnController extends Controller
 {
     public function index()
     {
-        $sales = Sale::all();
-        return view('saleReturn.index', compact( 'sales'));
+        $saleReturns = SaleReturn::all();
+        $accounts = Account::where('type', 'business')->get();
+        return view('saleReturn.index', compact( 'saleReturns', 'accounts'));
     }
 
     public function create()
@@ -28,7 +32,6 @@ class SaleReturnController extends Controller
 
     public function store(Request $request)
     {
-        dd('remaining');
         $requestData = $request->all();
         $customerIDs = array_filter($requestData, function ($key) {
             return strpos($key, "customerID") !== false;
@@ -50,29 +53,41 @@ class SaleReturnController extends Controller
         ]);
 
         foreach ($requestData as $key => $value) {
-            if (preg_match('/^returnQuantity_(\d+)$/', $key, $matches)) {
-                $returnBatchNumber = $matches[1];
-                $returnQty = $request['returnQuantity_' . $returnBatchNumber];
-                $returnDesc = $request['description_' . $returnBatchNumber];
-                $productID = $request['productID_' . $returnBatchNumber];
-//                $expiryDate = null;
-//                if (!empty($request['expiryDate_' . $returnBatchNumber])) {
-//                    $expiryDate = date('Y-m-d H:i:s', strtotime($request['expiryDate_' . $returnBatchNumber]));
-//                }
-//                SaleReturnDetail::create([
-//
-//
-//                ]);
+            if (preg_match('/^saleUnit_(\d+)$/', $key, $matches)) {
+                $batchNumber = $matches[1];
+                $returnQty = $request['returnQuantity_' . $batchNumber];
+                $returnDesc = $request['description_' . $batchNumber];
+                $productID = $request['productID_' . $batchNumber];
+                $saleUnit = $request['saleUnit_' . $batchNumber];
+                $expiryDate = null;
+                if (!empty($request['expiryDate_' . $batchNumber])) {
+                    $expiryDate = date('Y-m-d H:i:s', strtotime($request['expiryDate_' . $batchNumber]));
+                }
+                $netUnitCost = SaleOrder::where('saleID', $saleID)->where('productID', $productID)->where('batchNumber', $batchNumber)->pluck('netUnitCost');
+                SaleReturnDetail::create([
+                    'saleReturnID' => $saleReturn['saleReturnID'],
+                    'productID' => $productID,
+                    'batchNumber' => $batchNumber,
+                    'returnQuantity' => $returnQty,
+                    'expiryDate' => $expiryDate,
+                    'subTotal' => $returnQty * $netUnitCost[0],
+                    'description' => $returnDesc,
+                    'refID' => $ref,
+                    'date' => $date
+                ]);
             }
         }
+        $request->session()->flash('message', 'Sale Return Successfully!');
 
+        return redirect()->route('saleReturn.index')->with('success', 'Sale Return Create Successfully!' );
 
     }
 
     public function show(SaleReturn $saleReturn)
     {
-        //
-    }
+        $totalAmount = $saleReturn->saleReturnDetails->sum('subTotal');
+        return view('saleReturn.show', compact('saleReturn', 'totalAmount'));
+     }
 
     public function edit(SaleReturn $saleReturn)
     {

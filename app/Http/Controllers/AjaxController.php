@@ -101,34 +101,39 @@ class AjaxController extends Controller
                         sd.saleUnit,
                         sales.customerID,
                         sd.batchNumber,
-                        products.name,
-
+                        products.NAME,
                         SUM(sd.receivedQty) AS totalQty,
-                        IFNULL(SUM(srd.returnQuantity), 0) AS returnQuantity,
-                        SUM(sd.receivedQty) - IFNULL(SUM(srd.returnQuantity), 0) AS remainingQty
+                        IFNULL(returnQty, 0) AS returnQuantity,
+                        SUM(sd.receivedQty) - IFNULL(returnQty, 0) AS remainingQty
                     FROM
                         saledelivered sd
                     LEFT JOIN
-                        salereturndetails srd
-                    ON
-                        sd.productID = srd.productID
+                        sales ON sales.saleID = sd.saleID
+                    LEFT JOIN
+                        products ON products.productID = sd.productID
+                    LEFT JOIN (
+                        SELECT
+                            productID,
+                            batchNumber,
+                            SUM(returnQuantity) AS returnQty
+                        FROM
+                            salereturndetails
+                        GROUP BY
+                            productID,
+                            batchNumber
+                    ) AS srd ON sd.productID = srd.productID
                         AND sd.batchNumber = srd.batchNumber
-                    LEFT JOIN
-                        sales
-                    ON
-                        sales.saleID = sd.saleID
-                    LEFT JOIN
-                        products
-                    ON
-                        products.productID = sd.productID
                     WHERE
                         sales.saleID = $saleID
                     GROUP BY
-                        sd.productID, sd.saleID, sd.expiryDate, sd.saleUnit, sales.customerID, sd.batchNumber, products.name";
+                        sd.productID,
+                        sd.saleID,
+                        sd.expiryDate,
+                        sd.saleUnit,
+                        sales.customerID,
+                        sd.batchNumber,
+                        products.NAME";
         return DB::select($strQuery);
-
-
-
     }
 
 

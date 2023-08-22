@@ -84,8 +84,7 @@
                         strHTML += '<td>' + id + '</td>';
                         strHTML += '<td>' + (v.expiryDate || 'N/A') + '</td>';
                         strHTML += '<td>' + v.remainingQty + '</td>';
-                        // strHTML += '<td><input type="number" class="form-control" name="remainingQuantity'+id+'" min="1" value="'+v.remainingQty+'" oninput="changeQuantity(this, '+id+')" style="border: none"></td>';
-                        strHTML += '<td><select class="form-control" name="purchaseUnit_' + id + '" required> <option value="">Select Unit</option>';
+                        strHTML += '<td><select class="form-control" name="saleUnit_' + id + '" required> <option value="">Select Unit</option>';
                         units.forEach(function (unit) {
                             const isSelected = (unit.unitID === v.saleUnit) ? 'selected' : '';
                             strHTML += '<option value="' + unit.unitID + '" ' + isSelected + '>' + unit.name + '</option>';
@@ -95,6 +94,7 @@
                         strHTML += '<td><input type="text" class="form-control" name="description_' + id + '" placeholder="Reason"></td>';
                         strHTML += '<input type="hidden" name="saleID" value="'+v.saleID+'">';
                         strHTML += '<input type="hidden" name="customerID_' + id + '" value="'+v.customerID+'">';
+                        strHTML += '<input type="hidden" name="expiryDate_' + id + '" value="'+v.expiryDate+'">';
                         strHTML += '<td><input type="hidden" name="productID_'+ id +'" value="'+v.productID+'"><button type="button" class="btn btn-sm" onclick="deleteRow(this, '+v.productID+')" id="'+v.productID+'"><i class="fa fa-trash"></i></button></td>';
                         strHTML += '</tr>';
                     });

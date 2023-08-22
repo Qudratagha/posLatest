@@ -18,4 +18,14 @@ class SaleReturn extends Model
     {
         return $this->belongsTo(\App\Models\Account::class, 'accountID', 'accountID');
     }
+
+    public function saleReturnDetails(){
+        return $this->hasMany(\App\Models\SaleReturnDetail::class, 'saleReturnID', 'saleReturnID');
+    }
+
+    public function saleReturnPayments(){
+        return $this->hasMany(\App\Models\SaleReturnPayment::class, 'saleReturnID', 'saleReturnID');
+    }
+
+
 }

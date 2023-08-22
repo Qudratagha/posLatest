@@ -68,7 +68,7 @@
                                         <th width="12%">Quantity</th>
                                         <th>Batch No</th>
                                         <th width="8%">Expired Date</th>
-                                        <th>Net Unit Cost</th>
+                                        <th width="8%">Net Unit Cost</th>
                                         <th>Sale Unit</th>
                                         <th>Discount</th>
                                         <th>Tax</th>
@@ -321,7 +321,7 @@
                                         `<input type="date" class="form-control" name="expiryDate_${v.batchNumber}" value="${getCurrentDate()}" required>`
                                         : '<div style="display: inline-block; text-align: center;">N/A</div>'
                                 }</td>`;
-                                strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this,'+ id +')" > </td>';
+                                strHTML += '<td width="10%"><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this,'+ id +')" > </td>';
                                 strHTML += '<td width="15%"><select class="form-select" name="saleUnit_' + v.batchNumber + '" required onchange="changeSaleUnit(this,'+ id +')"> <option value="">Select Unit</option>';
                                 units.forEach(function (unit) {
                                     strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';

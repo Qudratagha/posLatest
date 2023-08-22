@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/saleDelivered', \App\Http\Controllers\SaleDeliveredController::class);
     Route::resource('/salePayment', \App\Http\Controllers\SalePaymentController::class);
     Route::resource('/saleReturn', \App\Http\Controllers\SaleReturnController::class);
+    Route::resource('/saleReturnPayment',\App\Http\Controllers\SaleReturnPaymentController::class);
 
     Route::resource('/purchaseReceive',\App\Http\Controllers\PurchaseReceiveController::class);
     Route::resource('/purchaseReturn',\App\Http\Controllers\PurchaseReturnController::class);

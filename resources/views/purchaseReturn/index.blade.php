@@ -55,14 +55,9 @@
                                     <a class="dropdown-item" href="{{ route('purchaseReturn.show', $return->purchaseReturnID) }}">
                                         <i class="fas fa-eye"></i> View
                                     </a>
-{{--                                    <a class="dropdown-item" href="{{ route('purchaseReturn.edit', $return->purchaseReturnID) }}">--}}
-{{--                                        <i class="text-yellow fa fa-edit"></i> Edit--}}
-{{--                                    </a>--}}
-
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addPaymentModal_{{ $return->purchaseReturnID }}">
                                         <i class="text-yellow fa fa-plus"></i> Add Payment
                                     </a>
-
                                     <form action="{{ route('purchase.destroy', $return->purchaseReturnID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
                                         @method('DELETE')
                                         @csrf
