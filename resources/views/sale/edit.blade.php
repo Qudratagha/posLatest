@@ -111,7 +111,6 @@
                                             <td><input type="number" class="form-control" name="netUnitCost_{{$order->batchNumber}}" min="1" value="{{ $order->netUnitCost }}" oninput="changeNetUnitCost(this, {{$order->batchNumber}})" > </td>
                                             <td>
                                                 <select name="saleUnit_{{$order->batchNumber}}" id="" class="form-select" required onchange="changeSaleUnit(this,{{$order->batchNumber}} )">
-                                                    <option value="">Select Unit</option>
                                                     @foreach($units as $unit)
                                                         <option value="{{ $unit->unitID }}" @if ($unit->unitID == $order->saleUnit) selected @endif > {{ $unit->name }}</option>
                                                     @endforeach
@@ -353,6 +352,7 @@
 
                         }else {
                             result.forEach(function (v) {
+                                console.log(v)
                                 let id = v.batchNumber;
                                 strHTML += '<tr id="rowID_' + v.batchNumber + '">';
                                 strHTML += '<td>' + v.product.name + '</td>';
@@ -365,9 +365,10 @@
                                         : '<div style="display: inline-block; text-align: center;">N/A</div>'
                                 }</td>`;
                                 strHTML += '<td><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this, ' + id + ')" > </td>';
-                                strHTML += '<td width="10%"><select class="form-control" name="saleUnit_' + v.batchNumber + '" required onchange="changeSaleUnit(this,'+ id +')"> <option value="">Select Unit</option>';
+                                strHTML += '<td width="10%"><select class="form-control" name="saleUnit_' + v.batchNumber + '" required onchange="changeSaleUnit(this,'+ id +')">';
                                 units.forEach(function (unit) {
-                                    strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
+                                    var isSelected = (unit.unitID === v.product.productUnit);
+                                    strHTML += '<option value="' + unit.unitID + '" ' + (isSelected ? 'selected' : '') + '>' + unit.name + '</option>';
                                 });
                                 strHTML += '</select></td>';
                                 strHTML += '<td><input type="number" class="form-control" name="discount_' + v.batchNumber + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';

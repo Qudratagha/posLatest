@@ -110,7 +110,6 @@
                                             <td><input type="number" class="form-control" name="netUnitCost_{{$order->productID}}" min="1" value="{{ $order->netUnitCost }}" oninput="changeNetUnitCost(this, {{$order->productID}})" > </td>
                                             <td>
                                                 <select name="purchaseUnit_{{$order->productID}}" id="" class="form-select" required onchange="changePurchaseUnit(this, {{ $order->productID }})">
-                                                    <option value="">Select Unit</option>
                                                     @foreach($units as $unit)
                                                         <option value="{{ $unit->unitID }}" @if ($unit->unitID == $order->purchaseUnit) selected @endif > {{ $unit->name }}</option>
                                                     @endforeach
