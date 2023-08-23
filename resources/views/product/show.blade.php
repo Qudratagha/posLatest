@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="row fs-5 mt-3 text-dark">
-                        <div class="col-sm-12 col-md-6 col-lg-6">Product Unit: {{ $product->productUnit}}</div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">Product Unit: {{ $product->unit->name}}</div>
                         <div class="col-sm-12 col-md-6 col-lg-6">Product Sale Price: {{ $product->salePrice}}</div>
                     </div>
 

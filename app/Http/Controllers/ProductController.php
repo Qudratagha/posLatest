@@ -28,7 +28,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $product =Product::create($request->all());
+        $product = Product::create($request->all());
         if($request->hasFile('image')){
             $image = $request->file('image');
             $filename = $image->getClientOriginalName();
@@ -49,9 +49,10 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        $units = Unit::all();
         $brands = Brand::all();
         $categories = Category::all();
-        return view('product.edit', compact('brands', 'categories', 'product'));
+        return view('product.edit', compact('brands', 'categories', 'product', 'units'));
     }
 
     public function update(Request $request, Product $product)

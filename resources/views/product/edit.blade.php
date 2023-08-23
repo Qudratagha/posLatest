@@ -46,8 +46,13 @@
 
                 <div class="form-group row mb-1">
                     <label for="productUnit" class="form-label required col-sm-6 col-md-6 col-lg-2  col-form-label">Product Unit: </label>
-                    <div class="col-sm-6 col-md-6 col-lg-4">
-                        <input type="number" name="productUnit" class="form-control" value="{{ old('productUnit', $product->productUnit) }}" required>
+                    <div class="col-sm-6 col-md-6 col-lg-4" >
+                        <select name="productUnit" class="form-select" required>
+                            <option value="">Select Category</option>
+                            @foreach ($units as $unit)
+                                <option value="{{ $unit->unitID }}" {{ $product->productUnit == $unit->unitID ? 'selected' : '' }}>{{ $unit->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <label for="purchasePrice" class="form-label required col-sm-6 col-md-6 col-lg-2   col-form-label">Purchase Price: </label>
                     <div class="col-sm-6 col-md-6 col-lg-4">
@@ -123,6 +128,6 @@
                 }
             });
         }
-       
+
     </script>
 @endsection

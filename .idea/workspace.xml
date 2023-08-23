@@ -21,12 +21,10 @@
   <component name="ChangeListManager">
     <list default="true" id="a7ed6078-c4f8-4a39-831e-0f0fbbd47331" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AjaxController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AjaxController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PurchaseReturnController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PurchaseReturnController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SaleReturnController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SaleReturnController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/purchaseReturn/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/purchaseReturn/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/saleReturn/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/saleReturn/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProductController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProductController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Product.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Product.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/product/show.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/product/show.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/purchase/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/purchase/create.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,7 +244,7 @@
       <workItem from="1692543583890" duration="618000" />
       <workItem from="1692598553641" duration="18153000" />
       <workItem from="1692684382534" duration="11786000" />
-      <workItem from="1692771113821" duration="1381000" />
+      <workItem from="1692771113821" duration="2823000" />
     </task>
     <servers />
   </component>
@@ -284,13 +282,13 @@
     <state x="413" y="124" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.738/1366.0.1600.870@0.0.1366.738" timestamp="1692627024247" />
     <state x="1850" y="146" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1692771963489" />
     <state x="413" y="124" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.738@0.0.1366.738" timestamp="1692693896235" />
-    <state x="1908" y="146" key="FileChooserDialogImpl" timestamp="1692714420859">
+    <state x="1908" y="146" key="FileChooserDialogImpl" timestamp="1692772495240">
       <screen x="1366" y="0" width="1600" height="870" />
     </state>
     <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738/-1366.6.1366.738@0.0.1366.738" timestamp="1691594201305" />
     <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1366.738@0.0.1366.738" timestamp="1691933980190" />
     <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1600.870@0.0.1366.738" timestamp="1691410037748" />
-    <state x="1908" y="146" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1692714420859" />
+    <state x="1908" y="146" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1692772495240" />
     <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1692603791251" />
     <state x="1933" y="158" key="NewPhpClassDialog" timestamp="1691475569109">
       <screen x="1366" y="0" width="1600" height="870" />

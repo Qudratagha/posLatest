@@ -21,6 +21,7 @@
                     <th>#</th>
                     <th>Product Name</th>
                     <th>Brand</th>
+                    <th>Code</th>
                     <th>Category</th>
                     <th>IsExpiry</th>
                     <th>Actions</th>
@@ -32,6 +33,7 @@
                         <td>{{ $product->productID }}</td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->brand->name }}</td>
+                        <td>{{ $product->code }}</td>
                         <td>{{ $product->category->name }}</td>
                         <td>{{ $product->isExpire == 0 ? "Yes" : "No" }}</td>
                         <td>

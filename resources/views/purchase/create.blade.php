@@ -217,6 +217,7 @@
                     productID: productID,
                 },
                 success: function (result) {
+                    console.log(result);
                     let found = $.grep(existingProducts, function(element) {
                         return element === result[0].productID;
                     });
