@@ -85,10 +85,15 @@ class AjaxController extends Controller
     {
         $purchaseID = $arguments['purchaseID'];
         $purchase = Purchase::where('purchaseID', $purchaseID)->get();
+
+        $test = $purchase[0]->purchaseOrders;
+        $test->first();
+        $warehouseID = $test[0]->warehouseID;
+
         $purchase->load('purchaseReceive');
         $purchase->load('purchaseReturns.purchaseReturnDetails');
 
-        return response()->json(['purchase'=>$purchase]);
+        return response()->json(['purchase'=>$purchase, 'warehouseID'=>$warehouseID]);
     }
 
     public function getSale($arguments){
@@ -102,6 +107,8 @@ class AjaxController extends Controller
                         sales.customerID,
                         sd.batchNumber,
                         products.NAME,
+                    	saleorders.warehouseID,
+
                         SUM(sd.receivedQty) AS totalQty,
                         IFNULL(returnQty, 0) AS returnQuantity,
                         SUM(sd.receivedQty) - IFNULL(returnQty, 0) AS remainingQty
@@ -111,6 +118,7 @@ class AjaxController extends Controller
                         sales ON sales.saleID = sd.saleID
                     LEFT JOIN
                         products ON products.productID = sd.productID
+	                INNER JOIN saleorders on sales.saleID = sd.saleID
                     LEFT JOIN (
                         SELECT
                             productID,

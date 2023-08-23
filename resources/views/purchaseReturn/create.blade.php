@@ -65,6 +65,7 @@
 @section('more-script')
     <script>
         var units = @json($units);
+        var products = @json($products);
         function getPurchase(purchaseID) {
             $('#tbody').empty();
             $.ajax({
@@ -104,12 +105,13 @@
                     for (const key in productBatchData) {
                         const [productID, batchNumber] = key.split('-');
                         const productBatch = productBatchData[key];
-
-
                         strHTML += '<tr>';
-                        strHTML += '<td>' + productID + '</td>';
+                        products.forEach(function (product) {
+                            if (product.productID == productID){
+                                strHTML += '<td>' + product.name + '</td>';
+                            }
+                        });
                         strHTML += '<td>' + batchNumber + '</td>';
-
                         const receive = purchase_receive_data.find(item => item.productID === parseInt(productID) && item.batchNumber === parseInt(batchNumber));
                         if (receive) {
                             strHTML += '<td>' + (receive.expiryDate || 'N/A') + '</td>';
@@ -129,6 +131,7 @@
 
                         strHTML += '<td><input type="number" class="form-control" name="returnQuantity_' + batchNumber + '" min="0" max="' + productBatch.receivedQty + '" oninput="validateReturnQuantity(this, ' + productBatch.receivedQty + ')" placeholder="Return Quantity" required></td>';
                         strHTML += '<td><input type="text" class="form-control" name="description_' + batchNumber + '" placeholder="Reason"></td>';
+                        strHTML += '<input type="hidden" name="warehouseID_' + batchNumber + '" placeholder="Reason" value="'+ result.warehouseID +'">';
                         strHTML += '<td><input type="hidden" name="productID_' + batchNumber + '" value="' + productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this)" id="' + batchNumber + '"><i class="fa fa-trash"></i></button></td>';
                         strHTML += '<input type="hidden" name="purchaseID" value="' + result.purchase[0].purchaseID + '">';
                         strHTML += '<input type="hidden" name="supplierID_' + batchNumber + '" value="' + result.purchase[0].supplierID + '">';

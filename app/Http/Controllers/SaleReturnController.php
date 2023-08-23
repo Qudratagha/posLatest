@@ -10,6 +10,7 @@ use App\Models\SaleDelivered;
 use App\Models\SaleOrder;
 use App\Models\SaleReturn;
 use App\Models\SaleReturnDetail;
+use App\Models\Stock;
 use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -40,8 +41,13 @@ class SaleReturnController extends Controller
             return strpos($key, "saleID") !== false;
         }, ARRAY_FILTER_USE_KEY);
 
+        $warehouseIDs = array_filter($requestData, function ($key) {
+            return strpos($key, "warehouseID") !== false;
+        }, ARRAY_FILTER_USE_KEY);
+
         $customerID = array_values(array_unique($customerIDs));
         $saleID = array_values(array_unique($saleIDs));
+        $warehouseID = array_values(array_unique($warehouseIDs));
         $ref = getRef();
         $date = Carbon::now();
         $saleReturn = SaleReturn::create([
@@ -75,11 +81,19 @@ class SaleReturnController extends Controller
                     'refID' => $ref,
                     'date' => $date
                 ]);
+                Stock::create([
+                    'warehouseID' =>  $warehouseID[0],
+                    'productID' => $productID,
+                    'batchNumber' => $batchNumber,
+                    'date' => $date,
+                    'expiryDate' => $expiryDate,
+                    'credit' => $returnQty,
+                    'refID' => $ref
+                ]);
             }
         }
-        $request->session()->flash('message', 'Sale Return Successfully!');
-
-        return redirect()->route('saleReturn.index')->with('success', 'Sale Return Create Successfully!' );
+        $request->session()->flash('message', 'Sale Return Successfully and Product Added To Stock Too!');
+        return redirect()->route('saleReturn.index');
 
     }
 
