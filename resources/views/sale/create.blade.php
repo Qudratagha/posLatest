@@ -322,9 +322,10 @@
                                         : '<div style="display: inline-block; text-align: center;">N/A</div>'
                                 }</td>`;
                                 strHTML += '<td width="10%"><input type="number" class="form-control" name="netUnitCost_' + v.batchNumber + '" min="1" value="' + v.product.purchasePrice + '" oninput="changeNetUnitCost(this,'+ id +')" > </td>';
-                                strHTML += '<td width="15%"><select class="form-select" name="saleUnit_' + v.batchNumber + '" required onchange="changeSaleUnit(this,'+ id +')"> <option value="">Select Unit</option>';
+                                strHTML += '<td width="15%"><select class="form-select" name="saleUnit_' + v.batchNumber + '" required onchange="changeSaleUnit(this,'+ id +')">';
                                 units.forEach(function (unit) {
-                                    strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
+                                    var isSelected = (unit.unitID === v.product.productUnit);
+                                    strHTML += '<option value="' + unit.unitID + '" ' + (isSelected ? 'selected' : '') + '>' + unit.name + '</option>';
                                 });
                                 strHTML += '</select></td>';
                                 strHTML += '<td><input type="number" class="form-control" name="discount_' + v.batchNumber + '" min="0" value="0" oninput="changeDiscount(this, ' + id + ')"></td>';

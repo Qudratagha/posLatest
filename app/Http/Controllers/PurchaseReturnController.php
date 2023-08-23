@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseReturn;
 use App\Models\PurchaseReturnDetail;
+use App\Models\Stock;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use Carbon\Carbon;
@@ -25,17 +27,27 @@ class PurchaseReturnController extends Controller
 
     public function create()
     {
+        $products = Product::all();
         $units = Unit::all();
         $purchases = Purchase::all();
-        return view('purchaseReturn.create', compact('purchases', 'units'));
+        return view('purchaseReturn.create', compact('purchases', 'units', 'products'));
     }
 
     public function store(Request $request)
     {
+        $warehouseID = null;
+        foreach ($request->all() as $key => $value) {
+            if (strpos($key, 'warehouseID_') === 0) {
+                $warehouseID = $value;
+                break; // Exit the loop once a match is found
+            }
+        }
+
         $ref = getRef();
         $date = Carbon::now();
         $purchases = Purchase::where('purchaseID', $request['purchaseID'])->with('purchaseOrders')->first();
         $requestData = $request->all();
+
         /* $supplierIDs = [];
         foreach ($requestData as $key => $value) {
             if (strpos($key, 'supplierID_') === 0) {
@@ -76,10 +88,19 @@ class PurchaseReturnController extends Controller
                     'refID' => $ref,
                     'date' => $request->date,
                 ]);
+                Stock::create([
+                    'warehouseID' =>  $warehouseID,
+                    'productID' => $productID,
+                    'date' => $request->date,
+                    'batchNumber' => $returnBatchNumber,
+                    'expiryDate' => $expiryDate,
+                    'debt' => $returnQty,
+                    'refID' => $ref,
+                ]);
             }
         }
         $total += $request->shippingCost;
-        addTransaction($purchases->supplierID, $request->date, "Purchase Return", 0, $total, $ref, "Purchase Return Pendings");
+        addTransaction($purchases->supplierID, $request->date, "Purchase Return", 0, $total, $ref, "Purchase Return Pending");
         return redirect()->route('purchaseReturn.index')->with('success', 'Purchase Return Create Successfully!' );
     }
 

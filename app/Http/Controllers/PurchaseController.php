@@ -36,6 +36,7 @@ class PurchaseController extends Controller
 
     public function create()
     {
+
         $units = Unit::all();
         $warehouses = Warehouse::all();
         $accounts = Account::where('type', 'supplier')->get();

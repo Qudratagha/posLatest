@@ -77,7 +77,7 @@
                 success: function (result) {
                     var strHTML = '';
                     result.forEach(function (v) {
-                        console.log(v);
+
                         let id = v.batchNumber;
                         strHTML += '<tr id="rowID_'+ id +'">';
                         strHTML += '<td> ' + v.name + '</td>';
@@ -95,6 +95,7 @@
                         strHTML += '<input type="hidden" name="saleID" value="'+v.saleID+'">';
                         strHTML += '<input type="hidden" name="customerID_' + id + '" value="'+v.customerID+'">';
                         strHTML += '<input type="hidden" name="expiryDate_' + id + '" value="'+v.expiryDate+'">';
+                        strHTML += '<input type="hidden" name="warehouseID_' + id + '" value="'+v.warehouseID+'">';
                         strHTML += '<td><input type="hidden" name="productID_'+ id +'" value="'+v.productID+'"><button type="button" class="btn btn-sm" onclick="deleteRow(this, '+v.productID+')" id="'+v.productID+'"><i class="fa fa-trash"></i></button></td>';
                         strHTML += '</tr>';
                     });

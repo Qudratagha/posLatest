@@ -252,6 +252,7 @@
 
                     } else {
                         result.forEach(function (v) {
+                            console.log(v);
                             let id = v.productID;
                             strHTML += '<tr id="rowID_'+ v.productID +'">';
                             strHTML += '<td>' + v.name + '</td>';
@@ -277,7 +278,8 @@
                             strHTML += '<td><input type="number" class="form-control" name="netUnitCost_'+v.productID+'" min="1" value="' + v.purchasePrice + '" oninput="changeNetUnitCost(this, '+id+')" > </td>';
                             strHTML += '<td width="15%"><select class="form-control" name="purchaseUnit_'+v.productID+'" required onchange="changePurchaseUnit(this,'+id+')"> <option value="">Select Unit</option>';
                             units.forEach(function(unit) {
-                                strHTML += '<option value="' + unit.unitID + '">' + unit.name + '</option>';
+                                var isSelected = (unit.unitID === v.productUnit);
+                                strHTML += '<option value="' + unit.unitID + '" ' + (isSelected ? 'selected' : '') + '>' + unit.name + '</option>';
                             });
                             strHTML += '</select></td>';
                             strHTML += '<td><input type="number" class="form-control" name="discount_'+v.productID+'" min="0" value="0" oninput="changeDiscount(this, '+id+')"></td>';

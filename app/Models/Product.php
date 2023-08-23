@@ -22,6 +22,11 @@ class Product extends Model
         return $this->belongsTo(\App\Models\Category::class, 'categoryID', 'categoryID');
     }
 
+    public function unit()
+    {
+        return $this->belongsTo(\App\Models\Unit::class, 'productUnit', 'unitID');
+    }
+
     public function purchaseOrders()
     {
         return $this->hasMany(\App\Models\PurchaseOrder::class, 'productID', 'productID');
