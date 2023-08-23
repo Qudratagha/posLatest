@@ -43,19 +43,6 @@
                     </label>
                 </div>
 
-{{--                <div class="form-group row">--}}
-{{--                    <label for="purchaseStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Purchase Status:--}}
-{{--                        <select name="purchaseStatus" class="form-select">--}}
-{{--                            <option value="received">Received</option>--}}
-{{--                            <option value="pending">Pending</option>--}}
-{{--                        </select>--}}
-{{--                    </label>--}}
-
-{{--                    <label for="doc" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Attach Document:--}}
-{{--                        <input type="file" name="image" class="form-control" >--}}
-{{--                    </label>--}}
-{{--                </div>--}}
-
                 <div class="form-group row">
                     <label for="productID" class="form-label col-form-label col-sm-12"> Products:
                         <div class="col-sm-12">
@@ -137,7 +124,6 @@
                         <textarea type="text" name="description" rows="5" class="form-control"></textarea>
                     </label>
                 </div>
-
                 <div class="form-group row mt-2">
                     <input class="btn btn-primary" id="saveButton" type="submit" value="Save">
                 </div>
@@ -183,19 +169,36 @@
         var currentDate = new Date().toISOString().split("T")[0];
         document.getElementById("date").value = currentDate;
         $(document).ready(function() {
-            var selectized = $('.selectize').selectize()[0].selectize;
-            selectized.focus();
-            selectized.on("type", function(str) {
-            const results = selectized.search(str);
-            /* console.log("Number of found items:", this.currentResults.items.length); */
-            if(this.currentResults.items.length === 1)
-            {
-               /*  console.log(this.currentResults.items[0].id); */
-               getProduct(this.currentResults.items[0].id);
+            setTimeout(function() {
+                var selectized = $('.selectize').selectize()[0].selectize;
+                selectized.on("type", function(str) {
+                    const results = selectized.search(str);
+                    console.log(this.currentResults.items.length);
+                    // if (this.currentResults.items.length === 1) {
+                    //     console.log(this.currentResults.items[0].id);
+                    //     getProduct(this.currentResults.items[0].id);
+                    // }
+                });
+                selectized.focus();
 
-            }
-            });
-        })
+                // var selectized = $('.selectize').selectize()[0].selectize;
+                // if (selectized.length > 0) {
+                //     selectized = selectized[0].selectize;
+                //     console.log(selectized);
+                // }
+                // var selectized = $('.selectize').selectize()[0].selectize;
+                // selectized.focus();
+                // selectized.on("type", function(str) {
+                // const results = selectized.search(str);
+                // /* console.log("Number of found items:", this.currentResults.items.length); */
+                // if(this.currentResults.items.length === 1)
+                // {
+                //    console.log(this.currentResults.items[0].id);
+                //    getProduct(this.currentResults.items[0].id);
+                // }
+                // });
+            }, 100);
+        });
         var units = @json($units);
         var existingProducts = [];
         $('#orderTax').change(function() {
@@ -206,7 +209,6 @@
                 $('#taxAmountLabel').addClass('d-none');
             }
         });
-
         function getProduct(productID) {
             var strHTML = "";
             $.ajax({
@@ -251,7 +253,6 @@
 
                     } else {
                         result.forEach(function (v) {
-                            console.log(v);
                             let id = v.productID;
                             strHTML += '<tr id="rowID_'+ v.productID +'">';
                             strHTML += '<td>' + v.name + '</td>';
@@ -424,7 +425,6 @@
             $('td:has(span#subTotal_' + id + ')').find('span#subTotal_' + id).text(subtotal);
             rowData();
         }
-
         function changePurchaseUnit(input, id){
             var unitValue = 0;
 
@@ -463,7 +463,6 @@
             $(button).closest('tr').remove();
             rowData();
         }
-
         function rowData(){
             var subTotalAmount = 0;
             var totalQuantity = 0;
@@ -525,7 +524,6 @@
             var payingAmount = subTotalAmount + overAllTaxAmount - totalDiscount + totalTax + overallShippingCost - overallDiscount;
             $('#fGrandTotal').text(payingAmount.toFixed(2));
         }
-
         function overallDiscount(){
             rowData();
         }
