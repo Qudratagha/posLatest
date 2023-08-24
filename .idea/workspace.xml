@@ -21,7 +21,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a7ed6078-c4f8-4a39-831e-0f0fbbd47331" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PurchaseReturnController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PurchaseReturnController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SaleReturnPaymentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SaleReturnPaymentController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/purchase/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/purchase/create.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

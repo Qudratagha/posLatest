@@ -29,9 +29,10 @@ class SaleReturnPaymentController extends Controller
             'date' => $request['date'],
             'refID' => $ref,
         ]);
-//        $return = SaleReturn::where('purchaseReturnID', $request['purchaseReturnID'])->first();
-//        addTransaction($return->supplierID, $request->date, "Purchase Return Payment", $request->amount, 0, $ref, $request['description']);
-//        addTransaction($request->accountID, $request->date, "Purchase Return Payment", $request->amount, 0, $ref, $request['description']);
+        $return = SaleReturn::where('saleReturnID', $request['saleReturnID'])->first();
+
+        addTransaction($return->customerID, $request->date, "Purchase Return Payment", $request->amount, 0, $ref, $request['description']);
+        addTransaction($request['accountID'], $request->date, "Purchase Return Payment", $request->amount, 0, $ref, $request['description']);
         $request->session()->flash('message', 'Payment Received Successfully!');
         return back();
     }

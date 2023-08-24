@@ -60,7 +60,7 @@ class PurchaseController extends Controller
                 'refID' => $purchase->refID,
                 'date' => $request['date'],
             ]);
-            addTransaction($request['accountID'], $request['date'], 'purchase', 0, $request['amount'], $purchase->refID, $request['description']);
+            addTransaction($request['accountID'], $request['date'], 'purchase', $request['amount'], 0 , $purchase->refID, $request['description']);
             addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $purchase->refID, $request['description']);
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
             return redirect()->route('purchase.index');

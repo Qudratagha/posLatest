@@ -55,7 +55,6 @@
                         </div>
                     </label>
                 </div>
-
                 <div class="form-group">
                     <div class="row mt-4">
                         <div class="col-md-12">
@@ -186,6 +185,8 @@
             setTimeout(function() {
                 var selectized = $('.selectize').selectize()[0].selectize;
                 selectized.on("type", function(str) {
+                    selectized.focus();
+
                     const results = selectized.search(str);
                     console.log(this.currentResults.items.length);
                     if (this.currentResults.items.length === 1) {
@@ -193,7 +194,6 @@
                         getProduct(this.currentResults.items[0].id);
                     }
                 });
-                selectized.focus();
 
                 // var selectized = $('.selectize').selectize()[0].selectize;
                 // if (selectized.length > 0) {
@@ -312,8 +312,6 @@
                    rowData();
                 }
             });
-
-
         }
         function changeNetUnitCost(input, id) {
             var unitValue = 0;

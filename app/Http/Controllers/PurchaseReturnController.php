@@ -108,7 +108,6 @@ class PurchaseReturnController extends Controller
     {
         $totalAmount = $purchaseReturn->purchaseReturnDetails->sum('subTotal');
         return view('purchaseReturn.show', compact('purchaseReturn', 'totalAmount'));
-
     }
 
     public function edit(PurchaseReturn $purchaseReturn)
