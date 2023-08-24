@@ -173,10 +173,10 @@
             selectized.focus();
             selectized.on("type", function(str) {
             const results = selectized.search(str);
-           
+
             if(this.currentResults.items.length == 1)
             {
-               
+
                getProduct(this.currentResults.items[0].id);
                $("#productID-selectized").val("");
                 $("#productID-selectized").focus();
@@ -188,10 +188,10 @@
                 selectized.on("type", function(str) {
                     const results = selectized.search(str);
                     console.log(this.currentResults.items.length);
-                    // if (this.currentResults.items.length === 1) {
-                    //     console.log(this.currentResults.items[0].id);
-                    //     getProduct(this.currentResults.items[0].id);
-                    // }
+                    if (this.currentResults.items.length === 1) {
+                        console.log(this.currentResults.items[0].id);
+                        getProduct(this.currentResults.items[0].id);
+                    }
                 });
                 selectized.focus();
 
@@ -212,7 +212,7 @@
                 // }
                 // });
             }, 100);
-        });
+
         var units = @json($units);
         var existingProducts = [];
         $('#orderTax').change(function() {
@@ -312,8 +312,8 @@
                    rowData();
                 }
             });
-            
-            
+
+
         }
         function changeNetUnitCost(input, id) {
             var unitValue = 0;
