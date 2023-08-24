@@ -41,7 +41,7 @@ class PurchaseController extends Controller
         $warehouses = Warehouse::all();
         $accounts = Account::where('type', 'supplier')->get();
         $purchaseStatuses = PurchaseStatus::all();
-        $products = Product::all();
+        $products = Product::orderBy('productID', 'desc')->get();
         return view('purchase.create', compact('warehouses', 'accounts', 'purchaseStatuses', 'products', 'units'));
     }
 
