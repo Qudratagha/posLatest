@@ -12,6 +12,7 @@ use App\Models\SaleDelivered;
 use App\Models\SaleOrder;
 use App\Models\SalePayment;
 use App\Models\Stock;
+use App\Models\Transaction;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use Carbon\Carbon;
@@ -142,7 +143,7 @@ class SaleController extends Controller
             ]);
 
             addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $sale->refID, "Payment of Sale #". $sale->saleID);
-            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->rafID, "Payment of Sale #". $sale->saleID);
+            addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->refID, "Payment of Sale #". $sale->saleID);
         }
         $request->session()->flash('message', 'Sale Created Successfully!');
         return redirect()->route('sale.index');
@@ -199,6 +200,7 @@ class SaleController extends Controller
     {
         $sale->saleOrders()->delete();
         $sale->saleReceive()->delete();
+        Transaction::where('refID', $sale->refID)->delete();
         $date = Carbon::now();
         $ref = getRef();
         $warehouseID = $request['warehouseID'];
@@ -214,16 +216,7 @@ class SaleController extends Controller
             'refID' => $ref
         ]);
 
-        if ($request['paymentStatus'] === 'received'){
-            SalePayment::create([
-                'saleID' => $sale->saleID,
-                'amount' => $request['paying-amount'],
-                'accountID' => $request['accountID'],
-                'description' => $request['description'],
-                'refID' => $ref,
-                'date' => $request['date']
-            ]);
-        }
+        $pro_total = 0;
         foreach ($request->all() as $key => $value) {
             if (preg_match('/^quantity_(\d+)$/', $key, $matches)) {
                 $pregMatchID = $matches[1];
@@ -240,6 +233,8 @@ class SaleController extends Controller
 
                 $productID = $request['productID_' . $pregMatchID];
                 $subTotal = ($productNetUnitCost * $productQuantity  * $unit->value) +  - $productDiscount + $productTax;
+
+                $pro_total += $subTotal;
                 SaleOrder::create([
                     'saleID' => $sale->saleID,
                     'productID' => $productID,
@@ -284,6 +279,21 @@ class SaleController extends Controller
                     ]);
                 }
             }
+
+        }
+        $total_bill = $pro_total + $request['taxAmount'] + $request['shippingCost'] - $request['discount'];
+        addTransaction($request->customerID, $request->date, "Sale", $total_bill, 0, $sale->refID, "Pending of Sale #". $sale->saleID);
+        if ($request['paymentStatus'] === 'received'){
+            SalePayment::create([
+                'saleID' => $sale->saleID,
+                'amount' => $request['paying-amount'],
+                'accountID' => $request['accountID'],
+                'description' => $request['description'],
+                'refID' => $ref,
+                'date' => $request['date']
+            ]);
+            addTransaction($request->customerID, $request->date, "Sale", 0, $request['paying-amount'], $sale->refID, "Payment of Sale #". $sale->saleID);
+        addTransaction($request->accountID, $request->date, "Sale", $request['paying-amount'], 0, $sale->refID, "Payment of Sale #". $sale->saleID);
         }
         $request->session()->flash('message', 'Sale Update Successfully!');
         return redirect()->route('sale.index');

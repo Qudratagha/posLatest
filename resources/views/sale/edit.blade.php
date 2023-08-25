@@ -84,16 +84,16 @@
                                     <tbody id="tbody">
                                     @foreach($saleOrders as $order)
                                         <?php
-                                            $warehouseID = $order->warehouseID;
+                                            $warehouseID = $order['warehouseID'];
                                             $productID = $order->productID;
                                             $batchNumber = $order->batchNumber;
-                                            $stock = \App\Models\Stock::where('productID', $productID)
+                                            $stock  = \App\Models\Stock::where('productID', $productID)
                                                 ->where('warehouseID', $warehouseID)
                                                 ->where('batchNumber', $batchNumber)
-                                                ->selectRaw('SUM(credit) - SUM(debt) as totalQuantity')
+                                                ->select('warehouseID', 'productID', 'batchNumber', \DB::raw('SUM(credit) as totalCredit'), \DB::raw('SUM(debt) as totalDebt'))
+                                                ->groupBy('warehouseID', 'productID', 'batchNumber')
                                                 ->first();
-                                        $totalQuantity = $stock ? $stock->totalQuantity : 0;
-
+                                            $totalQuantity = $stock->totalCredit - $stock->totalDebt;
                                         ?>
                                         <tr id="rowID_{{ $order->batchNumber }}">
                                             <td>{{ $order->product->name }}</td>
