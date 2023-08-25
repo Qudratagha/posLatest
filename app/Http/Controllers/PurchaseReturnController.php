@@ -71,6 +71,7 @@ class PurchaseReturnController extends Controller
                 $returnDesc = $request['description_' . $returnBatchNumber];
                 $productID = $request['productID_' . $returnBatchNumber];
                 $expiryDate = null;
+
                 if (!empty($request['expiryDate_' . $returnBatchNumber])) {
                     $expiryDate = date('Y-m-d H:i:s', strtotime($request['expiryDate_' . $returnBatchNumber]));
                 }

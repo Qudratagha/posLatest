@@ -21,9 +21,11 @@
   <component name="ChangeListManager">
     <list default="true" id="a7ed6078-c4f8-4a39-831e-0f0fbbd47331" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AjaxController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AjaxController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PurchaseController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PurchaseReturnController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PurchaseReturnController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2023_07_17_101813_create_purchase_receives_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2023_07_17_101813_create_purchase_receives_table.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/purchaseReturn/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/purchaseReturn/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/purchaseReturn/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/purchaseReturn/index.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -281,13 +283,13 @@
     <state x="413" y="124" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.738/1366.0.1600.870@0.0.1366.738" timestamp="1692627024247" />
     <state x="1850" y="146" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1692771963489" />
     <state x="413" y="124" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.738@0.0.1366.738" timestamp="1692693896235" />
-    <state x="463" y="124" key="FileChooserDialogImpl" timestamp="1692785076706">
-      <screen x="0" y="0" width="1366" height="738" />
+    <state x="1908" y="146" key="FileChooserDialogImpl" timestamp="1692963926542">
+      <screen x="1366" y="0" width="1600" height="870" />
     </state>
     <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738/-1366.6.1366.738@0.0.1366.738" timestamp="1691594201305" />
     <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1366.738@0.0.1366.738" timestamp="1691933980190" />
     <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1600.870@0.0.1366.738" timestamp="1691410037748" />
-    <state x="1908" y="146" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1692772495240" />
+    <state x="1908" y="146" key="FileChooserDialogImpl/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1692963926542" />
     <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1692785076706" />
     <state x="1933" y="158" key="NewPhpClassDialog" timestamp="1691475569109">
       <screen x="1366" y="0" width="1600" height="870" />
@@ -320,10 +322,10 @@
     <state x="339" y="165" width="673" height="678" key="run.anything.popup/0.0.1366.738/1366.0.1600.870@0.0.1366.738" timestamp="1692262006712" />
     <state x="1763" y="195" width="788" height="799" key="run.anything.popup/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1690199457588" />
     <state x="339" y="165" width="672" height="677" key="run.anything.popup/0.0.1366.738@0.0.1366.738" timestamp="1690974404455" />
-    <state x="1771" y="70" width="788" height="800" key="search.everywhere.popup" timestamp="1692707713775">
+    <state x="1771" y="70" width="788" height="800" key="search.everywhere.popup" timestamp="1692977792025">
       <screen x="1366" y="0" width="1600" height="870" />
     </state>
-    <state x="1771" y="70" width="788" height="800" key="search.everywhere.popup/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1692707713775" />
+    <state x="1771" y="70" width="788" height="800" key="search.everywhere.popup/0.0.1366.738/1366.0.1600.870@1366.0.1600.870" timestamp="1692977792025" />
     <state x="346" y="59" width="672" height="678" key="search.everywhere.popup/0.0.1366.738@0.0.1366.738" timestamp="1690111486298" />
   </component>
 </project>

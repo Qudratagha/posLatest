@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('purchaseReceives', function (Blueprint $table) {
@@ -19,15 +16,13 @@ return new class extends Migration
             $table->date('expiryDate')->nullable();
             $table->integer('orderedQty')->nullable();
             $table->integer('receivedQty')->nullable();
+            $table->integer('discount')->nullable();
+            $table->integer('tax')->nullable();
             $table->foreignId('purchaseUnit')->constrained('units', 'unitID');
-
             $table->timestamp('date')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('purchaseReceives');

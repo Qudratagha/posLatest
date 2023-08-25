@@ -104,14 +104,12 @@
                     let strHTML = '';
                     for (const key in productBatchData) {
 
-
                         const [productID, batchNumber] = key.split('-');
                         const productBatch = productBatchData[key];
                         if (productBatch.receivedQty === 0) {
+                            alert('No products');
                             continue;
                         }
-                        console.log('no');
-
                         strHTML += '<tr>';
                         products.forEach(function (product) {
                             if (product.productID == productID){
@@ -145,7 +143,7 @@
                         strHTML += '</tr>';
                     }
                     $('#tbody').html(strHTML);
-                    alert("All products of selected purchase are shown below, You have to select only which you want to return!!! \nDelete all other products which you don't want to return!!! ")
+                    // alert("All products of selected purchase are shown below, You have to select only which you want to return!!! \nDelete all other products which you don't want to return!!! ")
 
 
                 }

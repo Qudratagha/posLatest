@@ -92,7 +92,6 @@ class AjaxController extends Controller
 
         $purchase->load('purchaseReceive');
         $purchase->load('purchaseReturns.purchaseReturnDetails');
-
         return response()->json(['purchase'=>$purchase, 'warehouseID'=>$warehouseID]);
     }
 

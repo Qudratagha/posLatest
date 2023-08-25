@@ -108,14 +108,14 @@ class PurchaseController extends Controller
                         'warehouseID' => $warehouseID,
                         'purchaseUnit' => $productPurchaseUnit
                     ]);
-                    PurchaseReceive::create([
-                        'purchaseID' => $purchase->purchaseID,
-                        'productID' => $productID,
-                        'batchNumber' => $productBatchNumber,
-                        'expiryDate' => $productExpiryDate,
-                        'orderedQty' => $productQuantity * $unit->value,
-                        'purchaseUnit' => $productPurchaseUnit
-                    ]);
+//                    PurchaseReceive::create([
+//                        'purchaseID' => $purchase->purchaseID,
+//                        'productID' => $productID,
+//                        'batchNumber' => $productBatchNumber,
+//                        'expiryDate' => $productExpiryDate,
+//                        'orderedQty' => $productQuantity * $unit->value,
+//                        'purchaseUnit' => $productPurchaseUnit
+//                    ]);
                     if($request['purchaseStatus'] === 'received'){
                         PurchaseReceive::create([
                             'purchaseID' => $purchase->purchaseID,
