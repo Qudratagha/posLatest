@@ -58,7 +58,7 @@
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addPaymentModal_{{ $return->purchaseReturnID }}">
                                         <i class="text-yellow fa fa-plus"></i> Add Payment
                                     </a>
-                                    <form action="{{ route('purchase.destroy', $return->purchaseReturnID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
+                                    <form action="{{ route('purchaseReturn.destroy', $return->purchaseReturnID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');" style="display: inline-block;">
                                         @method('DELETE')
                                         @csrf
                                         <button type="submit" class="dropdown-item">

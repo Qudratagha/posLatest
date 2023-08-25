@@ -122,8 +122,15 @@ class PurchaseReturnController extends Controller
         //
     }
 
-    public function destroy(PurchaseReturn $purchaseReturn)
+    public function destroy(PurchaseReturn $purchaseReturn, Request $request)
     {
-        //
+        if (count($purchaseReturn->purchaseReturnPayments) > 0){
+            $request->session()->flash('warning', 'You can not delete this return as it has some payments!');
+            return redirect()->route('purchaseReturn.index');
+        }
+        $purchaseReturn->purchaseReturnDetails()->delete();
+        $purchaseReturn->delete();
+        $request->session()->flash('message', 'Purchase Return Deleted Successfully!');
+        return redirect()->route('purchaseReturn.index');
     }
 }

@@ -34,7 +34,7 @@
                                         <th width="10%">Batch No</th>
                                         <th width="10%">Expired Date</th>
                                         <th width="10%">Received Quantity</th>
-                                        <th width="15%">Purchase Unit</th>
+{{--                                        <th width="15%">Purchase Unit</th>--}}
                                         <th width="17%">Return Quantity</th>
                                         <th>Reason</th>
                                         <th width="7%"><i class="fa fa-trash"></i></th>
@@ -103,8 +103,15 @@
                     }
                     let strHTML = '';
                     for (const key in productBatchData) {
+
+
                         const [productID, batchNumber] = key.split('-');
                         const productBatch = productBatchData[key];
+                        if (productBatch.receivedQty === 0) {
+                            continue;
+                        }
+                        console.log('no');
+
                         strHTML += '<tr>';
                         products.forEach(function (product) {
                             if (product.productID == productID){
@@ -117,19 +124,19 @@
                             strHTML += '<td>' + (receive.expiryDate || 'N/A') + '</td>';
                             strHTML += '<input type="hidden" name="expiryDate_' + batchNumber + '" value="' + (receive.expiryDate || '') + '">';
                             strHTML += '<td>' + productBatch.receivedQty + '</td>';
-                            strHTML += '<td><select class="form-control" name="purchaseUnit_' + batchNumber + '" required> <option value="">Select Unit</option>';
-                            units.forEach(function (unit) {
-                                const isSelected = (unit.unitID === receive.purchaseUnit) ? 'selected' : '';
-                                strHTML += '<option value="' + unit.unitID + '" ' + isSelected + '>' + unit.name + '</option>';
-                            });
-                            strHTML += '</select></td>';
+                            // strHTML += '<td><select class="form-control" name="purchaseUnit_' + batchNumber + '" required> <option value="">Select Unit</option>';
+                            // units.forEach(function (unit) {
+                            //     const isSelected = (unit.unitID === receive.purchaseUnit) ? 'selected' : '';
+                            //     strHTML += '<option value="' + unit.unitID + '" ' + isSelected + '>' + unit.name + '</option>';
+                            // });
+                            // strHTML += '</select></td>';
                         } else {
                             strHTML += '<td>N/A</td>';
                             strHTML += '<td>' + productBatch.receivedQty + '</td>';
                             strHTML += '<td></td>';
                         }
 
-                        strHTML += '<td><input type="number" class="form-control" name="returnQuantity_' + batchNumber + '" min="0" max="' + productBatch.receivedQty + '" oninput="validateReturnQuantity(this, ' + productBatch.receivedQty + ')" placeholder="Return Quantity" required></td>';
+                        strHTML += '<td><input type="number" class="form-control" name="returnQuantity_' + batchNumber + '" min="1" value="1" max="' + productBatch.receivedQty + '" oninput="validateReturnQuantity(this, ' + productBatch.receivedQty + ')" placeholder="Return Quantity" required></td>';
                         strHTML += '<td><input type="text" class="form-control" name="description_' + batchNumber + '" placeholder="Reason"></td>';
                         strHTML += '<input type="hidden" name="warehouseID_' + batchNumber + '" placeholder="Reason" value="'+ result.warehouseID +'">';
                         strHTML += '<td><input type="hidden" name="productID_' + batchNumber + '" value="' + productID + '"><button type="button" class="btn btn-sm" onclick="deleteRow(this)" id="' + batchNumber + '"><i class="fa fa-trash"></i></button></td>';
@@ -138,6 +145,8 @@
                         strHTML += '</tr>';
                     }
                     $('#tbody').html(strHTML);
+                    alert("All products of selected purchase are shown below, You have to select only which you want to return!!! \nDelete all other products which you don't want to return!!! ")
+
 
                 }
             });
