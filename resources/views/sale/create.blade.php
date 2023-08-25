@@ -16,7 +16,7 @@
                     </label>
 
                     <label for="referenceNo" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Reference No:
-                        <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo') }}" placeholder="Reference No" required>
+                        <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo') }}" placeholder="Reference No">
                     </label>
 
                     <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Customer:

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('saleID');
             $table->foreignId('customerID')->constrained('accounts', 'accountID');
             $table->string('saleStatus');
-            $table->integer('referenceNo');
+            $table->integer('referenceNo')->nullable();
             $table->integer('shippingCost')->nullable();
             $table->integer('discountValue')->nullable();
             $table->string('orderTax')->nullable();
