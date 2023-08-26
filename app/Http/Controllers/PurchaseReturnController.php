@@ -76,15 +76,33 @@ class PurchaseReturnController extends Controller
                     $expiryDate = date('Y-m-d H:i:s', strtotime($request['expiryDate_' . $returnBatchNumber]));
                 }
 
-                $netUnitCost = PurchaseOrder::where('purchaseID', $request['purchaseID'])->where('productID', $productID)->where('batchNumber', $returnBatchNumber)->pluck('netUnitCost');
-                $total += $returnQty * $netUnitCost[0];
+                $netUnitCost = PurchaseOrder::where('purchaseID', $request['purchaseID'])->where('productID', $productID)->where('batchNumber', $returnBatchNumber)->first();
+                $totalQty = $netUnitCost['quantity'];
+                $totalTax = $netUnitCost['tax'];
+                $totalDisc = $netUnitCost['discount'];
+
+
+                $perProdDisc =  $totalTax / $totalQty ? $totalTax / $totalQty : 0 ;
+                $perProdTax =  $totalDisc / $totalQty ? $totalDisc / $totalQty : 0;
+
+                $finalCost =  ($netUnitCost['netUnitCost'] * $returnQty) + $perProdTax - $perProdDisc;
+//                dump('net unit cost -> '. $netUnitCost['netUnitCost'] );
+//                dump('discount -> '. $perProdDisc );
+//                dump( 'tax -> '. $perProdTax );
+//                dump( 'quantity -> '. $returnQty );
+//                dd( 'final -> '. $finalCost);
+
+                $total += $returnQty * $finalCost;
                 PurchaseReturnDetail::create([
                     'purchaseReturnID' => $purchaseReturn->purchaseReturnID,
                     'productID' => $productID,
                     'batchNumber' => $returnBatchNumber,
                     'returnQuantity' => $returnQty,
                     'expiryDate' => $expiryDate,
-                    'subTotal' => $returnQty * $netUnitCost[0],
+                    'discount' => $perProdDisc,
+                    'tax' => $perProdTax,
+                    'netUnitCost' => $netUnitCost['netUnitCost'],
+                    'subTotal' => $finalCost,
                     'description' => $returnDesc,
                     'refID' => $ref,
                     'date' => $request->date,

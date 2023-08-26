@@ -38,6 +38,9 @@
                                         <th scope="col">Product Name</th>
                                         <th scope="col">Batch Number</th>
                                         <th scope="col">Return Quantity</th>
+                                        <th scope="col">Discount</th>
+                                        <th scope="col">Tax</th>
+                                        <th scope="col">Net Unit Cost</th>
                                         <th scope="col">Expiry Date</th>
                                         <th scope="col">Total Amount</th>
                                         </tr>
@@ -53,6 +56,9 @@
                                             <td>{{ $return->product->name }}</td>
                                             <td>{{ $return->batchNumber }}</td>
                                             <td>{{ $return->returnQuantity }}</td>
+                                            <td>{{ $return->discount }}</td>
+                                            <td>{{ $return->tax }}</td>
+                                            <td>{{ $return->netUnitCost }}</td>
                                             <td>{{ $return->expiryDate   }}</td>
                                             <td>{{ $return->subTotal ?? '' }}</td>
                                         </tr>

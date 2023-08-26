@@ -18,7 +18,9 @@ return new class extends Migration
             $table->integer('batchNumber');
             $table->integer('returnQuantity');
             $table->date('expiryDate')->nullable();
-            $table->integer('deductionAmount')->nullable();
+            $table->integer('discount')->nullable();
+            $table->integer('tax')->nullable();
+            $table->integer('netUnitCost')->nullable();
             $table->integer('subTotal');
             $table->string('description')->nullable();
             $table->integer('refID');
