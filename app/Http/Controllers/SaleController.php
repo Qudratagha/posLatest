@@ -189,7 +189,7 @@ class SaleController extends Controller
 
         $units = Unit::all();
         $warehouses = Warehouse::all();
-        $accounts = Account::all();
+        $accounts = Account::where('type', 'customer')->get();
         $purchaseStatuses = PurchaseStatus::all();
         $saleOrders = $sale->saleOrders;
         $paymentAccounts = Account::where('type', 'business')->get();

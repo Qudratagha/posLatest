@@ -61,7 +61,7 @@ class PurchaseController extends Controller
                 'refID' => $purchase->refID,
                 'date' => $request['date'],
             ]);
-            addTransaction($request['accountID'], $request['date'], 'purchase', $request['amount'], 0 , $purchase->refID, $request['description']);
+            addTransaction($request['accountID'], $request['date'], 'Purchase', $request['amount'], 0 , $purchase->refID, $request['description']);
             addTransaction($purchasePayment->purchase->supplierID, $request['date'], 'purchase',0, $request['amount'], $purchase->refID, $request['description']);
             $request->session()->flash('message', 'Purchase Payment Created Successfully!');
             return redirect()->route('purchase.index');
@@ -143,7 +143,7 @@ class PurchaseController extends Controller
             $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
 
             $desc = "<b>Purchase</b><br> Pending Amount of Purchase #" . $purchase->purchaseID;
-            addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $purchase->refID, $desc);
+            addTransaction($request['supplierID'], $request['date'], 'Purchase', $netAmount1, 0, $purchase->refID, $desc);
             $request->session()->flash('message', 'Purchase Created Successfully!');
             return redirect()->route('purchase.index');
 
@@ -278,7 +278,7 @@ class PurchaseController extends Controller
         $netAmount1 = $netAmount - $request['discount'] + $request['shippingCost'];
 
         $desc = "<b>Purchase</b><br> Pending Amount of Purchase #" . $purchase->purchaseID;
-        addTransaction($request['supplierID'], $request['date'], 'purchase', $netAmount1, 0, $purchase->refID, $desc);
+        addTransaction($request['supplierID'], $request['date'], 'Purchase', $netAmount1, 0, $purchase->refID, $desc);
         $request->session()->flash('message', 'Purchase Updated Successfully!');
         return to_route('purchase.index');
 

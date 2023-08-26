@@ -20,14 +20,14 @@
                     </label>
 
                     <label for="referenceNo" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Reference No:
-                        <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo', $sale->referenceNo) }}" required>
+                        <input type="number" name="referenceNo" class="form-control" value="{{ old('referenceNo', $sale->referenceNo) }}" >
                     </label>
 
                     <label for="customerID" class="form-label col-form-label col-sm-12 col-md-6 col-lg-2"> Customer:
                         <select name="customerID" class="form-select" required>
                             <option value="">Select Customer</option>
                             @foreach ($accounts as $account)
-                                <option value="{{ $account->accountID }}" {{ old('customerID') == $account->accountID ? 'selected' : '' }}>{{ $account->name }}</option>
+                                <option value="{{ $account->accountID }}" {{ $account->accountID == $sale->customerID ? 'selected' : '' }}>{{ $account->name }}</option>
                             @endforeach
                         </select>
                     </label>
@@ -168,8 +168,8 @@
                 <div class="form-group row">
                     <label for="saleStatus" class="form-label col-form-label col-sm-12 col-md-6 col-lg-4"> Sale Status:
                         <select name="saleStatus" id="saleStatus" class="form-select">
-                            <option value="completed">Completed</option>
-                            <option value="pending">Pending</option>
+                            <option value="completed" {{$sale->saleStatus == 'completed' ? 'selected' : ''}}>Completed</option>
+                            <option value="pending" {{$sale->saleStatus == 'pending' ? 'selected' : ''}}>Pending</option>
                         </select>
                     </label>
 
