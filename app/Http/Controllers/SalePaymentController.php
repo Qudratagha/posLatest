@@ -20,14 +20,14 @@ class SalePaymentController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request->all());
 
+        $sale = Sale::find($request->saleID);
         $salePayment =  SalePayment::create([
             'saleID' => $request['saleID'],
             'amount' => $request['amount'],
             'accountID' => $request['accountID'],
             'description' => $request['description'],
-            'refID' => $ref,
+            'refID' => $sale->refID,
             'date' => $request['date'],
         ]);
 
